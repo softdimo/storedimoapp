@@ -1,0 +1,499 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */
+}
+
+.page-container {
+    flex: 1;
+    /* Para que este contenedor ocupe todo el espacio restante */
+}
+
+/* footer {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    width: 100%;
+} */
+
+.btn-circle {
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
+    padding-top: 0.0rem !important;
+    padding-bottom: 0.0rem !important;
+}
+
+@media (min-width: 769px) {
+    .sidebar-container {
+        width: 15%;
+    }
+
+    .content-container {
+        width: 85%;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar-container {
+        width: 0 !important;
+    }
+
+    .content-container {
+        width: 100% !important;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        width: 50% !important;
+        transition: 0.3s;
+        z-index: 1000;
+        background: white;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .navbar-toggler-container {
+        position: relative;
+        padding-left: 70% !important;
+    }
+
+    .navbar-toggler-container-logo {
+        position: absolute;
+        left: 50% !important;
+        transform: translateX(-50%);
+        z-index: 0;
+    }
+}
+
+.d-flex.flex-nowrap.w-100 {
+    position: relative;
+}
+
+.navbar-toggler-container-logo {
+    position: absolute;
+    left: 10%;
+    transform: translateX(-50%);
+    z-index: 0;
+}
+
+/* =============================================== */
+
+.dt-buttons {
+    margin-bottom: 1rem;
+}
+
+.dataTables_length {
+    width: 50%;
+    display: inline-block;
+    color: #555;
+}
+
+.table thead th {
+    cursor: pointer;
+}
+
+.dataTables_length label select {
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.dataTables_filter {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+    margin-bottom: 1%;
+}
+
+.dataTables_filter label {
+    color: #555;
+}
+
+.dataTables_filter label input {
+    margin-left: 1rem;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.dataTables_scroll {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.dataTables_info {
+    width: 50%;
+    display: inline-block;
+    color: #555;
+}
+
+.dataTables_paginate {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+    margin-top: 1%;
+    cursor: pointer;
+}
+
+.dataTables_paginate a {
+    text-decoration: none;
+    color: #555;
+    border: solid 1px #555;
+    padding: 0.3rem;
+    vertical-align: middle;
+}
+
+.dataTables_paginate span a {
+    background-color: #337AB7;
+    border: solid 1px #555;
+    width: 100%;
+    padding: 0.3rem 0.5rem;
+    color: white;
+    vertical-align: middle;
+}
+
+.iti__country-list {
+  z-index: 2000 !important;
+}
+
+/* =============================================== */
+
+/* Estilos generales del select2 */
+
+.select2-spaced+.select2-container {
+    width: 96% !important;
+    margin: 0.5rem 0 0.5rem 0.5rem;
+}
+
+.select2-container .select2-selection--single {
+    height: 38px !important;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+/* Alinea verticalmente la flecha del select2 */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    top: 0;
+    right: 10px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 26px;
+}
+
+.select2-container {
+    z-index: 1050 !important;
+}
+
+.select2-dropdown {
+    z-index: 99999 !important;
+}
+
+/* Fin estilos generales del select2 */
+
+/* =============================================== */
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.hover-li:hover {
+    background-color: #337AB7;
+    /* Color de fondo deseado */
+}
+
+@media (max-width:992px) {
+    .w-100-div {
+        width: 100%;
+        display: block;
+    }
+}
+
+@media (min-width:993px) {
+    .w-48 {
+        width: 48%;
+    }
+}
+
+.loadingIndicator {
+    display: none;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.loadingIndicator>img {
+    width: 80px;
+    height: 80px;
+}
+
+#loaderGif {
+    background-size: 75px;
+    position: fixed;
+    left: 30vw;
+    top: 5vw;
+    width: 100%;
+    height: 100vh;
+    z-index: 20;
+}
+
+.ocultar {
+    display: none !important;
+}
+
+/* Estilos grid permisos */
+.permiso-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+@media (min-width: 640px) {
+    .permiso-grid {
+        grid-template-columns: 1fr 1fr;
+        /* 2 columnas a partir de 640px (sm) */
+    }
+}
+
+@media (min-width: 992px) {
+    .permiso-grid {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        /* 4 columnas a partir de 992px (md) */
+    }
+}
+
+.permiso-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.permiso-item label {
+    margin-left: 8px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+/* Para permitir submenús */
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    right: 100%;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    display: none;
+    position: absolute;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+/* ========================================= */
+/* ========================================= */
+
+/* Estilos Input tipo file */
+.file-container .div-file {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-container .div-file::before {
+    background-color: #337AB7;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    content: 'Seleccionar Archivo';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-size: 14px;
+}
+
+.file {
+    opacity: 0;
+    height: 40px;
+    display: inline-block;
+}
+
+/* ========================================= */
+/* ========================================= */
+
+/* INICIO Media Query TopMenu */
+@media (max-width: 992px) {
+    .menu-container {
+        order: 2 !important;
+        display: flex;
+        flex-direction: column;
+        padding-left: 0;
+        padding-right: 0;
+        justify-content: center;
+        /* position: relative; */
+        width: 50% !important;
+    }
+
+    .navbar .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .navbar .toggler-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .navbar-toggler {
+        width: 100%;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    #navbarNavDropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 1050;
+        background-color: #337AB7 !important;
+        width: 100vw !important;
+        padding-left: 0rem !important;
+        /* margin-top: 1.5rem !important; */
+    }
+
+    #navbarNavDropdown .navbar-nav {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        /* Para que pasen a nueva línea si no caben */
+        justify-content: center;
+        /* Centrado horizontal */
+    }
+
+    #navbarNavDropdown .nav-item {
+        padding: 0.5rem 1.0rem;
+    }
+
+    .logo-container {
+        order: 1 !important;
+        width: 50% !important;
+        padding-left: 0;
+        padding-right: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .logo-container a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo-container a img {
+        width: 90% !important;
+        height: 60% !important;
+    }
+
+    #toggle_user {
+        width: 1em !important;
+    }
+
+    /* FIN Media Query TopMenu  */
+
+    /* =============================================== */
+
+    .dataTables_length {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .dataTables_length label select {
+        height: 25px;
+        padding: 0px 8px;
+    }
+
+    .dataTables_filter {
+        margin-top: 2rem;
+        width: 100%;
+        display: block;
+        font-size: 12px;
+    }
+
+    .dataTables_filter label input {
+        margin-left: 0rem;
+        width: 100%;
+    }
+
+    .dataTables_info {
+        width: 100%;
+        margin-bottom: 1rem;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .dataTables_paginate {
+        width: 100%;
+        text-align: center;
+    }
+
+    .dataTables_paginate a {
+        font-size: 12px;
+    }
+
+    /* =============================================== */
+
+}
+
+/* FIN Media Query  */
+
+/* ========================================= */
