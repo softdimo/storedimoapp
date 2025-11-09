@@ -163,16 +163,12 @@
             </button>
         </div>
 
-        {{-- ======================= --}}
-
         <div class="col-12 col-md-3 mt-3" id="">
             <div class="form-group d-flex flex-column">
                 <label for="fecha_vencimiento" class="form-label">Fecha Vencimiento</label>
                 {!! Form::date('fecha_vencimiento', null, ['class' => 'form-control', 'id' => 'fecha_vencimiento']) !!}
             </div>
         </div>
-
-        {{-- ======================= --}}
 
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column file-container">
@@ -190,11 +186,6 @@
                 <span id="selected_imagen_producto" class="text-danger hidden"></span>
             </div>
         </div>
-
-        {{-- ========================================================= --}}
-        {{-- ========================================================= --}}
-        {{-- ========================================================= --}}
-        {{-- ========================================================= --}}
 
         <!-- Contenedor para el GIF -->
         <div id="loadingIndicatorCrearProducto" class="loadingIndicator">

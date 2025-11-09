@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
-class StockMinimo implements Responsable
+class FechasVencimiento implements Responsable
 {
     public function toResponse($request)
     {
@@ -16,18 +16,18 @@ class StockMinimo implements Responsable
             $clientApi = new Client(['base_uri' => $baseUri]);
             
             // Realiza la solicitud a la API
-            $peticion = $clientApi->get($baseUri . 'stock_minimo_index', [
+            $peticion = $clientApi->get($baseUri . 'fechas_vencimiento_index', [
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
             ]);
 
-            $stockMinimoIndex = json_decode($peticion->getBody()->getContents());
-            return view('existencias.stock_minimo', compact('stockMinimoIndex'));
+            $fechasVencimientoIndex = json_decode($peticion->getBody()->getContents());
+            return view('existencias.fechas_vencimiento', compact('fechasVencimientoIndex'));
 
         } catch (Exception $e)
         {
-            alert()->error('Error', 'Exception Index stockMinimoIndex, contacte a Soporte.');
+            alert()->error('Error', 'Exception en fechasVencimientoIndex, contacte a Soporte.');
             return back();
         }
     }

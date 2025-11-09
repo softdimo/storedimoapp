@@ -147,7 +147,8 @@
 
 @section('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function()
+        {
 
             $('.select2').select2({
                 placeholder: "Seleccionar...",
@@ -264,7 +265,6 @@
             });
             // Fin de función para abrir el modal de crear categoría
 
-
             // Valido que el precio unitario sea menor que el precio al detal
             $('#precio_detal').blur(function() {
                 let precioUnitario = parseFloat($('#precio_unitario').val()) || 0;
@@ -279,8 +279,6 @@
                     $('#precio_detal').val('');
                 }
             });
-
-            // =============================================
 
             // Valido que el precio unitario sea menor que el precio al detal
             $('#precio_por_mayor').blur(function() {
@@ -298,10 +296,7 @@
                 }
             });
 
-
             //======================== Validación de referencia ==============================//
-
-
             const referenceInput = document.getElementById('referencia');
             const errorReferenceMsg = document.getElementById('reference-error');
 
@@ -376,10 +371,9 @@
                 loadingIndicator.show();
             });
 
-            // =============================================
-
             // formCrearUmd para cargar gif en el submit
-            $(document).on("submit", "form[id^='formCrearUmdProducto']", function(e) {
+            $(document).on("submit", "form[id^='formCrearUmdProducto']", function(e)
+            {
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 const cancelButton = form.find('button[type="button"]');
@@ -394,12 +388,35 @@
             });
 
             // ===========================================================
+            document.getElementById('fecha_vencimiento').addEventListener('change', function()
+            {
+                // Fecha seleccionada por el usuario
+                const seleccionada = new Date(this.value);
+
+                // Fecha actual + 8 días
+                const hoy = new Date();
+                hoy.setHours(0,0,0,0); // limpiar horas
+                const fechaEsperada = new Date(hoy);
+                fechaEsperada.setDate(hoy.getDate() + 8);
+
+                // Comparación
+                if (seleccionada.getTime() < fechaEsperada.getTime())
+                {
+                    Swal.fire(
+                        'Cuidado!',
+                        'Se recomienda que la fecha de vencimiento sea mayor a 8 días calendario',
+                        'warning'
+                    );
+
+                    return;
+                }
+            });
+
         }); // FIN document.ready
 
-        // =============================================
-
         // Funcionalidad input tipo file para imagen producto
-        function displaySelectedFile(inputId, displayElementId) {
+        function displaySelectedFile(inputId, displayElementId)
+        {
             const input = document.getElementById(inputId);
             const displayElement = document.getElementById(displayElementId);
             const file = input.files[0];
@@ -408,7 +425,8 @@
             displayElement.textContent = '';
             displayElement.classList.add('hidden');
 
-            if (file) {
+            if (file)
+            {
                 const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
                 const maxSizeMB = 2;
                 const fileSizeMB = file.size / (1024 * 1024);

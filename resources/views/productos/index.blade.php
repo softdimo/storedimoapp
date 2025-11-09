@@ -152,7 +152,11 @@
 
                                         <td class="align-middle">{{ $producto->stock_minimo }}</td>
 
-                                        <td class="align-middle">{{ $producto->fecha_vencimiento }}</td>
+                                        @if(is_null($producto->fecha_vencimiento) || $producto->fecha_vencimiento == "")
+                                            <td class="align-middle">No Aplica</td>
+                                        @else
+                                            <td class="align-middle">{{ $producto->fecha_vencimiento }}</td>
+                                        @endif
 
                                         @if (!empty($producto->estado_vencimiento))
                                             @if ($producto->estado_vencimiento === 'vencido')

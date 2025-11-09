@@ -90,9 +90,11 @@ class ProductosController extends Controller
                     $categorias = $this->categoriasTrait();
                     $umd = $this->UmdTrait();
                     $proveedores = $this->proveedoresTrait();
+
                     view()->share('categorias', $categorias);
                     view()->share('umd', $umd);
                     view()->share('proveedores', $proveedores);
+
                     $vista = 'productos.create';
                     return $this->validarAccesos($sesion[0], 20, $vista);
                 }
@@ -130,12 +132,14 @@ class ProductosController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
+
                     $vista = new ProductoStore();
                     return $this->validarAccesos($sesion[0], 27, $vista);
                 }
             }
         } catch (Exception $e)
         {
+            dd($e);
             alert()->error("Exception Store Productos!");
             return back();
         }

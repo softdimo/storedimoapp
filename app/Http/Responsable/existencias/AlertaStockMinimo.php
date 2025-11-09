@@ -13,8 +13,6 @@ class AlertaStockMinimo implements Responsable
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
-
-            // ==============================================================
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'alerta_stock_minimo', [

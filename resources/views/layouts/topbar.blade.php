@@ -84,12 +84,17 @@
                         <li class="nav-item dropdown">
                             <a href="#" title="Notificaciones" class="nav-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-bell fa-1x"></i>
-                                <span id="notificaciones_stock" class="position-absolute top-0 start-md-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                                <span id="notificaciones" class="position-absolute top-0 start-md-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
                             </a>
                             <ul class="dropdown-menu bg-white" style="right:0;left:auto">
                                 <li class="nav-item">
                                     <a href="{{route('stock_minimo')}}" class="dropdown-item text-dark hover-li"><i class="fa fa-cubes fa-fw"></i> Hay productos por debajo del stock mínimo</a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a href="{{route('fechas_vencimiento')}}" class="dropdown-item text-dark hover-li"><i class="fa fa-cubes fa-fw"></i> Hay productos con fecha vencimiento próximos a vencer o vencidos</a>
+                                </li>
+
                                 {{-- <li class="nav-item">
                                     <a href="{{route('prestamos_vencer')}}" class="dropdown-item text-dark hover-li"><i class="fa fa-money fa-fw"></i> Hay Préstamos a punto de vencer</a>
                                 </li> --}}
@@ -220,9 +225,6 @@
 </div>
 {{-- FINAL Modal INFORMACIÓN --}}
 
-{{-- ==================================================================================== --}}
-{{-- ==================================================================================== --}}
-
 {{-- INICIO Modal AYUDA --}}
 <div class="modal fade" id="modal_ayuda" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
@@ -231,8 +233,6 @@
                 <div class="rounded-top text-white text-center" style="background-color: #337AB7; border: solid 1px #337AB7;">
                     <h5>Ayudas</h5>
                 </div>
-
-                {{-- ====================================================== --}}
 
                 <div class="modal-body">
                     <div class="row m-0 p-0">
@@ -243,8 +243,6 @@
                 </div>
             </div>
             
-            {{-- ====================================================== --}}
-
             <div class="d-flex justify-content-end mt-2 p-3">
                 <button type="button" class="btn btn-primary d-flex justify-content-end" data-bs-dismiss="modal">
                     <i class="fa fa-check-circle"> Aceptar</i>
@@ -263,8 +261,6 @@
                 <div class="rounded-top text-white text-center" style="background-color: #337AB7; border: solid 1px #337AB7;">
                     <h5>Configuración Ventas</h5>
                 </div>
-
-                {{-- ====================================================== --}}
 
                 <div class="modal-body p-0 m-0">
                     <div class="row m-0 pt-4 pb-4">
@@ -299,8 +295,6 @@
                 </div>
             </div>
             
-            {{-- ====================================================== --}}
-
             <div class="d-flex justify-content-between mt-3">
                 <div>
                     <button type="button" class="btn btn-secondary" title="Cancelar" data-bs-dismiss="modal">
@@ -323,8 +317,6 @@
 </div>
 {{-- FINAL Modal CONFIGURAR VENTAS --}}
 
-{{-- ==================================================================================== --}}
-
 {{-- INICIO Modal CONFIGURAR PAGOS --}}
 <div class="modal fade" id="modal_configurar_pago" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
     <div class="modal-dialog">
@@ -333,8 +325,6 @@
                 <div class="rounded-top text-white text-center" style="background-color: #337AB7; border: solid 1px #337AB7;">
                     <h5>Configuración Pagos</h5>
                 </div>
-
-                {{-- ====================================================== --}}
 
                 <div class="modal-body p-0 m-0">
                     <div class="row m-0 pt-4 pb-4">
@@ -362,8 +352,6 @@
                 </div>
             </div>
             
-            {{-- ====================================================== --}}
-
             <div class="d-flex justify-content-between mt-3">
                 <div>
                     <button type="button" class="btn btn-secondary" title="Cancelar" data-bs-dismiss="modal">
@@ -402,11 +390,16 @@
             }
             return response.json();
         })
-        .then(data => {
-            let badge = document.getElementById("notificaciones_stock");
-            if (data.productos_bajo_stock > 0) {
-                badge.textContent = data.productos_bajo_stock ;
+        .then(data =>
+        {
+            let badge = document.getElementById("notificaciones");
+
+            if (data.productos_bajo_stock > 0)
+            {
+                // badge.textContent = data.productos_bajo_stock ;
+                badge.textContent = "N";
                 badge.style.display = "inline-block";
+
             } else {
                 badge.style.display = "none";
             }

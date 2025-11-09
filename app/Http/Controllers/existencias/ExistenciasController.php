@@ -12,8 +12,10 @@ use App\Http\Responsable\existencias\BajaDetalle;
 use App\Http\Responsable\existencias\BajaStore;
 use App\Http\Responsable\existencias\ReporteBajasPdf;
 use App\Http\Responsable\existencias\StockMinimo;
+use App\Http\Responsable\existencias\FechasVencimiento;
 use App\Http\Responsable\existencias\StockMinimoPdf;
 use App\Http\Responsable\existencias\AlertaStockMinimo;
+use App\Http\Responsable\existencias\AlertaFechaVencimiento;
 class ExistenciasController extends Controller
 {
     use MetodosTrait;
@@ -251,7 +253,8 @@ class ExistenciasController extends Controller
                     return $this->validarAccesos($sesion[0], 33, $vista);
                 }
             }
-        } catch (Exception $e) {
+        } catch (Exception $e)
+        {
             alert()->error("Exception stockMinimo!");
             return redirect()->to(route('login'));
         }
@@ -282,6 +285,34 @@ class ExistenciasController extends Controller
         } catch (Exception $e)
         {
             alert()->error("Exception stockMinimo!");
+            return redirect()->to(route('login'));
+        }
+    }
+
+    public function fechasVencimiento()
+    {
+        try
+        {
+            if (!$this->checkDatabaseConnection())
+            {
+                return view('db_conexion');
+            } else {
+                $sesion = $this->validarVariablesSesion();
+
+                if (empty($sesion[0]) || is_null($sesion[0]) &&
+                    empty($sesion[1]) || is_null($sesion[1]) &&
+                    empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
+                {
+                    return redirect()->to(route('login'));
+                } else
+                {
+                    $vista = new FechasVencimiento();
+                    return $this->validarAccesos($sesion[0], 34, $vista);
+                }
+            }
+        } catch (Exception $e)
+        {
+            alert()->error("Exception fechasVencimiento!");
             return redirect()->to(route('login'));
         }
     }

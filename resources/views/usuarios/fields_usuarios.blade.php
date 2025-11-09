@@ -24,7 +24,7 @@
             <div class="form-group d-flex flex-column">
                 <label for="id_tipo_documento" class="form-label">Tipo de documento <span
                         class="text-danger">*</span></label>
-                {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tipos_documento), null, [
+                {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tipos_documento_usuario), null, [
                     'class' => 'form-select select2',
                     'id' => 'id_tipo_documento',
                     'required' => 'required',

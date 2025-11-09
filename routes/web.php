@@ -147,11 +147,12 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
             Route::post('baja_store', 'ExistenciasController@bajaStore')->name('baja_store');
             Route::post('reporte_bajas_pdf', 'ExistenciasController@reporteBajasPdf')->name('reporte_bajas_pdf');
             Route::get('stock_minimo', 'ExistenciasController@stockMinimo')->name('stock_minimo');
+            Route::get('fechas_vencimiento', 'ExistenciasController@fechasVencimiento')->name('fechas_vencimiento');
             Route::post('stock_minimo_pdf', 'ExistenciasController@stockMinimoPdf')->name('stock_minimo_pdf');
             Route::get('alerta_stock_minimo_app', 'ExistenciasController@alertaStockMinimo')->name('alerta_stock_minimo_app');
+            // Route::get('alerta_fecha_vencimiento_app', 'ExistenciasController@alertaFechaVencimiento')->name('alerta_fecha_vencimiento_app');
         });
 
-        // ========================================================================
         // ========================================================================
 
         // ENTRADAS
