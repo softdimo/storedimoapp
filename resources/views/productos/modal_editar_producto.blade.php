@@ -153,8 +153,8 @@
 
                 <div class="col-12 col-md-4 mt-md-3">
                     <div class="form-group d-flex flex-column">
-                        <label for="id_umdEdit" class="form-label">Unidad de Medida <span class="text-danger">*</span></label>
-                        {!! Form::select('id_umdEdit', 
+                        <label for="id_umdEdit" class="">Unidad de Medida <span class="text-danger">*</span></label>
+                        {!! Form::select('id_umdEdit',
                             collect(['' => 'Seleccionar...'])->union($umd),
                             isset($productoEdit) ? $productoEdit->id_umd : null, [
                             'class' => 'form-select select2',
