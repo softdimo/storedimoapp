@@ -27,7 +27,7 @@ class ProductoIndex implements Responsable
 
             return view('productos.index', compact('productos'));
         } catch (Exception $e) {
-            alert()->error('Error', 'Exception, contacte a Soporte.');
+            alert()->error('Error', 'Exception Cargando Productos, contacte a Soporte.');
             return back();
         }
     }
