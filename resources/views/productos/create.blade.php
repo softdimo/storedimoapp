@@ -359,6 +359,14 @@
             });
             //=========================== Fin validación de referencia ==============================//
 
+            // Evita permitir que el enter active el submit
+            $(document).on('keypress', 'form[id^="formCrearProducto"]', function (e) {
+                if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             // formCrearCategoria para cargar gif en el submit
             $(document).on("submit", "form[id^='formCrearProducto']", function(e) {
                 const form = $(this);
