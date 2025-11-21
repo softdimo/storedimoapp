@@ -296,6 +296,14 @@
 
             // ===========================================================
 
+            // Evita permitir que el enter active el submit
+            $(document).on('keypress', 'form[id^="formEditarProducto_"]', function (e) {
+                if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             $(document).on('click', '.btn-editar-producto', function() {
                 const idProducto = $(this).data('id');
 

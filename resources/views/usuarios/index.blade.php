@@ -318,6 +318,14 @@
 
             // ===========================================================================================
 
+            // Evita permitir que el enter active el submit
+            $(document).on('keypress', 'form[id^="formEditarUsuario_"]', function (e) {
+                if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             // Botón de submit de editar usuario
             $(document).on("submit", "form[id^='formEditarUsuario_']", function(e) {
 
