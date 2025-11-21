@@ -199,6 +199,14 @@
 
             // ===========================================================================================
 
+            // Evita permitir que el enter active el submit
+            $(document).on('keypress', 'form[id^="formEditarCliente_"]', function (e) {
+                if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             $(document).on('click', '.btn-editar-cliente', function() {
                 const idCliente = $(this).data('id');
 
