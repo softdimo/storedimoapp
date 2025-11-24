@@ -317,7 +317,7 @@
                 }
 
                 if (!regexReferencia.test(reference)) {
-                    errorReferenceMsg.textContent = 'Ingrese una referencia válida.';
+                    errorReferenceMsg.textContent = 'Ingrese una referencia válida, sin espacios.';
                     errorReferenceMsg.classList.remove('d-none');
                     referenceInput.classList.add('is-invalid');
                     return;
