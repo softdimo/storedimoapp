@@ -118,7 +118,7 @@
             <div class="form-group d-flex flex-column">
                 <label for="descripcion" class="form-label">Descripción</label>
                 {!! Form::text('descripcion', null, [
-                    'class' => 'form-control', 
+                    'class' => 'form-control',
                     'id' => 'descripcion',
                     'pattern' => '^[a-zA-ZÁÉÍÓÚáéíóúÑñ0-9\s\-_.,;:()&]{0,255}$',
                     'title' => 'La descripción puede incluir letras, números, espacios y caracteres especiales como -_.,;:()&. Máximo 255 caracteres.',
@@ -208,7 +208,7 @@
             <button type="submit" class="btn btn-success rounded-2 me-3">
                 <i class="fa fa-floppy-o"></i>
                 Guardar
-            </button> 
+            </button>
         </div>
     </div> {{-- FIN div_campos_productos --}}
 </div> {{-- FIN div_crear_productos --}}
