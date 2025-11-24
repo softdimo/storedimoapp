@@ -337,46 +337,57 @@
                         let inputPrecioDetal = modal.find('[id^=precioDetalEdit]');
                         let inputPrecioPorMayor = modal.find('[id^=precioPorMayorEdit]');
 
-                        if (inputPrecioUnitario.length > 0) { // Al cargar el modal
-                            // Valido que el precio unitario sea menor que el precio al detal
+                        if (inputPrecioUnitario.length > 0) {
+                            // Asignar validaciones en blur usando la función auxiliar
                             inputPrecioDetal.on("blur", function() {
-                                let precioUnitario = parseFloat(inputPrecioUnitario
-                                    .val()) || 0;
-                                let precioDetal = parseFloat(inputPrecioDetal.val()) ||
-                                    0;
-
-                                if (precioUnitario >= precioDetal) {
-                                    Swal.fire(
-                                        'Cuidado!',
-                                        'El precio unitario debe ser menor que el precio al detal!',
-                                        'warning'
-                                    )
-                                    inputPrecioDetal.val('');
-                                }
+                                validarPrecios(modal);
                             });
+
+                            inputPrecioPorMayor.on("blur", function() {
+                                validarPrecios(modal);
+                            });
+                        }
+
+                        // if (inputPrecioUnitario.length > 0) { // Al cargar el modal
+                            // Valido que el precio unitario sea menor que el precio al detal
+                            // inputPrecioDetal.on("blur", function() {
+                            //     let precioUnitario = parseFloat(inputPrecioUnitario
+                            //         .val()) || 0;
+                            //     let precioDetal = parseFloat(inputPrecioDetal.val()) ||
+                            //         0;
+
+                            //     if (precioUnitario >= precioDetal) {
+                            //         Swal.fire(
+                            //             'Cuidado!',
+                            //             'El precio unitario debe ser menor que el precio al detal!',
+                            //             'warning'
+                            //         )
+                            //         inputPrecioDetal.val('');
+                            //     }
+                            // });
 
                             // ===================================================
 
                             // Valido que el precio por mayor sea mayor que el unitario y menor que el precio al detal
-                            inputPrecioPorMayor.blur(function() {
-                                let precioUnitario = parseFloat(inputPrecioUnitario
-                                    .val()) || 0;
-                                let precioDetal = parseFloat(inputPrecioDetal.val()) ||
-                                    0;
-                                let precioPorMayor = parseFloat(inputPrecioPorMayor
-                                    .val()) || 0;
+                            // inputPrecioPorMayor.blur(function() {
+                            //     let precioUnitario = parseFloat(inputPrecioUnitario
+                            //         .val()) || 0;
+                            //     let precioDetal = parseFloat(inputPrecioDetal.val()) ||
+                            //         0;
+                            //     let precioPorMayor = parseFloat(inputPrecioPorMayor
+                            //         .val()) || 0;
 
-                                if (precioPorMayor <= precioUnitario ||
-                                    precioPorMayor >= precioDetal) {
-                                    Swal.fire(
-                                        'Cuidado!',
-                                        'El precio al por mayor debe ser superior al precio unitario y menor que el precio al detal!',
-                                        'warning'
-                                    )
-                                    inputPrecioPorMayor.val('');
-                                }
-                            });
-                        } // FIN inputPrecioUnitario.length > 0
+                            //     if (precioPorMayor <= precioUnitario ||
+                            //         precioPorMayor >= precioDetal) {
+                            //         Swal.fire(
+                            //             'Cuidado!',
+                            //             'El precio al por mayor debe ser superior al precio unitario y menor que el precio al detal!',
+                            //             'warning'
+                            //         )
+                            //         inputPrecioPorMayor.val('');
+                            //     }
+                            // });
+                        // } // FIN inputPrecioUnitario.length > 0
                     },
                     error: function() {
                         $('#modalEditarProductoContent').html(
@@ -395,14 +406,22 @@
                 const formId = form.attr('id'); // Obtenemos el ID del formulario
                 const id = formId.split('_')[1]; // Obtener el ID del formulario desde el ID del formulario
 
+                const modal = $('#modalEditarProducto');
+
+                // ======= LLAMAR VALIDACIÓN ANTES DEL SPINNER =======
+                if (!validarPrecios(modal)) {
+                    e.preventDefault();
+                    return false;
+                }
+                // ====================================================
+
                 // Capturar spinner y btns
                 const loadingIndicator = $(`#loadingIndicatorEditProducto_${id}`);
                 const submitButton = $(`#btn_editar_producto_${id}`);
                 const cancelButton = $(`#btn_cancelar_producto_${id}`);
 
                 // Desactivar btns
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
                 loadingIndicator.show();
             });
@@ -561,6 +580,42 @@
                 displayElement.textContent = file.name;
                 displayElement.classList.remove('hidden');
             }
+        }
+
+        // ============================================================
+        // FUNCIÓN AUXILIAR DE VALIDACIÓN PARA EDITAR PRODUCTO
+        // ============================================================
+        function validarPrecios(modal) {
+
+            let inputPrecioUnitario = modal.find('[id^=precioUnitarioEdit]');
+            let inputPrecioDetal = modal.find('[id^=precioDetalEdit]');
+            let inputPrecioPorMayor = modal.find('[id^=precioPorMayorEdit]');
+
+            let precioUnitario = parseFloat(inputPrecioUnitario.val()) || 0;
+            let precioDetal = parseFloat(inputPrecioDetal.val()) || 0;
+            let precioPorMayor = parseFloat(inputPrecioPorMayor.val()) || 0;
+
+            // Validación #1
+            if (precioUnitario >= precioDetal) {
+                Swal.fire(
+                    'Cuidado!',
+                    'El precio unitario debe ser menor que el precio al detal!',
+                    'warning'
+                );
+                return false;
+            }
+
+            // Validación #2
+            if (precioPorMayor <= precioUnitario || precioPorMayor >= precioDetal) {
+                Swal.fire(
+                    'Cuidado!',
+                    'El precio al por mayor debe ser superior al precio unitario y menor que el precio al detal!',
+                    'warning'
+                );
+                return false;
+            }
+
+            return true;
         }
     </script>
 @stop
