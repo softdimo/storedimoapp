@@ -282,7 +282,7 @@
 
             // ===================================================================================
 
-            formCrearUsuario para cargar gif en el submit
+            //formCrearUsuario para cargar gif en el submit
             $("form").on("submit", function(e) {
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
