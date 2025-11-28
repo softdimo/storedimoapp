@@ -20,13 +20,13 @@
         </div>
 
         <div class="p-3 d-flex flex-column content-container">
-            {{-- <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
+            <div class="d-flex justify-content-end pe-0 mt-3 mb-2">
                 <div class="">
                     <a href="{{ route('suscripciones.create') }}" class="btn text-white" style="background-color:#337AB7">
                         Crear Suscripción
                     </a>
                 </div>
-            </div> --}}
+            </div>
 
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}
@@ -35,13 +35,6 @@
                 <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
                     Listar Suscripciones
                 </h5>
-
-                {{-- <div class="row pe-3 mt-3">
-                    <div class="col-12 d-flex justify-content-end">
-                        <a href="{{ route('suscripciones.create') }}" class="btn text-white"
-                            style="background-color:#337AB7">Crear Suscripción</a>
-                    </div>
-                </div> --}}
 
                 <div class="col-12 p-3" id="">
                     <div class="{{-- table-responsive --}}">

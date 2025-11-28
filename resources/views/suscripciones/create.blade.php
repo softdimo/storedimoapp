@@ -26,7 +26,7 @@
             <div class="d-flex justify-content-between pe-3 mt-3">
                 <div class="">
                     <a href="{{ route('suscripciones.index') }}" class="btn text-white"
-                        style="background-color:#337AB7">suscripciones
+                        style="background-color:#337AB7">Suscripciones
                     </a>
                 </div>
             </div>

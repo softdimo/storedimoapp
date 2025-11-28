@@ -204,7 +204,8 @@
                 <label for="observaciones_suscripcion" class="form-label">Observaciones Suscripción</label>
                 {!! Form::textarea('observaciones_suscripcion', null, [
                     'class' => 'form-control',
-                    'id' => 'observaciones_suscripcion'
+                    'id' => 'observaciones_suscripcion',
+                    'rows' => 3
                 ]) !!}
             </div>
         </div>

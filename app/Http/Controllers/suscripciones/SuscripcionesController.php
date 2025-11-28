@@ -46,13 +46,10 @@ class SuscripcionesController extends Controller
                 {
                     $vista = new SuscripcionIndex();
                     return $this->validarAccesos($sesion[0], 68, $vista);
-                    // return new SuscripcionIndex();
-                    // return view('suscripciones.index');
                 }
             }
         } catch (Exception $e)
         {
-            dd($e);
             alert()->error("Exception Index Suscripciones!");
             return redirect()->to(route('login'));
         }
@@ -74,9 +71,8 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // $vista = 'suscripciones.create';
-                    // return $this->validarAccesos($sesion[0], 2, $vista);
-                    return view('suscripciones.create');
+                    $vista = 'suscripciones.create';
+                    return $this->validarAccesos($sesion[0], 69, $vista);
                 }
             }
         } catch (Exception $e)
