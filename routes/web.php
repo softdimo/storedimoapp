@@ -224,6 +224,14 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         Route::group(['namespace' => 'App\Http\Controllers\unidades_medida'], function () {
             Route::resource('unidades_medida', 'UnidadesMedidaController');
         });
+        
+        // ========================================================================
+        // ========================================================================
+
+        // Suscripciones
+        Route::group(['namespace' => 'App\Http\Controllers\suscripciones'], function () {
+            Route::resource('suscripciones', 'SuscripcionesController');
+        });
     }); // FIN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])
 

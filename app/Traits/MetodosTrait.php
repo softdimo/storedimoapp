@@ -21,6 +21,7 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use App\Models\InformeCampo;
 use App\Models\Informe;
+use App\Models\Plan;
 
 trait MetodosTrait
 {
@@ -106,6 +107,7 @@ trait MetodosTrait
     {
         view()->share('roles', Rol::orderBy('name')->pluck('name', 'id'));
         view()->share('estados', Estado::whereIn('id_estado', [1,2])->orderBy('estado')->pluck('estado', 'id_estado'));
+        view()->share('estados_suscripciones', Estado::whereIn('id_estado', [1,2,10,11,12])->orderBy('estado')->pluck('estado', 'id_estado'));
         view()->share('tipos_documento', TipoDocumento::orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
         view()->share('tipos_persona', TipoPersona::whereNotIn('id_tipo_persona', [1,2])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
         view()->share('tipos_empleado', TipoPersona::whereIn('id_tipo_persona', [1,2])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
@@ -114,6 +116,7 @@ trait MetodosTrait
         view()->share('tipos_baja', TipoBaja::orderBy('tipo_baja','asc')->pluck('tipo_baja', 'id_tipo_baja'));
         view()->share('tipos_pago_ventas', TipoPago::whereNotIn('id_tipo_pago', [4,5])->where('id_estado',1)->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('tipos_pago_nomina', TipoPago::whereIn('id_tipo_pago', [4,5])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
+        view()->share('tipos_pago_suscripcion', TipoPago::whereIn('id_tipo_pago', [6,7,8,9])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('periodos_pago', PeriodoPago::orderBy('periodo_pago')->pluck('periodo_pago', 'id_periodo_pago'));
         view()->share('porcentajes_comision', PorcentajeComision::orderBy('porcentaje_comision')->pluck('porcentaje_comision', 'id_porcentaje_comision'));
         view()->share('empresas', Empresa::orderBy('nombre_empresa')->where('id_estado', 1)->pluck('nombre_empresa', 'id_empresa'));
@@ -128,6 +131,12 @@ trait MetodosTrait
 
 
         view()->share('tipos_cliente', TipoPersona::whereIn('id_tipo_persona', [5,6])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
+
+        // Para el pluck del select normal
+        view()->share('planes', Plan::orderBy('nombre_plan')->where('id_estado_plan', 1)->pluck('nombre_plan', 'id_plan'));
+
+        // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
+        view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
         
     } // FIN shareBasicData()
 
