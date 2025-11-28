@@ -76,7 +76,7 @@
                                                 class="btn btn-success rounded-circle btn-circle btn-editar-suscripcion"
                                                 title="Editar Suscripción" data-id="{{ $suscripcion->id_suscripcion }}">
                                                 <i class="fa fa-pencil-square-o"></i>
-                                            </button>ç
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
