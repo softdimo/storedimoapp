@@ -154,17 +154,22 @@
 
                     // 1. Obtener fecha de hoy
                     const hoy = obtenerHoy();
+                    
                     // 2. Asignar a fecha inicial
                     $('#formCrearSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
 
                     // 3. Calcular días (asegurate que plan.dias_trial sea un número)
                     let diasTrial = $('#dias_trial').val();
                     const dias = (plan && plan.dias_trial) ? parseInt(plan.dias_trial) : diasTrial;
+
                     // 4. Calcular fecha final
                     const fechaFin = sumarDias(hoy, dias);
+                    console.log('fechaInicial:', hoy);
+                    console.log('fechaFin:', fechaFin);
+                    
                     // 5. Asignar fecha final
                     $('#formCrearSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
-
+                    
                     // AGREGAR: Bloquear escritura para que no modifiquen los 15 días
                     $('#formCrearSuscripcion').find('#fecha_inicial').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
                     $('#formCrearSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
@@ -282,7 +287,7 @@
 
             // ===================================================================================
 
-            //formCrearUsuario para cargar gif en el submit
+            // formCrearUsuario para cargar gif en el submit
             $("form").on("submit", function(e) {
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');

@@ -158,9 +158,10 @@
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
                 <label for="fecha_final" class="form-label">Fecha Final<span class="text-danger">*</span></label>
-                {!! Form::date('fecha_final', null, [
+                {!! Form::date('fecha_final', old('fecha_final'), [
                     'class' => 'form-control',
                     'id' => 'fecha_final',
+                    'required' => 'required'
                     // 'onkeydown' => 'return false',
                 ]) !!}
             </div>
@@ -184,7 +185,7 @@
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
                 <label for="fecha_cancelacion" class="form-label">Fecha Cancelación</label>
-                {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_cancelacion']) !!}
+                {!! Form::date('fecha_cancelacion', null, ['class' => 'form-control', 'id' => 'fecha_cancelacion']) !!}
             </div>
         </div>
 
