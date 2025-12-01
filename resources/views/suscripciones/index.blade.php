@@ -42,18 +42,19 @@
                             aria-describedby="users-usuarios">
                             <thead>
                                 <tr class="header-table text-center">
-                                    <th>Id Suscripción</th>
+                                    <th>Id</th>
                                     <th>Empresa</th>
                                     <th>Plan</th>
                                     <th>Días Trial</th>
                                     <th>Modalidad Suscripción</th>
-                                    <th>valor_suscripcion</th>
+                                    <th>Valor Suscripcion</th>
                                     <th>Fecha Inicial</th>
                                     <th>Fecha Final</th>
                                     <th>Estado</th>
                                     <th>Fecha Cancelación</th>
                                     <th>Renovación Automática</th>
                                     <th>Observaciones</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             
@@ -65,6 +66,7 @@
                                         <td>{{ $suscripcion->nombre_plan }}</td>
                                         <td>{{ $suscripcion->dias_trial }}</td>
                                         <td>{{ $suscripcion->modalidad_suscripcion }}</td>
+                                        <td>{{ $suscripcion->valor_suscripcion }}</td>
                                         <td>{{ $suscripcion->fecha_inicial }}</td>
                                         <td>{{ $suscripcion->fecha_final }}</td>
                                         <td>{{ $suscripcion->estado }}</td>

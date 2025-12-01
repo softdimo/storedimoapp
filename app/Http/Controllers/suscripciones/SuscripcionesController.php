@@ -101,8 +101,8 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // $vista = new SuscripcionStore();
-                    // return $this->validarAccesos($sesion[0], 9, $vista);
+                    $vista = new SuscripcionStore();
+                    return $this->validarAccesos($sesion[0], 70, $vista);
                 }
             }
         } catch (Exception $e)
