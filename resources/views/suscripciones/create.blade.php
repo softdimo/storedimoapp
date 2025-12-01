@@ -119,7 +119,7 @@
             }
 
             // Usar jQuery + eventos de Select2 para máxima compatibilidad
-            $('#id_plan').on('change select2:select', function (e) {
+            $('#id_plan_suscrito').on('change select2:select', function (e) {
                 // obtener valor (siempre string)
                 const idPlan = $(this).val();
 
@@ -170,7 +170,7 @@
                     $('#formCrearSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
 
                     // Asignar 10 a estado Trial
-                    $('#formCrearSuscripcion').find('#id_estado').val(10).trigger('change');
+                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(10).trigger('change');
                     
                 } else if (idPlan != 1 && idPlan != '') {
 
@@ -202,7 +202,7 @@
                     $('#formCrearSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
                     $('#formCrearSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
 
-                    $('#formCrearSuscripcion').find('#id_estado').val('').trigger('change');
+                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
 
                 } else {
 
@@ -236,7 +236,7 @@
                     $('#formCrearSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
                     $('#formCrearSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
 
-                    $('#formCrearSuscripcion').find('#id_estado').val('').trigger('change');
+                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
                 }
             });
 

@@ -12,10 +12,10 @@
 
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
-                <label for="id_empresa" class="form-label">Empresa <span class="text-danger">*</span></label>
-                {!! Form::select('id_empresa', collect(['' => 'Seleccionar...'])->union($empresas), null, [
+                <label for="id_empresa_suscrita" class="form-label">Empresa <span class="text-danger">*</span></label>
+                {!! Form::select('id_empresa_suscrita', collect(['' => 'Seleccionar...'])->union($empresas), null, [
                     'class' => 'form-select select2',
-                    'id' => 'id_empresa',
+                    'id' => 'id_empresa_suscrita',
                     'required' => 'required',
                 ]) !!}
             </div>
@@ -26,10 +26,10 @@
 
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
-                <label for="id_plan" class="form-label">Plan <span class="text-danger">*</span></label>
-                {!! Form::select('id_plan', collect(['' => 'Seleccionar...'])->union($planes), null, [
+                <label for="id_plan_suscrito" class="form-label">Plan <span class="text-danger">*</span></label>
+                {!! Form::select('id_plan_suscrito', collect(['' => 'Seleccionar...'])->union($planes), null, [
                     'class' => 'form-select select2',
-                    'id' => 'id_plan',
+                    'id' => 'id_plan_suscrito',
                     'required' => 'required',
                 ]) !!}
             </div>
@@ -170,10 +170,10 @@
 
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
-                <label for="id_estado" class="form-label">Estado<span class="text-danger">*</span></label>
-                {!! Form::select('id_estado', collect(['' => 'Seleccionar...'])->union($estados_suscripciones), null, [
+                <label for="id_estado_suscripcion" class="form-label">Estado<span class="text-danger">*</span></label>
+                {!! Form::select('id_estado_suscripcion', collect(['' => 'Seleccionar...'])->union($estados_suscripciones), null, [
                     'class' => 'form-select select2',
-                    'id' => 'id_estado',
+                    'id' => 'id_estado_suscripcion',
                     'required' => 'required',
                 ]) !!}
             </div>

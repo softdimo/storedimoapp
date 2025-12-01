@@ -24,7 +24,6 @@ class SuscripcionIndex implements Responsable
             return view('suscripciones.index', compact('suscripcionesIndex'));
             
         } catch (Exception $e) {
-            dd($e);
             alert()->error('Error', 'Exception Index Suscripciones, contacte a Soporte.');
             return back();
         }
