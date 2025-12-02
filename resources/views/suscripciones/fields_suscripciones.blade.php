@@ -3,13 +3,7 @@
         Editar Suscripción (Obligatorios * )
     </h5>
 
-    <div class="row m-0 p-3" id="div_campos_usuarios">
-        {{-- {!! Form::hidden('id_suscripcion', null, [
-            'class' => '',
-            'id' => 'id_suscripcion',
-            'required' => 'required',
-        ]) !!} --}}
-
+    <div class="row m-0 p-3">
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
                 <label for="id_empresa_suscrita" class="form-label">Empresa <span class="text-danger">*</span></label>
@@ -40,8 +34,7 @@
         <div class="col-12 col-md-3 mt-3" id="div_valor_mensual">
             <div class="form-group d-flex flex-column">
                 <label for="valor_mensual" class="form-label">Valor Mensual</label>
-                {{-- {!! Form::text('valor_mensual', old('valor_mensual', isset($suscripcionEdit) ? $suscripcionEdit->valor_mensual : null), [ --}}
-                {!! Form::text('valor_mensual', null), [
+                {!! Form::text('valor_mensual', null, [
                     'class' => 'form-control bg-secondary-subtle',
                     'id' => 'valor_mensual',
                     'readonly' => true
@@ -54,8 +47,7 @@
         <div class="col-12 col-md-3 mt-3" id="div_valor_trimestral">
             <div class="form-group d-flex flex-column">
                 <label for="valor_trimestral" class="form-label">Valor Trimestral</label>
-                {{-- {!! Form::text('valor_trimestral', old('valor_trimestral', isset($suscripcionEdit) ? $suscripcionEdit->valor_trimestral : null), [ --}}
-                {!! Form::text('valor_trimestral', null), [
+                {!! Form::text('valor_trimestral', null, [
                     'class' => 'form-control bg-secondary-subtle',
                     'id' => 'valor_trimestral',
                     'readonly' => true
@@ -68,8 +60,7 @@
         <div class="col-12 col-md-3 mt-3" id="div_valor_semestral">
             <div class="form-group d-flex flex-column">
                 <label for="valor_semestral" class="form-label">Valor Semestral</label>
-                {{-- {!! Form::text('valor_semestral', old('valor_semestral', isset($suscripcionEdit) ? $suscripcionEdit->valor_semestral : null), [ --}}
-                {!! Form::text('valor_semestral', null), [
+                {!! Form::text('valor_semestral', null, [
                     'class' => 'form-control bg-secondary-subtle',
                     'id' => 'valor_semestral',
                     'readonly' => true
@@ -82,8 +73,7 @@
         <div class="col-12 col-md-3 mt-3" id="div_valor_anual">
             <div class="form-group d-flex flex-column">
                 <label for="valor_anual" class="form-label">Valor Anual</label>
-                {{-- {!! Form::text('valor_anual', old('valor_anual', isset($suscripcionEdit) ? $suscripcionEdit->valor_anual : null), [ --}}
-                {!! Form::text('valor_anual', null), [
+                {!! Form::text('valor_anual', null, [
                     'class' => 'form-control bg-secondary-subtle',
                     'id' => 'valor_anual',
                     'readonly' => true
@@ -96,7 +86,7 @@
         <div class="col-12 col-md-3 mt-3" id="div_descripcion_plan">
             <div class="form-group d-flex flex-column">
                 <label for="descripcion_plan" class="form-label">Descripción Plan</label>
-                {!! Form::text('descripcion_plan', old('descripcion_plan', isset($suscripcionEdit) ? $suscripcionEdit->descripcion_plan : null), [
+                {!! Form::text('descripcion_plan', null, [
                     'class' => 'form-control bg-secondary-subtle',
                     'id' => 'descripcion_plan',
                     'readonly' => true
@@ -123,7 +113,7 @@
         <div class="col-12 col-md-3 mt-3" id="div_id_tipo_pago">
             <div class="form-group d-flex flex-column">
                 <label for="id_tipo_pago" class="form-label">Modalidad Suscripción<span class="text-danger">*</span></label>
-                {!! Form::select('id_tipo_pago', collect(['' => 'Seleccionar...'])->union($tipos_pago_suscripcion), old('id_tipo_pago', isset($suscripcionEdit) ? $suscripcionEdit->id_tipo_pago : null), [
+                {!! Form::select('id_tipo_pago', collect(['' => 'Seleccionar...'])->union($tipos_pago_suscripcion), old('id_tipo_pago', isset($suscripcionEdit) ? $suscripcionEdit->id_tipo_pago_suscripcion : null), [
                     'class' => 'form-select select2',
                     'id' => 'id_tipo_pago'
                 ]) !!}
@@ -225,5 +215,5 @@
                 ]) !!}
             </div>
         </div>
-    </div> {{-- FIN div_campos_usuarios --}}
-</div> {{-- FIN div_crear_usuario --}}
+    </div> {{-- FIN div campos --}}
+</div> {{-- FIN div principal --}}

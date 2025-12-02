@@ -77,23 +77,155 @@
                 width: '100%'
             });
 
-            
             // ==============================================================
             // ==============================================================
 
-            // $('#div_dias_trial').hide();
-            // $('#div_valor_mensual').hide();
-            // $('#div_valor_trimestral').hide();
-            // $('#div_valor_semestral').hide();
-            // $('#div_valor_anual').hide();
-            // $('#div_descripcion_plan').hide();
-            // $('#div_id_tipo_pago').hide();
+            // 1. DEFINICIÓN DEL SELECTOR DINÁMICO DEL FORMULARIO
+            // Usamos Blade para obtener el ID de la suscripción y construir el selector
+            const suscripcionId = '{{ $suscripcionEdit->id_suscripcion }}';
+            const formSelector = '#formEditarSuscripcion_' + suscripcionId;
+
+            // 2. OBTENER EL ID DEL PLAN AL CARGAR LA PÁGINA (uso directo del ID del Select)
+            const idPlan = $(formSelector).find('#id_plan_suscrito').val();
+            console.log('idPlan', idPlan); // Verifica que obtenga el ID correcto
+
+            // ==============================================================
+            // ==============================================================
+
+            // CACHÉ DE DATOS ORIGINALES DEL SERVIDOR
+            // Almacenamos los valores que vienen de $suscripcionEdit para poder
+            // restaurarlos si el usuario regresa al plan original.
+            const originalSuscripcionData = {
+                fecha_inicial: $(formSelector).find('#fecha_inicial').val(),
+                fecha_final: $(formSelector).find('#fecha_final').val(),
+                id_estado_suscripcion: $(formSelector).find('#id_estado_suscripcion').val(),
+                dias_trial: $('#dias_trial').val() // Este campo es único, selector directo es suficiente
+            };
+            console.log('Datos originales cargados:', originalSuscripcionData);
 
             // ==============================================================
             // ==============================================================
 
             const planesData = @json($planesData);
+            const plan = planesData[idPlan] ?? planesData[String(idPlan)] ?? null;
+
             console.log('planesData cargados:', planesData);
+
+            // ==============================================================
+
+            // 3. FUNCIÓN DE INICIALIZACIÓN (llamada al cargar la página)
+            function inicializarFormulario(idPlan) {
+                const plan = planesData[idPlan] ?? planesData[String(idPlan)] ?? null;
+            
+                // asignar valores a los inputs (si plan es null, dejar vacío)
+                if (idPlan == 1) {
+
+                    $('#div_dias_trial').show();
+
+                    $('#valor_mensual').val('');
+                    $('#div_valor_mensual').hide('slow');
+
+                    $('#valor_trimestral').val('');
+                    $('#div_valor_trimestral').hide('slow');
+
+                    $('#valor_semestral').val('');
+                    $('#div_valor_semestral').hide('slow');
+
+                    $('#valor_anual').val('');
+                    $('#div_valor_anual').hide('slow');
+
+                    $('#descripcion_plan').val('');
+                    $('#div_descripcion_plan').hide('slow');
+
+                    $('#div_id_tipo_pago').hide();
+                    $('#id_tipo_pago').removeAttr('required');
+                    $('#id_tipo_pago').val('').trigger('change'); // Reiniciar selección
+
+                    $('#valor_suscripcion').val(0);
+                    
+                } else if (idPlan != 1 && idPlan != '') {
+
+                    if (plan) {
+
+                        $('#div_dias_trial').hide();
+
+                        $('#div_valor_mensual').show();
+                        $('#valor_mensual').val(plan.valor_mensual ?? '');
+
+                        $('#div_valor_trimestral').show();
+                        $('#valor_trimestral').val(plan.valor_trimestral ?? '');
+
+                        $('#div_valor_semestral').show();
+                        $('#valor_semestral').val(plan.valor_semestral ?? '');
+
+                        $('#div_valor_anual').show();
+                        $('#valor_anual').val(plan.valor_anual ?? '');
+
+                        $('#div_descripcion_plan').show();
+                        $('#descripcion_plan').val(plan.descripcion_plan ?? '');
+
+                        $('#div_id_tipo_pago').show();
+                        $('#id_tipo_pago').attr('required');
+                        $('#valor_suscripcion').val('');
+
+                        // $('#formEditarSuscripcion').find('#fecha_inicial').val('').trigger('change');
+                        // $('#formEditarSuscripcion').find('#fecha_final').val('').trigger('change');
+
+                        // AGREGAR: Permitir escritura nuevamente
+                        $('#formEditarSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                        $('#formEditarSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
+
+                        // $('#formEditarSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
+                    }
+
+                } else {
+
+                    $('#div_dias_trial').hide();
+
+                    $('#valor_mensual').val('');
+                    $('#div_valor_mensual').hide('slow');
+
+                    $('#valor_trimestral').val('');
+                    $('#div_valor_trimestral').hide('slow');
+
+                    $('#valor_semestral').val('');
+                    $('#div_valor_semestral').hide('slow');
+
+                    $('#valor_anual').val('');
+                    $('#div_valor_anual').hide('slow');
+
+                    $('#descripcion_plan').val('');
+                    $('#div_descripcion_plan').hide('slow');
+
+                    $('#div_id_tipo_pago').hide();
+                    $('#id_tipo_pago').removeAttr('required');
+                    // $('#id_tipo_pago').val('').trigger('change');
+
+                    // $('#formEditarSuscripcion').find('#fecha_inicial').val('').trigger('change');
+                    // $('#formEditarSuscripcion').find('#fecha_final').val('').trigger('change');
+
+                    $('#valor_suscripcion').val('');
+
+                    // AGREGAR: Limpiar atributos por si acaso
+                    $('#formEditarSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $('#formEditarSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
+
+                    // $('#formEditarSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
+                }
+            }
+
+            // ==============================================================
+            // ==============================================================
+
+            // LLAMADA INICIAL AL CARGAR
+            if (idPlan) {
+                inicializarFormulario(idPlan);
+                // También dispara la lógica de tipo de pago si ya hay uno seleccionado
+                $('#id_tipo_pago').trigger('change');
+            }
+
+            // ==============================================================
+            // ==============================================================
 
             // Función para obtener fecha LOCAL en formato YYYY-MM-DD
             function obtenerHoy() {
@@ -169,12 +301,22 @@
                     // 5. Asignar fecha final
                     $('#formEditarSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
                     
-                    // AGREGAR: Bloquear escritura para que no modifiquen los 15 días
-                    $('#formEditarSuscripcion').find('#fecha_inicial').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
-                    $('#formEditarSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
+                    // ====================================================================
+                    // RESTAURAR LOS VALORES ORIGINALES AL VOLVER A TRIAL
+                    // ====================================================================
+                    $(formSelector).find('#fecha_inicial').val(originalSuscripcionData.fecha_inicial).trigger('change');
+                    $(formSelector).find('#fecha_final').val(originalSuscripcionData.fecha_final).trigger('change');
+                    
+                    // Bloquear escritura y clase
+                    $(formSelector).find('#fecha_inicial').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
+                    $(formSelector).find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
 
-                    // Asignar 10 a estado Trial
-                    $('#formEditarSuscripcion').find('#id_estado_suscripcion').val(10).trigger('change');
+                    // Restaurar estado
+                    $(formSelector).find('#id_estado_suscripcion').val(originalSuscripcionData.id_estado_suscripcion).trigger('change');
+                    // $(formSelector).find('#id_estado_suscripcion').val(10).trigger('change');
+                    
+                    // El valor de la suscripción es 0 en trial, esto se mantiene.
+                    $('#valor_suscripcion').val(0);
                     
                 } else if (idPlan != 1 && idPlan != '') {
 
@@ -199,14 +341,13 @@
                     $('#id_tipo_pago').attr('required');
                     $('#valor_suscripcion').val('');
 
-                    $('#formEditarSuscripcion').find('#fecha_inicial').val('').trigger('change');
-                    $('#formEditarSuscripcion').find('#fecha_final').val('').trigger('change');
+                    $(formSelector).find('#fecha_inicial').val('').trigger('change');
+                    $(formSelector).find('#fecha_final').val('').trigger('change');
 
-                    // AGREGAR: Permitir escritura nuevamente
-                    $('#formEditarSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
-                    $('#formEditarSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $(formSelector).find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $(formSelector).find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
 
-                    $('#formEditarSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
+                    $(formSelector).find('#id_estado_suscripcion').val('').trigger('change');
 
                 } else {
 
@@ -231,16 +372,18 @@
                     $('#id_tipo_pago').removeAttr('required');
                     $('#id_tipo_pago').val('').trigger('change'); // Reiniciar selección
 
-                    $('#formEditarSuscripcion').find('#fecha_inicial').val('').trigger('change');
-                    $('#formEditarSuscripcion').find('#fecha_final').val('').trigger('change');
+                    $(formSelector).find('#fecha_inicial').val('').trigger('change');
+                    $(formSelector).find('#fecha_final').val('').trigger('change');
 
                     $('#valor_suscripcion').val('');
 
-                    // AGREGAR: Limpiar atributos por si acaso
-                    $('#formEditarSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
-                    $('#formEditarSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    // LIMPIEZA DE ATRIBUTOS, Usar el selector dinámico para limpiar readonly
+                    $(formSelector).find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $(formSelector).find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
 
-                    $('#formEditarSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
+                    // LIMPIEZA DE ESTADO, Usar el selector dinámico
+                    $(formSelector).find('#id_estado_suscripcion').val('').trigger('change');
+                    $(formSelector).find('#observaciones_suscripcion').val('');
                 }
             });
 
