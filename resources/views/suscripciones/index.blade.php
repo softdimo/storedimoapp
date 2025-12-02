@@ -74,11 +74,11 @@
                                         <td>{{ $suscripcion->renovacion_automatica }}</td>
                                         <td>{{ $suscripcion->observaciones_suscripcion }}</td>
                                         <td>
-                                            <button type="button"
-                                                class="btn btn-success rounded-circle btn-circle btn-editar-suscripcion"
-                                                title="Editar Suscripción" data-id="{{ $suscripcion->id_suscripcion }}">
+                                            <a href="{{ route('suscripciones.edit', $suscripcion->id_suscripcion) }}"
+                                                class="btn btn-success text-white rounded-circle btn-circle btn-editar-suscripcion"
+                                                title="Editar Suscripción">
                                                 <i class="fa fa-pencil-square-o"></i>
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

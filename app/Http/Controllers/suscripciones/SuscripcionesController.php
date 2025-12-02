@@ -117,7 +117,7 @@ class SuscripcionesController extends Controller
         //
     }
 
-    public function edit(Request $request, $idUsuario)
+    public function edit(Request $request, $idSuscripcion)
     {
         try {
             if (!$this->checkDatabaseConnection()) {
@@ -133,7 +133,8 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // return new SuscripcionEdit($idUsuario);
+                    $vista = new SuscripcionEdit($idSuscripcion);
+                    return $this->validarAccesos($sesion[0], 71, $vista);
                 }
             }
         } catch (Exception $e)
