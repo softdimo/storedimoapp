@@ -9,6 +9,7 @@ use App\Http\Responsable\suscripciones\SuscripcionIndex;
 use App\Http\Responsable\suscripciones\SuscripcionStore;
 use App\Http\Responsable\suscripciones\SuscripcionEdit;
 use App\Http\Responsable\suscripciones\SuscripcionUpdate;
+use App\Models\Suscripcion;
 use GuzzleHttp\Client;
 use App\Traits\MetodosTrait;
 
@@ -71,6 +72,10 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
+                    // Llama al método del trait para cargar empresas disponibles
+                    $this->shareEmpresasSuscripciones(null);
+                    // ==============================
+
                     $vista = 'suscripciones.create';
                     return $this->validarAccesos($sesion[0], 69, $vista);
                 }
@@ -133,6 +138,15 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
+                    // 1. Obtener el ID de la empresa actualmente suscrita.
+                    // Nota: Asumimos que $idSuscripcion existe y es válido.
+                    $suscripcion = Suscripcion::select('id_empresa_suscrita')->find($idSuscripcion);
+                    $idEmpresaActual = $suscripcion ? $suscripcion->id_empresa_suscrita : null;
+
+                    // 2. Llama al método del trait pasando el ID de la empresa actual.
+                    $this->shareEmpresasSuscripciones($idEmpresaActual);
+                    // ==============================
+
                     $vista = new SuscripcionEdit($idSuscripcion);
                     return $this->validarAccesos($sesion[0], 71, $vista);
                 }
@@ -144,7 +158,7 @@ class SuscripcionesController extends Controller
         }
     }
 
-    public function update(Request $request, $idUsuario)
+    public function update(Request $request, $idSuscripcion)
     {
         try
         {
@@ -163,8 +177,8 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // $vista = new SuscripcionUpdate();
-                    // return $this->validarAccesos($sesion[0], 10, $vista);
+                    $vista = new SuscripcionUpdate($idSuscripcion);
+                    return $this->validarAccesos($sesion[0], 72, $vista);
                 }
             }
         } catch (Exception $e)
@@ -178,12 +192,4 @@ class SuscripcionesController extends Controller
     {
         //
     }
-
-
-
-    
-
-    
-
-    
 }

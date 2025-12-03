@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\InformeCampo;
 use App\Models\Informe;
 use App\Models\Plan;
+use App\Models\Suscripcion;
 
 trait MetodosTrait
 {
@@ -139,6 +140,57 @@ trait MetodosTrait
         view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
         
     } // FIN shareBasicData()
+
+    // =======================================================================================
+
+    /**
+     * Genera la lista de empresas para el select de suscripciones.
+     * Excluye todas las empresas con suscripción activa, excepto la actual (si se está editando).
+     * * @param int|null $idEmpresaActual El ID de la empresa que se está editando (null para creación).
+     * @return void
+     */
+    public function shareEmpresasSuscripciones(?int $idEmpresaActual = null): void
+    {
+        // --- Configuración de Exclusiones ---
+        
+        // 1. IDs de empresas que YA tienen una suscripción (activa o inactiva, según tu lógica de negocio)
+        $empresasConSuscripcion = Suscripcion::whereNotNull('id_empresa_suscrita')
+                                            ->pluck('id_empresa_suscrita')
+                                            ->toArray();
+
+        // 2. IDs fijos a excluir (ej. ID 5)
+        $idsFijosAExcluir = [5];
+        
+        // 3. Unir todas las exclusiones
+        $idsAExcluir = array_merge($empresasConSuscripcion, $idsFijosAExcluir);
+
+        // 4. Si estamos en modo EDICIÓN, quitamos la empresa actual de la lista de exclusión.
+        // Esto es CRUCIAL para que la empresa editada aparezca en el select.
+        if ($idEmpresaActual) {
+            $idsAExcluir = array_diff($idsAExcluir, [$idEmpresaActual]);
+        }
+        
+        // --- Consulta de Empresas ---
+        
+        $empresasDisponibles = Empresa::orderBy('nombre_empresa')
+            ->where('id_estado', 1)
+            ->whereNotIn('id_empresa', $idsAExcluir)
+            ->pluck('nombre_empresa', 'id_empresa');
+
+        // 5. Si estamos en EDICIÓN y la empresa actual fue excluida (como debería ser),
+        // la agregamos manualmente a la lista para que el select la muestre seleccionada.
+        // Esto es necesario porque el paso 4 solo quita el ID de la lista de exclusión,
+        // pero si la empresa no está disponible para nadie más, debe ser agregada.
+        if ($idEmpresaActual) {
+            $empresaActual = Empresa::where('id_empresa', $idEmpresaActual)->pluck('nombre_empresa', 'id_empresa');
+            // Usamos union para agregar la empresa actual a la colección de disponibles
+            $empresasDisponibles = $empresasDisponibles->union($empresaActual);
+        }
+        
+        view()->share('empresas_suscripciones', $empresasDisponibles);
+    }
+
+    // =======================================================================================
 
     protected function sharePermissionsData()
     {

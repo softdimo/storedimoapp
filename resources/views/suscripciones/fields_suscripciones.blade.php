@@ -5,13 +5,28 @@
 
     <div class="row m-0 p-3">
         <div class="col-12 col-md-3 mt-3">
-            <div class="form-group d-flex flex-column">
+            {{-- <div class="form-group d-flex flex-column">
                 <label for="id_empresa_suscrita" class="form-label">Empresa <span class="text-danger">*</span></label>
                 {!! Form::select('id_empresa_suscrita', collect(['' => 'Seleccionar...'])->union($empresas), old('id_empresa_suscrita', isset($suscripcionEdit) ? $suscripcionEdit->id_empresa_suscrita : null), [
                     'class' => 'form-select select2',
                     'id' => 'id_empresa_suscrita',
                     'required' => 'required',
                 ]) !!}
+            </div> --}}
+
+            <div class="form-group d-flex flex-column">
+                <label for="id_empresa_suscrita" class="form-label">Empresa <span class="text-danger">*</span></label>
+                {!! Form::select('id_empresa_suscrita', collect(['' => 'Seleccionar...'])->union($empresas_suscripciones), old('id_empresa_suscrita', $suscripcionEdit->id_empresa_suscrita ?? null),
+                    array_merge(
+                        [
+                            'class' => 'form-select select2',
+                            'id' => 'id_empresa_suscrita',
+                            'required' => 'required',
+                        ],
+                        // AÑADE 'disabled' en modo edición
+                        isset($suscripcionEdit) ? ['disabled' => 'disabled'] : []
+                    )
+                ) !!}
             </div>
         </div>
 

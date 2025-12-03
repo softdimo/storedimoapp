@@ -1,115 +1,71 @@
 <?php
 
-namespace App\Http\Responsable\empresas;
+namespace App\Http\Responsable\suscripciones;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Support\Facades\Crypt;
 use GuzzleHttp\Client;
 
-class EmpresaUpdate implements Responsable
+class SuscripcionUpdate implements Responsable
 {
     protected $baseUri;
     protected $clientApi;
-    protected $idEmpresa;
+    protected $idSuscripcion;
 
-    public function __construct($idEmpresa)
+    public function __construct($idSuscripcion)
     {
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
-        $this->idEmpresa = $idEmpresa;
+        $this->idSuscripcion = $idSuscripcion;
     }
 
     // ===================================================================
 
     public function toResponse($request)
     {
-        $nitEmpresa = request('nit_empresa', null);
-        $nombreEmpresa = request('nombre_empresa', null);
-        $telefonoEmpresa = request('telefono_empresa', null);
-        $celularEmpresa = request('celular_empresa');
-        $emailEmpresa = request('email_empresa');
-        $direccionEmpresa = request('direccion_empresa');
-        $idTipoBd = request('id_tipo_bd');
-        $dbHost = Crypt::encrypt(request('db_host'));
-        $dbDatabase = Crypt::encrypt(request('db_database'));
-        $dbUsername = Crypt::encrypt(request('db_username'));
-        $dbPassword = Crypt::encrypt(request('db_password'));
-        $idEstado = request('id_estado');
-
-        // ===================================================================
-
-        $logoEmpresaBase64Edit = null;
-
-        if ($request->hasFile('logo_empresa')) {
-            $logoEmpresa = $request->file('logo_empresa');
-
-            if ($logoEmpresa->isValid()) {
-                // Validación de tipo MIME
-                $tiposPermitidos = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp'];
-                $tipoMime = $logoEmpresa->getMimeType();
-
-                if (!in_array($tipoMime, $tiposPermitidos)) {
-                    alert()->error('Error', 'El tipo de imagen no es válido. Solo se permiten JPG, JPEG, PNG o WEBP.');
-                    return back();
-                }
-
-                // Validación de tamaño (2 MB = 2048 KB)
-                $tamanioMaximoKB = 2048;
-                $tamanioArchivoKB = $logoEmpresa->getSize() / 1024;
-
-                if ($tamanioArchivoKB > $tamanioMaximoKB) {
-                    alert()->error('Error', 'La imagen excede el tamaño máximo permitido de 2 MB.');
-                    return back();
-                }
-
-                // Codificación base64
-                $contenido = file_get_contents($logoEmpresa);
-                $logoEmpresaBase64Edit = 'data:' . $logoEmpresa->getMimeType() . ';base64,' . base64_encode($contenido);
-            }
-        }
+        $idPlanSuscrito = request('id_plan_suscrito', null);
+        $diasTrial = request('dias_trial', null);
+        $idTipoPago = request('id_tipo_pago', null);
+        $valorSuscripcion = request('valor_suscripcion', null);
+        $fechaInicial = request('fecha_inicial', null);
+        $fechaFinal = request('fecha_final', null);
+        $idEstadoSuscripcion = request('id_estado_suscripcion', null);
+        $fechaCancelacion = request('fecha_cancelacion', null);
+        $renovacionAutomatica = request('renovacion_automatica', null);
+        $observacionesSuscripcion = request('observaciones_suscripcion', null);
 
         // ===================================================================
 
         // Obtener los datos actuales del producto antes de actualizar
-        $peticionEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/'.$this->idEmpresa);
-        $empresaActual = json_decode($peticionEmpresa->getBody()->getContents());
+        $peticionSuscripcionEmpresa = $this->clientApi->get($this->baseUri.'administracion/suscripcion_edit/'.$this->idSuscripcion);
+        $suscripcionActual = json_decode($peticionSuscripcionEmpresa->getBody()->getContents());
 
         try {
-            $reqEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/empresa_update/'.$this->idEmpresa, [
+            $reqSuscripcionEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/suscripcion_update/'.$this->idSuscripcion, [
                 'json' => [
-                    'nit_empresa' => $nitEmpresa ?? $empresaActual->nit_empresa,
-                    'nombre_empresa' => $nombreEmpresa ?? $empresaActual->nombre_empresa,
-                    'telefono_empresa' => $telefonoEmpresa ?? $empresaActual->telefono_empresa,
-                    'celular_empresa' => $celularEmpresa ?? $empresaActual->celular_empresa,
-                    'email_empresa' => $emailEmpresa ?? $empresaActual->email_empresa,
-                    'direccion_empresa' => $direccionEmpresa ?? $empresaActual->direccion_empresa,
-                    'id_tipo_bd' => $idTipoBd ?? $empresaActual->id_tipo_bd,
-                    'db_host' => $dbHost ?? $empresaActual->db_host,
-                    'db_database' => $dbDatabase ?? $empresaActual->db_database,
-                    'db_username' => $dbUsername ?? $empresaActual->db_username,
-                    'db_password' => $dbPassword ?? $empresaActual->db_password,
-                    'logo_empresa' => $logoEmpresaBase64Edit ?? $empresaActual->logo_empresa,
-                    'id_estado' => $idEstado ?? $empresaActual->id_estado,
+                    'id_plan_suscrito' => $idPlanSuscrito ?? $suscripcionActual->id_plan_suscrito,
+                    'dias_trial' => $diasTrial ?? $suscripcionActual->dias_trial,
+                    'id_tipo_pago_suscripcion' => $idTipoPago ?? $suscripcionActual->id_tipo_pago_suscripcion,
+                    'valor_suscripcion' => $valorSuscripcion ?? $suscripcionActual->valor_suscripcion,
+                    'fecha_inicial' => $fechaInicial ?? $suscripcionActual->fecha_inicial,
+                    'fecha_final' => $fechaFinal ?? $suscripcionActual->fecha_final,
+                    'id_estado_suscripcion' => $idEstadoSuscripcion ?? $suscripcionActual->id_estado_suscripcion,
+                    'fecha_cancelacion' => $fechaCancelacion ?? $suscripcionActual->fecha_cancelacion,
+                    'renovacion_automatica' => $renovacionAutomatica ?? $suscripcionActual->renovacion_automatica,
+                    'observaciones_suscripcion' => $observacionesSuscripcion ?? $suscripcionActual->observaciones_suscripcion,
                     'id_audit' => session('id_usuario')
                 ]
             ]);
-            $resEmpresaUpdate = json_decode($reqEmpresaUpdate->getBody()->getContents());
+            $resSuscripcionEmpresaUpdate = json_decode($reqSuscripcionEmpresaUpdate->getBody()->getContents());
 
-            if(isset($resEmpresaUpdate->success) && $resEmpresaUpdate->success) {
-                alert()->success('Proceso Exitoso', 'Empresa editada satisfactoriamente');
-                return redirect()->to(route('empresas.index'));
+            if(isset($resSuscripcionEmpresaUpdate->success) && $resSuscripcionEmpresaUpdate->success) {
+                alert()->success('Proceso Exitoso', 'Suscripción editada satisfactoriamente');
+                return redirect()->to(route('suscripciones.index'));
             }
         } catch (Exception $e) {
-            $this->handleError('Error Exception actualizando la empresa, contacte a Soporte.');
+            dd($e);
+            alert()->error('Error', 'Actualizando la Suscripción, contacte a Soporte.');
+            return back();
         }
-
-        return back();
-    }
-
-    // Método auxiliar para manejar errores
-    private function handleError($message)
-    {
-        alert()->error('Error', $message);
     }
 }

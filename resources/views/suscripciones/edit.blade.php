@@ -80,6 +80,15 @@
             // ==============================================================
             // ==============================================================
 
+            // Obtenemos el contenedor de Select2 (el <span> que reemplaza al select)
+            $('#id_empresa_suscrita').next().find('.select2-selection').addClass('bg-secondary-subtle');
+            
+            // Opcional: Asegurar que el puntero no haga nada visualmente
+            $('#id_empresa_suscrita').next().css('pointer-events', 'none');
+
+            // ==============================================================
+            // ==============================================================
+
             // 1. DEFINICIÓN DEL SELECTOR DINÁMICO DEL FORMULARIO
             // Usamos Blade para obtener el ID de la suscripción y construir el selector
             const suscripcionId = '{{ $suscripcionEdit->id_suscripcion }}';
