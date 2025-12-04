@@ -71,12 +71,8 @@ class PlanesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // Llama al método del trait para cargar empresas disponibles
-                    $this->shareEmpresasSuscripciones(null);
-                    // ==============================
-
                     $vista = 'planes.create';
-                    return $this->validarAccesos($sesion[0], 69, $vista);
+                    return $this->validarAccesos($sesion[0], 75, $vista);
                 }
             }
         } catch (Exception $e)
@@ -105,13 +101,13 @@ class PlanesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // $vista = new PlanStore();
-                    // return $this->validarAccesos($sesion[0], 70, $vista);
+                    $vista = new PlanStore();
+                    return $this->validarAccesos($sesion[0], 76, $vista);
                 }
             }
         } catch (Exception $e)
         {
-            alert()->error("Exception Store Usuario!");
+            alert()->error("Exception Store Plan!");
             return redirect()->to(route('login'));
         }
     }
@@ -138,7 +134,7 @@ class PlanesController extends Controller
                 } else
                 {
                     // $vista = new PlanEdit($idSuscripcion);
-                    // return $this->validarAccesos($sesion[0], 71, $vista);
+                    // return $this->validarAccesos($sesion[0], 77, $vista);
                 }
             }
         } catch (Exception $e)
@@ -168,7 +164,7 @@ class PlanesController extends Controller
                 } else
                 {
                     // $vista = new PlanUpdate($idSuscripcion);
-                    // return $this->validarAccesos($sesion[0], 72, $vista);
+                    // return $this->validarAccesos($sesion[0], 78, $vista);
                 }
             }
         } catch (Exception $e)

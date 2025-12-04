@@ -19,13 +19,13 @@
         </div>
 
         <div class="p-3 d-flex flex-column content-container">
-            {{-- <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
+            <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
                 <div class="">
                     <a href="{{ route('planes.create') }}" class="btn text-white" style="background-color:#337AB7">
                         Crear Plan
                     </a>
                 </div>
-            </div> --}}
+            </div>
 
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}

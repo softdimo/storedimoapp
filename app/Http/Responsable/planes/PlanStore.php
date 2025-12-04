@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Responsable\suscripciones;
+namespace App\Http\Responsable\planes;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
-class SuscripcionStore implements Responsable
+class PlanStore implements Responsable
 {
     protected $baseUri;
     protected $clientApi;
@@ -25,67 +25,39 @@ class SuscripcionStore implements Responsable
 
         // dd(request()->all());
 
-        $idEmpresaSuscrita = request('id_empresa_suscrita', null);
-        $idPlanSuscrito = request('id_plan_suscrito', null);
-        $diasTrial = request('dias_trial', null);
-        $idTipoPago = request('id_tipo_pago', null);
-        $valorSuscripcion = request('valor_suscripcion', null);
-        $fechaInicial = request('fecha_inicial', null);
-        $fechaFinal = request('fecha_final', null);
-        $idEstadoSuscripcion = request('id_estado_suscripcion', null);
-        $fechaCancelacion = request('fecha_cancelacion', null);
-        $renovacionAutomatica = request('renovacion_automatica', null);
-        $observacionesSuscripcion = request('observaciones_suscripcion', null);
+        $nombrePlan = request('nombre_plan', null);
+        $valorMensual = request('valor_mensual', null);
+        $valorTrimestral = request('valor_trimestral', null);
+        $valorSemestral = request('valor_semestral', null);
+        $valorAnual = request('valor_anual', null);
+        $descripcionPlan = request('descripcion_plan', null);
+        $idEstadoPlan = request('id_estado_plan', null);
 
         // ========================================================
 
-        // $consultarSuscripcionEmpresa = $this->consultarSuscripcionEmpresa($idEmpresaSuscrita);
-
-        // if (isset($consultarSuscripcionEmpresa) && !is_null($consultarSuscripcionEmpresa) && !empty($consultarSuscripcionEmpresa)) {
-        //     alert()->warning('Cuidado', 'Empresa existente');
-        //     return redirect()->route('empresas.create')->withInput();
-        // }
-        
         try {
-            $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'administracion/suscripcion_store', [
+            $reqPlanStore = $this->clientApi->post($this->baseUri.'administracion/plan_store', [
                 'json' => [
-                    'id_empresa_suscrita' => $idEmpresaSuscrita,
-                    'id_plan_suscrito' => $idPlanSuscrito,
-                    'dias_trial' => $diasTrial,
-                    'id_tipo_pago' => $idTipoPago,
-                    'valor_suscripcion' => $valorSuscripcion,
-                    'fecha_inicial' => $fechaInicial,
-                    'fecha_final' => $fechaFinal,
-                    'id_estado_suscripcion' => $idEstadoSuscripcion,
-                    'fecha_cancelacion' => $fechaCancelacion,
-                    'renovacion_automatica' => $renovacionAutomatica,
-                    'observaciones_suscripcion' => $observacionesSuscripcion,
+                    'nombre_plan' => $nombrePlan,
+                    'valor_mensual' => $valorMensual,
+                    'valor_trimestral' => $valorTrimestral,
+                    'valor_semestral' => $valorSemestral,
+                    'valor_anual' => $valorAnual,
+                    'descripcion_plan' => $descripcionPlan,
+                    'id_estado_plan' => $idEstadoPlan,
                     'id_audit' => session('id_usuario')
                 ]
             ]);
-            $resSuscripcionStore = json_decode($reqSuscripcionStore->getBody()->getContents());
+            $resPlanStore = json_decode($reqPlanStore->getBody()->getContents());
 
-            if(isset($resSuscripcionStore->success) && $resSuscripcionStore->success) {
-                alert()->success('Proceso Exitoso', 'Suscripción creada satisfactoriamente');
-                return redirect()->to(route('suscripciones.index'));
+            if(isset($resPlanStore->success) && $resPlanStore->success) {
+                alert()->success('Proceso Exitoso', 'Plan creado satisfactoriamente');
+                return redirect()->to(route('planes.index'));
             }
 
         } catch (Exception $e) {
-            alert()->error('Error', 'Creando la Suscripción, contacte a Soporte.');
+            alert()->error('Error', 'Creando el Plan, contacte a Soporte.');
             return back();
         }
     }
-
-    // ===================================================================
-    // ===================================================================
-
-    // public function consultarSuscripcionEmpresa($idEmpresaSuscrita)
-    // {
-    //     $consultarSuscripcionEmpresa = $this->clientApi->post($this->baseUri.'administracion/consultar_suscripcion_empresa', [
-    //         'json' => [
-    //             'id_empresa_suscrita' => $idEmpresaSuscrita
-    //         ]
-    //     ]);
-    //     return json_decode($consultarSuscripcionEmpresa->getBody()->getContents());
-    // }
 } // FIN Class EmpresaStore
