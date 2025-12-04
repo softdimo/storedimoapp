@@ -228,10 +228,18 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         // ========================================================================
         // ========================================================================
 
-        // Suscripciones
+        // SUSCRIPCIONES
         Route::group(['namespace' => 'App\Http\Controllers\suscripciones'], function () {
             Route::resource('suscripciones', 'SuscripcionesController');
         });
-    }); // FIN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
+        
+        // ========================================================================
+        // ========================================================================
+
+        // PLANES
+        Route::group(['namespace' => 'App\Http\Controllers\planes'], function () {
+            Route::resource('planes', 'PlanesController');
+        });
+    }); // F..IN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])
 
