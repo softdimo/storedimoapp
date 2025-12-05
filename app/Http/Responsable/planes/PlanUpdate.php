@@ -1,70 +1,64 @@
 <?php
 
-namespace App\Http\Responsable\suscripciones;
+namespace App\Http\Responsable\planes;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
-class SuscripcionUpdate implements Responsable
+class PlanUpdate implements Responsable
 {
     protected $baseUri;
     protected $clientApi;
-    protected $idSuscripcion;
+    protected $idPlan;
 
-    public function __construct($idSuscripcion)
+    public function __construct($idPlan)
     {
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
-        $this->idSuscripcion = $idSuscripcion;
+        $this->idPlan = $idPlan;
     }
 
     // ===================================================================
 
     public function toResponse($request)
     {
-        $idPlanSuscrito = request('id_plan_suscrito', null);
-        $diasTrial = request('dias_trial', null);
-        $idTipoPago = request('id_tipo_pago', null);
-        $valorSuscripcion = request('valor_suscripcion', null);
-        $fechaInicial = request('fecha_inicial', null);
-        $fechaFinal = request('fecha_final', null);
-        $idEstadoSuscripcion = request('id_estado_suscripcion', null);
-        $fechaCancelacion = request('fecha_cancelacion', null);
-        $renovacionAutomatica = request('renovacion_automatica', null);
-        $observacionesSuscripcion = request('observaciones_suscripcion', null);
+        $nombrePlan = request('nombre_plan', null);
+        $valorMensual = request('valor_mensual', null);
+        $valorTrimestral = request('valor_trimestral', null);
+        $valorSemestral = request('valor_semestral', null);
+        $valorAnual = request('valor_anual', null);
+        $descripcionPlan = request('descripcion_plan', null);
+        $idEstadoPlan = request('id_estado_plan', null);
 
         // ===================================================================
 
         // Obtener los datos actuales del producto antes de actualizar
-        $peticionSuscripcionEmpresa = $this->clientApi->get($this->baseUri.'administracion/suscripcion_edit/'.$this->idSuscripcion);
-        $suscripcionActual = json_decode($peticionSuscripcionEmpresa->getBody()->getContents());
+        $planActualConsulta = $this->clientApi->get($this->baseUri.'administracion/plan_edit/'.$this->idPlan);
+        $planActual = json_decode($planActualConsulta->getBody()->getContents());
 
         try {
-            $reqSuscripcionEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/suscripcion_update/'.$this->idSuscripcion, [
+            $reqPlanUpdate = $this->clientApi->put($this->baseUri.'administracion/plan_update/'.$this->idPlan, [
                 'json' => [
-                    'id_plan_suscrito' => $idPlanSuscrito ?? $suscripcionActual->id_plan_suscrito,
-                    'dias_trial' => $diasTrial ?? $suscripcionActual->dias_trial,
-                    'id_tipo_pago_suscripcion' => $idTipoPago ?? $suscripcionActual->id_tipo_pago_suscripcion,
-                    'valor_suscripcion' => $valorSuscripcion ?? $suscripcionActual->valor_suscripcion,
-                    'fecha_inicial' => $fechaInicial ?? $suscripcionActual->fecha_inicial,
-                    'fecha_final' => $fechaFinal ?? $suscripcionActual->fecha_final,
-                    'id_estado_suscripcion' => $idEstadoSuscripcion ?? $suscripcionActual->id_estado_suscripcion,
-                    'fecha_cancelacion' => $fechaCancelacion ?? $suscripcionActual->fecha_cancelacion,
-                    'renovacion_automatica' => $renovacionAutomatica ?? $suscripcionActual->renovacion_automatica,
-                    'observaciones_suscripcion' => $observacionesSuscripcion ?? $suscripcionActual->observaciones_suscripcion,
+                    'nombre_plan' =>  $nombrePlan ?? $planActual->nombre_plan,
+                    'valor_mensual' => $valorMensual ?? $planActual->valor_mensual,
+                    'valor_trimestral' => $valorTrimestral ?? $planActual->valor_trimestral,
+                    'valor_semestral' => $valorSemestral ?? $planActual->valor_semestral,
+                    'valor_anual' => $valorAnual ?? $planActual->valor_anual,
+                    'descripcion_plan' => $descripcionPlan ?? $planActual->descripcion_plan,
+                    'id_estado_plan' => $idEstadoPlan ?? $planActual->id_estado_plan,
                     'id_audit' => session('id_usuario')
                 ]
             ]);
-            $resSuscripcionEmpresaUpdate = json_decode($reqSuscripcionEmpresaUpdate->getBody()->getContents());
+            $resPlanUpdate = json_decode($reqPlanUpdate->getBody()->getContents());
 
-            if(isset($resSuscripcionEmpresaUpdate->success) && $resSuscripcionEmpresaUpdate->success) {
-                alert()->success('Proceso Exitoso', 'Suscripción editada satisfactoriamente');
-                return redirect()->to(route('suscripciones.index'));
+            if(isset($resPlanUpdate->success) && $resPlanUpdate->success) {
+                alert()->success('Proceso Exitoso', 'Plan editado satisfactoriamente');
+                return redirect()->to(route('planes.index'));
             }
         } catch (Exception $e) {
             dd($e);
-            alert()->error('Error', 'Actualizando la Suscripción, contacte a Soporte.');
+            alert()->error('Error', 'Actualizando el Plan, contacte a Soporte.');
             return back();
         }
     }

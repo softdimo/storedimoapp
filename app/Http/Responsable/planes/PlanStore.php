@@ -22,9 +22,6 @@ class PlanStore implements Responsable
 
     public function toResponse($request)
     {
-
-        // dd(request()->all());
-
         $nombrePlan = request('nombre_plan', null);
         $valorMensual = request('valor_mensual', null);
         $valorTrimestral = request('valor_trimestral', null);

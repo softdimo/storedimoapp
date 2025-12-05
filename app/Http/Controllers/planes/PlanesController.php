@@ -117,7 +117,7 @@ class PlanesController extends Controller
         //
     }
 
-    public function edit(Request $request, $idSuscripcion)
+    public function edit(Request $request, $idPlan)
     {
         try {
             if (!$this->checkDatabaseConnection()) {
@@ -133,18 +133,18 @@ class PlanesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // $vista = new PlanEdit($idSuscripcion);
-                    // return $this->validarAccesos($sesion[0], 77, $vista);
+                    $vista = new PlanEdit($idPlan);
+                    return $this->validarAccesos($sesion[0], 77, $vista);
                 }
             }
         } catch (Exception $e)
         {
-            alert()->error("Exception Edit Usuario!");
+            alert()->error("Exception Edit Plan!");
             return redirect()->to(route('login'));
         }
     }
 
-    public function update(Request $request, $idSuscripcion)
+    public function update(Request $request, $idPlan)
     {
         try
         {
@@ -163,13 +163,13 @@ class PlanesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // $vista = new PlanUpdate($idSuscripcion);
-                    // return $this->validarAccesos($sesion[0], 78, $vista);
+                    $vista = new PlanUpdate($idPlan);
+                    return $this->validarAccesos($sesion[0], 78, $vista);
                 }
             }
         } catch (Exception $e)
         {
-            alert()->error("Exception Update Usuario!");
+            alert()->error("Exception Update Plan!");
             return redirect()->to(route('login'));
         }
     }

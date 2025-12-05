@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Responsable\suscripciones;
+namespace App\Http\Responsable\planes;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
-class SuscripcionEdit implements Responsable
+class PlanEdit implements Responsable
 {
-    protected $idSuscripcion;
+    protected $idPlan;
 
-    public function __construct($idSuscripcion)
+    public function __construct($idPlan)
     {
-        $this->idSuscripcion = $idSuscripcion;
+        $this->idPlan = $idPlan;
     }
 
     // =============================================================
@@ -24,13 +24,13 @@ class SuscripcionEdit implements Responsable
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $peticion = $clientApi->get($baseUri . 'administracion/suscripcion_edit/'. $this->idSuscripcion);
-            $suscripcionEdit = json_decode($peticion->getBody()->getContents());
+            $peticion = $clientApi->get($baseUri . 'administracion/plan_edit/'. $this->idPlan);
+            $planEdit = json_decode($peticion->getBody()->getContents());
 
-            return view('suscripciones.edit', compact('suscripcionEdit'));
+            return view('planes.edit', compact('planEdit'));
 
         } catch (Exception $e) {
-            alert()->error('Editando la Suscripción, contacte a Soporte.');
+            alert()->error('Editando el Plan, contacte a Soporte.');
             return back();
         }
     }
