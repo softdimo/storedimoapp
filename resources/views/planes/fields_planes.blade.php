@@ -99,7 +99,7 @@
                 <label for="id_estado_plan" class="form-label">id_estado_plan
                     <span class="text-danger">*</span>
                 </label>
-                {!! Form::select('id_estado_plan', collect(['' => 'Seleccionar...'])->union($estados), old('id_estado_plan', $planEdit->id_estado_plan ?? null), [
+                {!! Form::select('id_estado_plan', collect(['' => 'Seleccionar...'])->union($estados), old('id_estado_plan', $planEdit->id_estado_plan ?? 1), [
                     'class' => 'form-select select2',
                     'id' => 'id_estado_plan',
                     'required' => 'required',
