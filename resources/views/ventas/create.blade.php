@@ -146,6 +146,7 @@
                                 aria-describedby="ventas">
                                 <thead>
                                     <tr class="header-table text-center">
+                                        <th>Precio Unitario</th>
                                         <th>Precio Detal</th>
                                         <th>Precio por Mayor</th>
                                         <th>Aplicar Precio Al por Mayor</th>
@@ -154,6 +155,7 @@
                                 {{-- ============================== --}}
                                 <tbody>
                                     <tr class="text-center align-middle">
+                                        <td>$ <span id="p_unitario_venta"></span></td>
                                         <td>$ <span id="p_detal_venta"></span></td>
                                         <td>$ <span id="p_x_mayor_venta"></span></td>
                                         <td id="td_aplicar_x_mayor_venta">
@@ -222,6 +224,7 @@
                                                 <th>Producto</th>
                                                 <th>Cantidad</th>
                                                 <th>subtotal</th>
+                                                <th>Ganancia</th>
                                                 <th>Opción</th>
                                             </tr>
                                         </thead>
@@ -580,6 +583,7 @@
             let idProducto = $('#producto_venta').val();
 
             if (idProducto == '') {
+                $('#p_unitario_venta').html(0);
                 $('#p_detal_venta').html(0);
                 $('#p_x_mayor_venta').html(0);
                 $('#btnAgregarVenta').prop("disabled", true);
@@ -604,13 +608,13 @@
                             'id_producto': idProducto
                         },
                         beforeSend: function() {
+                            $('#p_unitario_venta').html(0);
                             $('#p_detal_venta').html(0);
                             $('#p_x_mayor_venta').html(0);
                             $('#cantidad_producto').html(0);
                             // Desactivar botón
                             spinner.show();
-                            btn.prop("disabled", true).html(
-                                `<i class="fa fa-spinner fa-spin"></i> Procesando...`);
+                            btn.prop("disabled", true).html(`<i class="fa fa-spinner fa-spin"></i> Procesando...`);
                             $('#cantidad_venta').val('');
 
                             btnRegistarVenta.prop('disabled', true);
@@ -618,6 +622,7 @@
                         },
                         success: function(respuesta) {
                             setTimeout(() => {
+                                $('#p_unitario_venta').html(respuesta.precio_unitario);
                                 $('#p_detal_venta').html(respuesta.precio_detal);
                                 $('#p_x_mayor_venta').html(respuesta.precio_por_mayor);
                                 $('#cantidad_producto').html(respuesta.cantidad);
@@ -649,6 +654,7 @@
                         }
                     });
                 } else {
+                    $('#p_unitario_venta').html(0);
                     $('#p_detal_venta').html(0);
                     $('#p_x_mayor_venta').html(0);
                     $('#cantidad_producto').html(0);
@@ -746,6 +752,7 @@
                 let idProductoVenta = $('#producto_venta').val();
                 let productoVenta = $('#producto_venta option:selected').text();
 
+                let pUnitarioVenta = parseFloat($('#p_unitario_venta').text());
                 let pDetalVenta = parseFloat($('#p_detal_venta').text());
                 let pxMayorVenta = parseFloat($('#p_x_mayor_venta').text());
                 let cantidadVenta = parseInt($('#cantidad_venta').val());
@@ -762,6 +769,9 @@
                 let valorSubTotal = aplicarMayor ? cantidadVenta * pxMayorVenta :
                     cantidadVenta * pDetalVenta;
 
+                let ganancia = aplicarMayor ? (cantidadVenta * pxMayorVenta) - (pUnitarioVenta*cantidadVenta) :
+                    (cantidadVenta * pDetalVenta) - (pUnitarioVenta*cantidadVenta);
+
                 if (aplicarMayor) {
                     pDetalVenta = '';
                 } else {
@@ -772,9 +782,11 @@
                     idProductoVenta: idProductoVenta,
                     nombre: productoVenta,
                     cantidad: cantidadVenta,
+                    pUnitarioVenta: pUnitarioVenta,
                     pDetalVenta: pDetalVenta,
                     pxMayorVenta: pxMayorVenta,
                     subtotal: valorSubTotal,
+                    ganancia: ganancia,
                 };
                 productosAgregados.push(producto);
 
@@ -796,6 +808,7 @@
 
                 $('#producto_venta').val('').trigger('change'); // Reiniciar selección de producto
 
+                $('#p_unitario_venta').html(0); // Resetear precio detal
                 $('#p_detal_venta').html(0); // Resetear precio detal
                 $('#p_x_mayor_venta').html(0); // Resetear precio mayorista
 
@@ -819,6 +832,7 @@
                             <td class="text-center align-middle">${producto.nombre}</td>
                             <td class="text-center align-middle">${producto.cantidad}</td>
                             <td class="text-center align-middle">$${producto.subtotal}</td>
+                            <td class="text-center align-middle">$${producto.ganancia}</td>
                             <td class="text-center align-middle">
                                 <button type="button" onclick="eliminarProducto(${index})" class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash text-white"></i>
@@ -827,9 +841,11 @@
 
                             <input type="hidden" name="id_producto_venta[]" value="${producto.idProductoVenta}">
                             <input type="hidden" name="cantidad_venta[]" value="${producto.cantidad}">
+                            <input type="hidden" name="p_unitario_venta[]" value="${producto.pUnitarioVenta}">
                             <input type="hidden" name="p_detal_venta[]" value="${producto.pDetalVenta}">
                             <input type="hidden" name="p_mayor_venta[]" value="${producto.pxMayorVenta}">
                             <input type="hidden" name="subtotal_venta[]" value="${producto.subtotal}">
+                            <input type="hidden" name="ganancia[]" value="${producto.ganancia}">
                         </tr>
                     `;
 
@@ -845,6 +861,7 @@
                 productosAgregados.splice(index, 1);
                 actualizarDetalleVenta();
                 $('#producto_venta').val('').trigger('change'); // Reiniciar selección de producto
+                $('#p_unitario_venta').html(0); // Resetear precio unitario
                 $('#p_detal_venta').html(0); // Resetear precio detal
                 $('#p_x_mayor_venta').html(0); // Resetear precio mayorista
                 $('#cantidad_venta').val(''); // Limpiar cantidad

@@ -48,6 +48,7 @@
                                     <th>Precio</th>
                                     <th>Cantidad</th>
                                     <th>Total</th>
+                                    <th>Ganancia</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,6 +58,7 @@
                                         <td class="text-end">{{ $producto->precio_venta_detalle }}</td>
                                         <td>{{ $producto->cantidad }}</td>
                                         <td class="text-end">{{ $producto->subtotal_detalle }}</td>
+                                        <td class="text-end">{{ $producto->ganancia_venta }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

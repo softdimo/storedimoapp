@@ -66,6 +66,7 @@
                                 <tr class="header-table text-center">
                                     <th>Código</th>
                                     <th>Total Venta</th>
+                                    <th>Ganancia</th>
                                     <th>Fecha Registro Venta</th>
                                     <th>Identificación Cliente</th>
                                     <th>Nombre Cliente</th>
@@ -80,6 +81,7 @@
                                     <tr class="text-center align-middle">
                                         <td>{{ $venta->id_venta }}</td>
                                         <td class="text-end">{{ $venta->total_venta_index }}</td>
+                                        <td class="text-end">{{ $venta->ganancia_total_venta }}</td>
                                         <td>{{ $venta->fecha_venta }}</td>
                                         <td>{{ $venta->identificacion }}</td>
                                         <td>{{ $venta->nombres_cliente }}</td>
