@@ -253,7 +253,6 @@
                 const idTipoPago = $(this).val();
                 console.log(idTipoPago);
                 
-
                 let valorMensual = $('#valor_mensual').val();
                 let valorTrimestral = $('#valor_trimestral').val();
                 let valorSemestral = $('#valor_semestral').val();
@@ -261,17 +260,43 @@
 
                 let valorSuscripcion = $('#valor_suscripcion');
 
-                if (idTipoPago == 7) {
+               
+
+                // 3. Calcular días (asegurate que plan.dias_trial sea un número)
+                let diasMensual = 30;
+                let diasTrimestral = 90;
+                let diasSemestral = 180;
+                let diasAnual = 365;
+
+                 // Obtener fecha de hoy
+                const hoy = obtenerHoy();
+
+                let fechaFin = '';
+
+                if (idTipoPago == 7) { // Mensual
                     valorSuscripcion.val(valorMensual);
-                } else if (idTipoPago == 8) {
+                    fechaFin = sumarDias(hoy, diasMensual);
+
+                } else if (idTipoPago == 8) { // Trimestral
                     valorSuscripcion.val(valorTrimestral);
-                } else if (idTipoPago == 9) {
+                    fechaFin = sumarDias(hoy, diasTrimestral);
+
+                } else if (idTipoPago == 9) { // Semestral
                     valorSuscripcion.val(valorSemestral);
-                } else if (idTipoPago == 6) {
+                    fechaFin = sumarDias(hoy, diasSemestral);
+
+                } else if (idTipoPago == 6) { // Anual
                     valorSuscripcion.val(valorAnual);
+                    fechaFin = sumarDias(hoy, diasAnual);
+                    
                 } else {
                     valorSuscripcion.val('');
                 }
+
+                // Asignar a fecha inicial y fechfinal
+                $('#formCrearSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
+
+                $('#formCrearSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
             });
 
             // ==============================================================
