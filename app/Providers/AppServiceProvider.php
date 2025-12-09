@@ -45,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with([
                     'usuarioLogueado' => $usuario,
                     'logoEmpresa' => $usuario->logo_empresa ?? $logoEmpresa,
+                    'nombreEmpresa' => $usuario->nombre_empresa ?? null,
                 ]);
             } catch (\Exception $e) {
                 $view->with('logoEmpresa', $logoEmpresa);
