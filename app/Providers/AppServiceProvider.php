@@ -61,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
             
             // Verificamos si la variable de sesión existe y es un número
             if (is_numeric($diasFaltantes)) {
-                $mensaje = "¡ADVERTENCIA! Su plan de prueba (Trial) vence en **{$diasFaltantes}** días. ¡Renueve pronto!";
+                $mensaje = "Su plan vence en **{$diasFaltantes}** días.";
                 $view->with('alertaTrial', $mensaje);
             }
         });

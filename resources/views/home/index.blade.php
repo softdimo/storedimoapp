@@ -23,6 +23,15 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 d-flex flex-column" style="width: 85%">
+            @if (isset($alertaTrial))
+                <div class="w-100 mt-0 mb-0">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {!! $alertaTrial !!}
+                        {{-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> --}}
+                    </div>
+                </div>
+            @endif
+
             <div class="text-end">
                 <a class="nav-link text-blue" href="">
                     <i class="fa fa-question-circle fa-2x" aria-hidden="true" title="Ayuda" style="color: #337AB7"></i>

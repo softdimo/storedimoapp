@@ -66,20 +66,6 @@
             @include('layouts.topbar_login')
         @else
             @include('layouts.topbar')
-
-            {{-- ================================================= --}}
-            {{-- AQUI VA LA ALERTA DE VENCIMIENTO DEL PLAN TRIAL --}}
-            {{-- ================================================= --}}
-            @if (isset($alertaTrial))
-                {{-- Contenedor para centrar y aplicar márgenes si es necesario, usa la clase de Bootstrap que prefieras (ej: container, p-3) --}}
-                <div class="container mt-0 mb-0">
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        {!! $alertaTrial !!}
-                        {{-- Botón opcional para que el usuario pueda cerrarla --}}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
         @endif
 
         @yield('content')
