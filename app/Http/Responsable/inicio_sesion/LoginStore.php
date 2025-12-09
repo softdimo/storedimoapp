@@ -50,7 +50,6 @@ class LoginStore implements Responsable
             if ($user['id_empresa'] != 5) {
 
                 $estadoSuscripcionEmpresa = $this->consultarEstadoSuscripcionEmpresa($user['id_empresa']);
-                // dd($estadoSuscripcionEmpresa);
 
                 // Convertimos a array para una verificación más fácil si el objeto está vacío
                 $estadoArray = (array) $estadoSuscripcionEmpresa;
@@ -67,7 +66,7 @@ class LoginStore implements Responsable
 
                 // Verificar si la fecha final ya pasó Y si el estado aún es Activo (1) o Trial (10)
                 // Usamos el Trait MetodosTrait para verificar si la fecha ha pasado (puedes crear el método)
-                if ($this->fechaHaVencido($fechaFinalSuscripcion) && in_array($estadoActual, [10])) {
+                if ($this->fechaHaVencido($fechaFinalSuscripcion) && in_array($estadoActual, [1])) {
                     
                     // La fecha está vencida, pero el estado no se ha actualizado.
                     // Llama a la API para actualizar el estado antes de denegar el acceso.
@@ -83,7 +82,6 @@ class LoginStore implements Responsable
                     alert()->error('Error de acceso', 'Su suscripción registrada está inactiva; por favor renuevela para continuar.');
                     return redirect()->route('login');
                 }
-
             }
 
             // =======================================================================================

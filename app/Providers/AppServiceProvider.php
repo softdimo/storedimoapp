@@ -50,5 +50,20 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('logoEmpresa', $logoEmpresa);
             }
         });
+
+        // ====================================================================
+        // === NUEVO VIEW COMPOSER: Alerta de Días Faltantes del Trial (Demo) ===
+        // ====================================================================
+
+        // Aplicado a TODAS las vistas para que esté disponible en cualquier página
+        View::composer(['*'], function ($view) {
+            $diasFaltantes = session('trial_dias_faltantes');
+            
+            // Verificamos si la variable de sesión existe y es un número
+            if (is_numeric($diasFaltantes)) {
+                $mensaje = "¡ADVERTENCIA! Su plan de prueba (Trial) vence en **{$diasFaltantes}** días. ¡Renueve pronto!";
+                $view->with('alertaTrial', $mensaje);
+            }
+        });
     }
 }

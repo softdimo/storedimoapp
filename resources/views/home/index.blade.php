@@ -22,7 +22,7 @@
         {{-- ======================================================================= --}}
         {{-- ======================================================================= --}}
 
-        <div class="p-3 d-flex flex-column" style="width: 80%">
+        <div class="p-3 d-flex flex-column" style="width: 85%">
             <div class="text-end">
                 <a class="nav-link text-blue" href="">
                     <i class="fa fa-question-circle fa-2x" aria-hidden="true" title="Ayuda" style="color: #337AB7"></i>

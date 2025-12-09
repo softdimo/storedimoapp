@@ -175,7 +175,7 @@
                     $('#formCrearSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
 
                     // Asignar 10 a estado Trial
-                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(10).trigger('change');
+                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
                     
                 } else if (idPlan != 1 && idPlan != '') {
 
