@@ -23,7 +23,7 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 content-container">
-            <div class="d-flex justify-content-between pe-3 mt-3">
+            <div class="d-flex justify-content-between pe-3 mt-3 mb-3">
                 <div class="">
                     <a href="{{ route('planes.index') }}" class="btn text-white"
                         style="background-color:#337AB7">Planes</a>
@@ -38,33 +38,39 @@
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            {!! Form::open([
-                'method' => 'PUT',
-                'route' => ['planes.update', $planEdit->id_plan],
-                'class' => 'mt-2',
-                'autocomplete' => 'off',
-                'id' => 'formEditarPlan' . $planEdit->id_plan ]) !!}
-                @csrf
+            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px 5px 0 0;">
+                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
+                    Editar Plan (Obligatorios * )
+                </h5>
 
-                @include('planes.fields_planes')
-
-                {{-- ========================================================= --}}
-                {{-- ========================================================= --}}
-
-                <!-- Contenedor para el GIF -->
-                <div id="loadingIndicatorEditarPlan_{{ $planEdit->id_plan }}" class="loadingIndicator">
-                    <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
-                </div>
-
-                {{-- ========================================================= --}}
-                {{-- ========================================================= --}}
-
-                <div class="mt-4 mb-0 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success rounded-2 me-3" id="btn_editar_plan_{{ $planEdit->id_plan }}">
-                        <i class="fa fa-floppy-o"> Editar</i>
-                    </button>
-                </div>
-            {!! Form::close() !!}
+                {!! Form::open([
+                    'method' => 'PUT',
+                    'route' => ['planes.update', $planEdit->id_plan],
+                    'class' => 'mt-2',
+                    'autocomplete' => 'off',
+                    'id' => 'formEditarPlan_' . $planEdit->id_plan ]) !!}
+                    @csrf
+    
+                    @include('planes.fields_planes')
+    
+                    {{-- ========================================================= --}}
+                    {{-- ========================================================= --}}
+    
+                    <!-- Contenedor para el GIF -->
+                    <div id="loadingIndicatorEditarPlan_{{ $planEdit->id_plan }}" class="loadingIndicator">
+                        <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
+                    </div>
+    
+                    {{-- ========================================================= --}}
+                    {{-- ========================================================= --}}
+    
+                    <div class="mt-4 mb-3 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success rounded-2 me-3" id="btn_editar_plan_{{ $planEdit->id_plan }}">
+                            <i class="fa fa-floppy-o"> Editar</i>
+                        </button>
+                    </div>
+                {!! Form::close() !!}
+            </div> {{-- FIN div_editar_plan --}}
         </div>
     </div>
 @stop
@@ -77,7 +83,6 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2({
-                // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });
