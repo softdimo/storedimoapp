@@ -32,11 +32,11 @@
                 </div>
             @endif
 
-            <div class="text-end">
+            {{-- <div class="text-end">
                 <a class="nav-link text-blue" href="">
                     <i class="fa fa-question-circle fa-2x" aria-hidden="true" title="Ayuda" style="color: #337AB7"></i>
                 </a>
-            </div>
+            </div> --}}
 
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}
