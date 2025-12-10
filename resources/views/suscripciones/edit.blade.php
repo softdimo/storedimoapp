@@ -23,43 +23,54 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 content-container">
-            <div class="d-flex justify-content-between pe-3 mt-3">
+            <div class="d-flex justify-content-between pe-3 mt-3 mb-3">
                 <div class="">
                     <a href="{{ route('suscripciones.index') }}" class="btn text-white"
                         style="background-color:#337AB7">Suscripciones</a>
+                </div>
+
+                <div class="">
+                    <a href="{{ route('suscripciones.create') }}" class="btn text-white"
+                        style="background-color:#337AB7">Crear Suscripción</a>
                 </div>
             </div>
 
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            {!! Form::open([
-                'method' => 'PUT',
-                'route' => ['suscripciones.update', $suscripcionEdit->id_suscripcion],
-                'class' => 'mt-2',
-                'autocomplete' => 'off',
-                'id' => 'formEditarSuscripcion_' . $suscripcionEdit->id_suscripcion ]) !!}
-                @csrf
+            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px 5px 0 0;">
+                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
+                    Editar Suscripción (Obligatorios * )
+                </h5>
 
-                @include('suscripciones.fields_suscripciones')
+                {!! Form::open([
+                    'method' => 'PUT',
+                    'route' => ['suscripciones.update', $suscripcionEdit->id_suscripcion],
+                    'class' => 'mt-2',
+                    'autocomplete' => 'off',
+                    'id' => 'formEditarSuscripcion_' . $suscripcionEdit->id_suscripcion ]) !!}
+                    @csrf
 
-                {{-- ========================================================= --}}
-                {{-- ========================================================= --}}
+                    @include('suscripciones.fields_suscripciones')
 
-                <!-- Contenedor para el GIF -->
-                <div id="loadingIndicatorEditarSuscripcion_{{ $suscripcionEdit->id_suscripcion }}" class="loadingIndicator">
-                    <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
-                </div>
+                    {{-- ========================================================= --}}
+                    {{-- ========================================================= --}}
 
-                {{-- ========================================================= --}}
-                {{-- ========================================================= --}}
+                    <!-- Contenedor para el GIF -->
+                    <div id="loadingIndicatorEditarSuscripcion_{{ $suscripcionEdit->id_suscripcion }}" class="loadingIndicator">
+                        <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
+                    </div>
 
-                <div class="mt-4 mb-0 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success rounded-2 me-3" id="btn_editar_suscripcion_{{ $suscripcionEdit->id_suscripcion }}">
-                        <i class="fa fa-floppy-o"> Editar</i>
-                    </button>
-                </div>
-            {!! Form::close() !!}
+                    {{-- ========================================================= --}}
+                    {{-- ========================================================= --}}
+
+                    <div class="mt-4 mb-3 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success rounded-2 me-3" id="btn_editar_suscripcion_{{ $suscripcionEdit->id_suscripcion }}">
+                            <i class="fa fa-floppy-o"> Editar</i>
+                        </button>
+                    </div>
+                {!! Form::close() !!}
+            </div> {{-- FIN div principal --}}
         </div>
     </div>
 @stop
@@ -120,6 +131,32 @@
 
             console.log('planesData cargados:', planesData);
 
+            // ==============================================================
+            // ==============================================================
+
+            // Función para obtener fecha LOCAL en formato YYYY-MM-DD
+            function obtenerHoy() {
+                const fecha = new Date();
+                const year = fecha.getFullYear();
+                const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
+                const day = String(fecha.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // Función para sumar días respetando la zona horaria local
+            function sumarDias(fechaString, dias) {
+                // Truco: Al crear date con string "YYYY-MM-DD" javascript lo asume UTC a veces.
+                // Mejor crearlo y ajustar componentes.
+                const fecha = new Date(fechaString + 'T00:00:00'); // Forzamos hora local inicio día
+                fecha.setDate(fecha.getDate() + parseInt(dias));
+                
+                const year = fecha.getFullYear();
+                const month = String(fecha.getMonth() + 1).padStart(2, '0');
+                const day = String(fecha.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // ==============================================================
             // ==============================================================
 
             // 3. FUNCIÓN DE INICIALIZACIÓN (llamada al cargar la página)
@@ -235,28 +272,6 @@
 
             // ==============================================================
             // ==============================================================
-
-            // Función para obtener fecha LOCAL en formato YYYY-MM-DD
-            function obtenerHoy() {
-                const fecha = new Date();
-                const year = fecha.getFullYear();
-                const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Meses van de 0-11
-                const day = String(fecha.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-
-            // Función para sumar días respetando la zona horaria local
-            function sumarDias(fechaString, dias) {
-                // Truco: Al crear date con string "YYYY-MM-DD" javascript lo asume UTC a veces.
-                // Mejor crearlo y ajustar componentes.
-                const fecha = new Date(fechaString + 'T00:00:00'); // Forzamos hora local inicio día
-                fecha.setDate(fecha.getDate() + parseInt(dias));
-                
-                const year = fecha.getFullYear();
-                const month = String(fecha.getMonth() + 1).padStart(2, '0');
-                const day = String(fecha.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
 
             // Usar jQuery + eventos de Select2 para máxima compatibilidad
             $('#id_plan_suscrito').on('change select2:select', function (e) {
@@ -404,7 +419,6 @@
                 const idTipoPago = $(this).val();
                 console.log(idTipoPago);
                 
-
                 let valorMensual = $('#valor_mensual').val();
                 let valorTrimestral = $('#valor_trimestral').val();
                 let valorSemestral = $('#valor_semestral').val();
@@ -412,17 +426,42 @@
 
                 let valorSuscripcion = $('#valor_suscripcion');
 
-                if (idTipoPago == 7) {
+                // Calcular días (asegurate que plan.dias_trial sea un número)
+                let diasMensual = 30;
+                let diasTrimestral = 90;
+                let diasSemestral = 180;
+                let diasAnual = 365;
+
+                // Obtener fecha de hoy
+                const hoy = obtenerHoy();
+
+                let fechaFin = '';
+
+                if (idTipoPago == 7) { // Mensual
                     valorSuscripcion.val(valorMensual);
-                } else if (idTipoPago == 8) {
+                    fechaFin = sumarDias(hoy, diasMensual);
+
+                } else if (idTipoPago == 8) { // Trimestral
                     valorSuscripcion.val(valorTrimestral);
-                } else if (idTipoPago == 9) {
+                    fechaFin = sumarDias(hoy, diasTrimestral);
+
+                } else if (idTipoPago == 9) { // Semestral
                     valorSuscripcion.val(valorSemestral);
-                } else if (idTipoPago == 6) {
+                    fechaFin = sumarDias(hoy, diasSemestral);
+
+                } else if (idTipoPago == 6) { // Anual
                     valorSuscripcion.val(valorAnual);
+                    fechaFin = sumarDias(hoy, diasAnual);
+                    
                 } else {
                     valorSuscripcion.val('');
                 }
+
+                // Asignar a fecha inicial y fechfinal
+                $(formSelector).find('#fecha_inicial').val(hoy).trigger('change');
+                $(formSelector).find('#fecha_final').val(fechaFin).trigger('change');
+
+                $(formSelector).find('#id_estado_suscripcion').val(1).trigger('change');
             });
 
             // ==============================================================
@@ -450,9 +489,7 @@
                 const loadingIndicator = $(`#loadingIndicatorEditarSuscripcion_${id}`);
 
                 // Lógica del botón
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>"
-                );
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Cargar Spinner
                 loadingIndicator.show();

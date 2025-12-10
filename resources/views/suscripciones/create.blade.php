@@ -23,7 +23,7 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 content-container">
-            <div class="d-flex justify-content-between pe-3 mt-3">
+            <div class="d-flex justify-content-between pe-3 mt-3 mb-3">
                 <div class="">
                     <a href="{{ route('suscripciones.index') }}" class="btn text-white"
                         style="background-color:#337AB7">Suscripciones
@@ -34,35 +34,41 @@
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            {!! Form::open([
-                'method' => 'POST',
-                'route' => ['suscripciones.store'],
-                'class' => 'mt-2',
-                'autocomplete' => 'off',
-                'id' => 'formCrearSuscripcion',
-                ]) !!}
-                @csrf
+            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px 5px 0 0;">
+                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
+                    Crear Suscripción (Obligatorios * )
+                </h5>
 
-                @include('suscripciones.fields_suscripciones')
+                {!! Form::open([
+                    'method' => 'POST',
+                    'route' => ['suscripciones.store'],
+                    'class' => 'mt-2',
+                    'autocomplete' => 'off',
+                    'id' => 'formCrearSuscripcion',
+                    ]) !!}
+                    @csrf
 
-                {{-- ========================================================= --}}
-                {{-- ========================================================= --}}
+                    @include('suscripciones.fields_suscripciones')
 
-                <!-- Contenedor para el GIF -->
-                <div id="loadingIndicatorStore" class="loadingIndicator">
-                    <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
-                </div>
+                    {{-- ========================================================= --}}
+                    {{-- ========================================================= --}}
 
-                {{-- ========================================================= --}}
-                {{-- ========================================================= --}}
+                    <!-- Contenedor para el GIF -->
+                    <div id="loadingIndicatorStore" class="loadingIndicator">
+                        <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
+                    </div>
 
-                <div class="mt-4 mb-0 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success rounded-2 me-3">
-                        <i class="fa fa-floppy-o"></i>
-                        Crear
-                    </button>
-                </div>
-            {!! Form::close() !!}
+                    {{-- ========================================================= --}}
+                    {{-- ========================================================= --}}
+
+                    <div class="mt-4 mb-3 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success rounded-2 me-3">
+                            <i class="fa fa-floppy-o"></i>
+                            Crear
+                        </button>
+                    </div>
+                {!! Form::close() !!}
+            </div> {{-- FIN div principal --}}
         </div>
     </div>
 @stop
@@ -96,6 +102,9 @@
             const planesData = @json($planesData);
             console.log('planesData cargados:', planesData);
 
+            // ==============================================================
+            // ==============================================================
+
             // Función para obtener fecha LOCAL en formato YYYY-MM-DD
             function obtenerHoy() {
                 const fecha = new Date();
@@ -117,6 +126,9 @@
                 const day = String(fecha.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
             }
+
+            // ==============================================================
+            // ==============================================================
 
             // Usar jQuery + eventos de Select2 para máxima compatibilidad
             $('#id_plan_suscrito').on('change select2:select', function (e) {
@@ -175,7 +187,7 @@
                     $('#formCrearSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
 
                     // Asignar 10 a estado Trial
-                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
+                    // $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
                     
                 } else if (idPlan != 1 && idPlan != '') {
 
@@ -260,15 +272,13 @@
 
                 let valorSuscripcion = $('#valor_suscripcion');
 
-               
-
-                // 3. Calcular días (asegurate que plan.dias_trial sea un número)
+                // Calcular días (asegurate que plan.dias_trial sea un número)
                 let diasMensual = 30;
                 let diasTrimestral = 90;
                 let diasSemestral = 180;
                 let diasAnual = 365;
 
-                 // Obtener fecha de hoy
+                // Obtener fecha de hoy
                 const hoy = obtenerHoy();
 
                 let fechaFin = '';
@@ -295,8 +305,9 @@
 
                 // Asignar a fecha inicial y fechfinal
                 $('#formCrearSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
-
                 $('#formCrearSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
+
+                $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
             });
 
             // ==============================================================
@@ -316,11 +327,9 @@
             $("form").on("submit", function(e) {
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
-                const cancelButton = form.find('button[type="button"]');
-                const loadingIndicator = form.find("div[id^='loadingIndicatorStore']"); // Busca el GIF del form actual
+                const loadingIndicator = form.find("div[id^='loadingIndicatorStore']");
 
                 // Dessactivar Botones
-                cancelButton.prop("disabled", true);
                 submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Mostrar Spinner
