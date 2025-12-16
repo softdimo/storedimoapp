@@ -81,7 +81,6 @@
     </div>
 @stop
 
-
 @section('scripts')
     <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('DataTables/Buttons-2.3.4/js/buttons.html5.min.js') }}"></script>
