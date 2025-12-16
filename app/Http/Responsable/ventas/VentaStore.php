@@ -36,9 +36,11 @@ class VentaStore implements Responsable
         
         $idProductos = request('id_producto_venta', []); // Array productos
         $cantidades = request('cantidad_venta', []);    // Array cantidades
+        $pUnitarioVenta = request('p_unitario_venta', []);   // Array precios Detal
         $pDetalVenta = request('p_detal_venta', []);   // Array precios Detal
         $pMayorVenta = request('p_mayor_venta', []);   // Array precios por Mayor
         $subtotales = request('subtotal_venta', []);    // Array de subtotales
+        $gananciaVenta = request('ganancia', []);    // Array de ganancias
         
         try {
             $reqVentaStore = $this->clientApi->post($this->baseUri.'venta_store', [
@@ -49,15 +51,17 @@ class VentaStore implements Responsable
                     'descuento' => $descuento,
                     'total_venta' => $totalVenta,
                     'id_tipo_pago' => $idTipoPago,
-                    'productos' => array_map(function ($id, $cantidad, $precioDetal, $precioMayor, $subtotal) {
+                    'productos' => array_map(function ($id, $cantidad, $pUnitario, $precioDetal, $precioMayor, $subtotal, $ganancia) {
                         return [
                             'id_producto' => $id,
                             'cantidad' => $cantidad,
+                            'p_unitario' => $pUnitario,
                             'p_detal' => $precioDetal,
                             'p_mayor' => $precioMayor,
-                            'subtotal' => $subtotal
+                            'subtotal' => $subtotal,
+                            'ganancia' => $ganancia
                         ];
-                    }, $idProductos, $cantidades, $pDetalVenta,$pMayorVenta,  $subtotales), // Construcción del array
+                    }, $idProductos, $cantidades, $pUnitarioVenta, $pDetalVenta, $pMayorVenta, $subtotales, $gananciaVenta), // Construcción del array
                     'id_cliente' => $idCliente,
                     'id_usuario' => $usuLogueado,
                     'id_estado' => $idEstado,

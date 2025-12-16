@@ -206,6 +206,14 @@
             // ===========================================================================================
             // ===========================================================================================
 
+            // Evita permitir que el enter active el submit
+            $(document).on('keypress', 'form[id^="formEditarProveedor_"]', function (e) {
+                if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             // Botón de submit de editar Proveedor
             $(document).on("submit", "form[id^='formEditarProveedor_']", function(e) {
                 const form = $(this);

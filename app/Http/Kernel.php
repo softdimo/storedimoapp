@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'verificar.sesion' => \App\Http\Middleware\VerificarSesionIniciada::class,
+        'check.diasplan.alert' => \App\Http\Middleware\CheckDiasPlanAlert::class,
     ];
 }

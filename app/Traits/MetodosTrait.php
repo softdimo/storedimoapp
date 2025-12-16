@@ -21,6 +21,8 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use App\Models\InformeCampo;
 use App\Models\Informe;
+use App\Models\Plan;
+use App\Models\Suscripcion;
 
 trait MetodosTrait
 {
@@ -106,6 +108,7 @@ trait MetodosTrait
     {
         view()->share('roles', Rol::orderBy('name')->pluck('name', 'id'));
         view()->share('estados', Estado::whereIn('id_estado', [1,2])->orderBy('estado')->pluck('estado', 'id_estado'));
+        view()->share('estados_suscripciones', Estado::whereIn('id_estado', [1,2,10,11,12])->orderBy('estado')->pluck('estado', 'id_estado'));
         view()->share('tipos_documento', TipoDocumento::orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
         view()->share('tipos_documento_usuario', TipoDocumento::whereNotIn('id_tipo_documento', [3])
                                                                 ->orderBy('tipo_documento')
@@ -123,6 +126,7 @@ trait MetodosTrait
         view()->share('tipos_baja', TipoBaja::orderBy('tipo_baja','asc')->pluck('tipo_baja', 'id_tipo_baja'));
         view()->share('tipos_pago_ventas', TipoPago::whereNotIn('id_tipo_pago', [4,5])->where('id_estado',1)->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('tipos_pago_nomina', TipoPago::whereIn('id_tipo_pago', [4,5])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
+        view()->share('tipos_pago_suscripcion', TipoPago::whereIn('id_tipo_pago', [6,7,8,9])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('periodos_pago', PeriodoPago::orderBy('periodo_pago')->pluck('periodo_pago', 'id_periodo_pago'));
         view()->share('porcentajes_comision', PorcentajeComision::orderBy('porcentaje_comision')->pluck('porcentaje_comision', 'id_porcentaje_comision'));
         view()->share('empresas', Empresa::orderBy('nombre_empresa')->where('id_estado', 1)->pluck('nombre_empresa', 'id_empresa'));
@@ -137,8 +141,65 @@ trait MetodosTrait
 
 
         view()->share('tipos_cliente', TipoPersona::whereIn('id_tipo_persona', [5,6])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
+
+        // Para el pluck del select normal
+        view()->share('planes', Plan::orderBy('nombre_plan')->where('id_estado_plan', 1)->pluck('nombre_plan', 'id_plan'));
+
+        // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
+        view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
         
     } // FIN shareBasicData()
+
+    // =======================================================================================
+
+    /**
+     * Genera la lista de empresas para el select de suscripciones.
+     * Excluye todas las empresas con suscripción activa, excepto la actual (si se está editando).
+     * * @param int|null $idEmpresaActual El ID de la empresa que se está editando (null para creación).
+     * @return void
+     */
+    public function shareEmpresasSuscripciones(?int $idEmpresaActual = null): void
+    {
+        // --- Configuración de Exclusiones ---
+        
+        // 1. IDs de empresas que YA tienen una suscripción (activa o inactiva, según tu lógica de negocio)
+        $empresasConSuscripcion = Suscripcion::whereNotNull('id_empresa_suscrita')
+                                            ->pluck('id_empresa_suscrita')
+                                            ->toArray();
+
+        // 2. IDs fijos a excluir (ej. ID 5)
+        $idsFijosAExcluir = [5];
+        
+        // 3. Unir todas las exclusiones
+        $idsAExcluir = array_merge($empresasConSuscripcion, $idsFijosAExcluir);
+
+        // 4. Si estamos en modo EDICIÓN, quitamos la empresa actual de la lista de exclusión.
+        // Esto es CRUCIAL para que la empresa editada aparezca en el select.
+        if ($idEmpresaActual) {
+            $idsAExcluir = array_diff($idsAExcluir, [$idEmpresaActual]);
+        }
+        
+        // --- Consulta de Empresas ---
+        
+        $empresasDisponibles = Empresa::orderBy('nombre_empresa')
+            ->where('id_estado', 1)
+            ->whereNotIn('id_empresa', $idsAExcluir)
+            ->pluck('nombre_empresa', 'id_empresa');
+
+        // 5. Si estamos en EDICIÓN y la empresa actual fue excluida (como debería ser),
+        // la agregamos manualmente a la lista para que el select la muestre seleccionada.
+        // Esto es necesario porque el paso 4 solo quita el ID de la lista de exclusión,
+        // pero si la empresa no está disponible para nadie más, debe ser agregada.
+        if ($idEmpresaActual) {
+            $empresaActual = Empresa::where('id_empresa', $idEmpresaActual)->pluck('nombre_empresa', 'id_empresa');
+            // Usamos union para agregar la empresa actual a la colección de disponibles
+            $empresasDisponibles = $empresasDisponibles->union($empresaActual);
+        }
+        
+        view()->share('empresas_suscripciones', $empresasDisponibles);
+    }
+
+    // =======================================================================================
 
     protected function sharePermissionsData()
     {

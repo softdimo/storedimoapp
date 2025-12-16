@@ -297,6 +297,7 @@
             });
 
             //======================== Validación de referencia ==============================//
+
             const referenceInput = document.getElementById('referencia');
             const errorReferenceMsg = document.getElementById('reference-error');
 
@@ -314,7 +315,7 @@
                 }
 
                 if (!regexReferencia.test(reference)) {
-                    errorReferenceMsg.textContent = 'Ingrese una referencia válida.';
+                    errorReferenceMsg.textContent = 'Ingrese una referencia válida, sin espacios.';
                     errorReferenceMsg.classList.remove('d-none');
                     referenceInput.classList.add('is-invalid');
                     return;
@@ -354,21 +355,32 @@
             });
             //=========================== Fin validación de referencia ==============================//
 
+            // Evita permitir que el enter active el submit
+            $(document).on('keypress', 'form[id^="formCrearProducto"]', function (e) {
+                if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
             // formCrearCategoria para cargar gif en el submit
             $(document).on("submit", "form[id^='formCrearProducto']", function(e) {
+    
+                // PRIMERO validamos los precios. Si falla, paramos el submit.
+                if (!validarPreciosCreacion()) {
+                    e.preventDefault();
+                    return false;
+                }
+
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 const cancelButton = form.find('button[type="button"]');
-                const loadingIndicator = form.find(
-                    "div[id^='loadingIndicatorCrearProducto']"); // Busca el GIF del form actual
+                const loadingIndicator = form.find("div[id^='loadingIndicatorCrearProducto']"); // Busca el GIF
 
                 // Dessactivar Submit y Cancel
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
-
-                // Mostrar Spinner
-                loadingIndicator.show();
+                loadingIndicator.show(); // Mostrar Spinner
             });
 
             // formCrearUmd para cargar gif en el submit
@@ -465,5 +477,36 @@
         //         displayElement.classList.add('hidden');
         //     }
         // }
+
+        // =======================
+        // FUNCIÓN AUXILIAR DE VALIDACIÓN DE PRECIOS
+        // =======================
+        function validarPreciosCreacion() {
+            let precioUnitario = parseFloat($('#precio_unitario').val()) || 0;
+            let precioDetal = parseFloat($('#precio_detal').val()) || 0;
+            let precioPorMayor = parseFloat($('#precio_por_mayor').val()) || 0;
+
+            // Precio unitario < detal
+            if (precioUnitario >= precioDetal) {
+                Swal.fire(
+                    'Cuidado!',
+                    'El precio unitario debe ser menor que el precio al detal!',
+                    'warning'
+                );
+                return false;
+            }
+
+            // Unitario < mayor < detal
+            if (precioPorMayor <= precioUnitario || precioPorMayor >= precioDetal) {
+                Swal.fire(
+                    'Cuidado!',
+                    'El precio al por mayor debe ser superior al precio unitario y menor que el precio al detal!',
+                    'warning'
+                );
+                return false;
+            }
+
+            return true; // Todo OK
+        }
     </script>
 @stop

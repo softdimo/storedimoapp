@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Models\Empresa;
 use Exception;
-
+use Illuminate\Support\Facades\Log;
 class TenantMigrationProvider extends ServiceProvider
 {
     /**
@@ -49,15 +49,28 @@ class TenantMigrationProvider extends ServiceProvider
                 echo "Migrando tenant: " . Crypt::decrypt($tenant->db_database) . "\n";
             }
 
-            try 
+            try
             {
+                // 1️⃣ Desencriptar datos
+                $dbHost = Crypt::decrypt($tenant->db_host);
+                $dbDatabase = Crypt::decrypt($tenant->db_database);
+                $dbUsername = Crypt::decrypt($tenant->db_username);
+                $dbPassword = Crypt::decrypt($tenant->db_password);
+
+                // 2️⃣ Si estamos en entorno local y el host es "localhost", usar el host público
+                if (app()->environment('local') && $dbHost === 'localhost') {
+                    $dbHost = 'srv1999.hstgr.io';
+                    Log::info("🔁 Host ajustado automáticamente para entorno local: {$dbHost}");
+                }
+
+                // 3️⃣ Configurar conexión tenant
                 Config::set('database.connections.tenant', [
                     'driver' => 'mysql',
-                    'host' =>  Crypt::decrypt($tenant->db_host),
+                    'host' => $dbHost,
                     'port' => env('DB_PORT', '3306'),
-                    'database' => Crypt::decrypt($tenant->db_database),
-                    'username' => Crypt::decrypt($tenant->db_username),
-                    'password' => Crypt::decrypt($tenant->db_password),
+                    'database' => $dbDatabase,
+                    'username' => $dbUsername,
+                    'password' => $dbPassword,
                     'charset' => 'utf8mb4',
                     'collation' => 'utf8mb4_unicode_ci',
                     'prefix'    => '',
@@ -70,6 +83,7 @@ class TenantMigrationProvider extends ServiceProvider
 
                 // 4. Establecer conexión tenant
                 DB::purge('tenant');
+                Log::info('Reconectando a la conexión tenant');
                 DB::reconnect('tenant');
 
                 // 5. Verificar conexión

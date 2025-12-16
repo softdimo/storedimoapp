@@ -41,9 +41,50 @@ class LoginStore implements Responsable
             }
 
             if (!$user || $user === 'error_bd') {
-                alert()->error('Error', 'Error consultando el usurio a la BD principal');
+                alert()->error('Error', 'Error consultando el usuario a la BD principal');
                 return back();
             }
+
+            // =======================================================================================
+            // VALIDACIÓN DE LA SUSCRIPCIÓN DE LA EMPRESA
+            if ($user['id_empresa'] != 5) {
+
+                $estadoSuscripcionEmpresa = $this->consultarEstadoSuscripcionEmpresa($user['id_empresa']);
+
+                // Convertimos a array para una verificación más fácil si el objeto está vacío
+                $estadoArray = (array) $estadoSuscripcionEmpresa;
+
+                if (empty($estadoArray)) {
+                    // La empresa NO tiene suscripción registrada.
+                    alert()->error('Error de acceso', 'Su empresa no tiene ninguna suscripción registrada.');
+                    return redirect()->route('login');
+                }
+
+                // 1. *** APLICAR VERIFICACIÓN POR FECHA ***
+                $fechaFinalSuscripcion = $estadoSuscripcionEmpresa->fecha_final;
+                $estadoActual = $estadoSuscripcionEmpresa->id_estado_suscripcion;
+
+                // Verificar si la fecha final ya pasó Y si el estado aún es Activo (1) o Trial (10)
+                // Usamos el Trait MetodosTrait para verificar si la fecha ha pasado (puedes crear el método)
+                if ($this->fechaHaVencido($fechaFinalSuscripcion) && in_array($estadoActual, [1])) {
+                    
+                    // La fecha está vencida, pero el estado no se ha actualizado.
+                    // Llama a la API para actualizar el estado antes de denegar el acceso.
+                    $this->actualizarEstadoSuscripcion($estadoSuscripcionEmpresa->id_suscripcion, 2); // 2 = Inactivo
+                    
+                    alert()->error('Error de acceso', 'La fecha de su suscripción ha expirado. Por favor, renuevela para continuar.');
+                    return redirect()->route('login');
+                }
+
+                // 2. *** VERIFICACIÓN POR ESTADO (Después de la verificación por fecha) ***
+                // Ahora solo verificamos el estado que queda (si es 2, fue marcado por el CRON o la validación anterior)
+                if ($estadoSuscripcionEmpresa->id_estado_suscripcion == 2) { // 2 = Inactivo, 1 = Activo
+                    alert()->error('Error de acceso', 'Su suscripción registrada está inactiva; por favor renuevela para continuar.');
+                    return redirect()->route('login');
+                }
+            }
+
+            // =======================================================================================
 
             // 2. Verificar estado del usuario
             if ($user['id_estado'] == 2) {
@@ -168,6 +209,58 @@ class LoginStore implements Responsable
         {
             alert()->error('Error actualizar clave fallas');
             return redirect()->route('login');
+        }
+    }
+
+    private function consultarEstadoSuscripcionEmpresa($idEmpresa)
+    {
+        try {
+            // Realiza la solicitud POST a la API
+            $client = new Client(['base_uri' => env('BASE_URI')]);
+
+            $response = $client->get('administracion/suscripcion_empresa_estado_login/'.$idEmpresa, [
+                    'query' => []
+                ]
+            );
+            return json_decode($response->getBody()->getContents());
+
+        } catch (Exception $e) {
+            alert()->error('Error consultando la suscripción de la empresa');
+            return redirect()->route('login');
+        }
+    }
+
+    // Método para verificar si la fecha ya pasó
+    private function fechaHaVencido($fecha)
+    {
+        if (empty($fecha)) {
+            return true; // No hay fecha, no es válida
+        }
+        try {
+            // La suscripción vence DESPUÉS del final del día de la fecha_final.
+            // Si hoy es DÍA y fecha_final es DÍA, aún es válida.
+            // Si hoy es DÍA+1, ya venció.
+            return \Carbon\Carbon::parse($fecha)->endOfDay()->isPast();
+        } catch (\Exception $e) {
+            return true; // Si hay error de parseo, asumimos que no es válida
+        }
+    }
+
+    private function actualizarEstadoSuscripcion($idSuscripcion, $nuevoEstado)
+    {
+        try {
+            $client = new Client(['base_uri' => env('BASE_URI')]);
+            // Asumiendo que crearás un nuevo endpoint en tu API para actualizar el estado
+            $client->post('administracion/suscripcion_actualizar_estado_automatico/'.$idSuscripcion, [
+                'json' => [
+                    'id_estado_suscripcion' => $nuevoEstado,
+                    'id_audit' => Session::get('id_usuario')
+                ]
+            ]);
+            // No devolver nada, solo ejecutar la actualización
+        } catch (Exception $e) {
+            Log::error("Error actualizando estado de suscripción: ".$e->getMessage());
+            // No alertamos para no interrumpir el login por un error menor
         }
     }
 }

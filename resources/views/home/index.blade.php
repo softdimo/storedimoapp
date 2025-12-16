@@ -22,17 +22,26 @@
         {{-- ======================================================================= --}}
         {{-- ======================================================================= --}}
 
-        <div class="p-3 d-flex flex-column" style="width: 80%">
-            <div class="text-end">
+        <div class="p-3 d-flex flex-column" style="width: 85%">
+            @if (isset($alertaTrial))
+                <div class="w-100 mt-0 mb-0">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {!! $alertaTrial !!}
+                        {{-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> --}}
+                    </div>
+                </div>
+            @endif
+
+            {{-- <div class="text-end">
                 <a class="nav-link text-blue" href="">
                     <i class="fa fa-question-circle fa-2x" aria-hidden="true" title="Ayuda" style="color: #337AB7"></i>
                 </a>
-            </div>
+            </div> --}}
 
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}
 
-            <h2 class="text-uppercase text-center" style="color: #337AB7">storedimo</h2>
+            <h2 class="text-uppercase text-center" style="color: #337AB7">{{ $nombreEmpresa }}</h2>
 
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}
@@ -56,10 +65,10 @@
                     <div class="d-flex text-white p-2" style="background-color: #3CB371; height: 90%">
                         <div class="col-6">
                             <h2 class="m-0" style="font-size: 3em"><i class="fa fa-shopping-cart"></i> {{ number_format($entradaDiaMes->entradasDia ?? 0, 0, ',', '.') }}</h2>
-                            <h3 class="m-0" style="font-size: 1em">Entradas Día</h3>
+                            <h3 class="m-0" style="font-size: 1em">Compras Día</h3>
                         </div>
                         <div class="col-6 text-end">
-                            <h5 class="m-0">Entradas Mes</h5>
+                            <h5 class="m-0">Compras Mes</h5>
                             <h5 class="m-0">{{ number_format($entradaDiaMes->entradasMes ?? 0, 0, ',', '.') }}</h5>
                         </div>
                     </div>

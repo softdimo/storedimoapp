@@ -35,10 +35,6 @@
                 <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
                     Productos en Stock Mínimo</h5>
 
-                <div id="loader-pdf" style="display:none;" class="text-center mt-3">
-                    <i class="fa fa-spinner fa-spin"></i> Generando PDF, por favor espera...
-                </div>
-
                 <div class="col-12 p-3" id="">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_stock_minimo"
@@ -70,8 +66,13 @@
                     </div>
                 </div>
 
+                <div id="loader-pdf" style="display:none;" class="text-center mt-3">
+                    <i class="fa fa-spinner fa-spin text-danger fw-bold"></i>
+                    <span class="text-danger fw-bold"> Generando PDF, por favor espera...</span>
+                </div>
+
                 <div class="d-flex justify-content-center mt-3 mb-3">
-                    <button class="btn btn-success generar-pdf" style="background-color: #337AB7">
+                    <button class="btn btn-success generar-pdf" style="background-color: #337AB7" {{ count($stockMinimoIndex) == 0 ? 'disabled' : '' }}>
                         <i class="fa fa-file-pdf-o"></i> Reporte stock Mínimo
                     </button>
                 </div>

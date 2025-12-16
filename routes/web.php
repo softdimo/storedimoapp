@@ -49,7 +49,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
     });
 
     // RUTAS PROTEGIDAS
-    Route::middleware(['verificar.sesion'])->group(function () {
+    Route::middleware(['verificar.sesion', 'check.diasplan.alert'])->group(function () {
 
         // HOME
         Route::group(['namespace' => 'App\Http\Controllers\home'], function () {
@@ -225,6 +225,22 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         Route::group(['namespace' => 'App\Http\Controllers\unidades_medida'], function () {
             Route::resource('unidades_medida', 'UnidadesMedidaController');
         });
-    }); // FIN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
+        
+        // ========================================================================
+        // ========================================================================
+
+        // SUSCRIPCIONES
+        Route::group(['namespace' => 'App\Http\Controllers\suscripciones'], function () {
+            Route::resource('suscripciones', 'SuscripcionesController');
+        });
+        
+        // ========================================================================
+        // ========================================================================
+
+        // PLANES
+        Route::group(['namespace' => 'App\Http\Controllers\planes'], function () {
+            Route::resource('planes', 'PlanesController');
+        });
+    }); // F..IN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])
 
