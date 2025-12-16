@@ -99,7 +99,9 @@
                         <h5 class="border rounded-top text-white p-2" style="background-color: #337AB7">Proveedor <span
                                 class="text-danger">*</span></h5>
                         {{-- ============================================================== --}}
-                        {{ Form::select('id_tipo_proveedor', collect(['' => 'Seleccionar...'])->union($proveedores_compras), null, ['class' => 'form-select select2 select2-spaced', 'id' => 'id_tipo_proveedor', 'style' => 'width:90%; margin:auto']) }}
+                        {{ Form::select('id_tipo_proveedor', collect(['' => 'Seleccionar...'])->union($proveedores_compras), 
+                                        null, ['class' => 'form-select select2 select2-spaced',
+                                        'id' => 'id_tipo_proveedor', 'style' => 'width:90%; margin:auto']) }}
 
                         {{-- ============================================================== --}}
 
@@ -597,15 +599,13 @@
     <script src="{{ asset('DataTables/Buttons-2.3.4/js/buttons.html5.min.js') }}"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function()
+        {
             $('.select2').select2({
                 // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });
-
-            // ===================================================================================
-            // ===================================================================================
 
             let idProducto = $('#id_producto').val();
 
@@ -615,9 +615,6 @@
                 $('#p_x_mayor').html(0);
                 $('#btn_add_entrada').prop("disabled", true);
             }
-
-            // ===================================================================================
-            // ===================================================================================
 
             // INICIO - Validación Formulario Creación de Bajas de productos
             $('#id_producto').change(function() {
@@ -673,7 +670,6 @@
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.error("Error:", error);
                             spinner.hide();
                             btn.prop("disabled", false).html(
                                 `<i class="fa fa-plus plus"></i> Agregar`);
@@ -688,6 +684,39 @@
             }); // FIN - Validación Formulario Creación de Bajas de productos $('#id_producto').change(function()
 
             // ===================================================================================
+
+            $('#id_tipo_proveedor').change(function ()
+            {
+                let idProveedor = $('#id_tipo_proveedor').val();
+
+                $.ajax({
+                    async: true,
+                    url: "{{ route('productos_por_proveedor') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        'id_proveedor': idProveedor
+                    },
+                    beforeSend: function()
+                    {
+                        // Desactivar botón
+                        spinner.show();
+                        btn.prop("disabled", true).html(
+                            `<i class="fa fa-spinner fa-spin"></i> Procesando...`);
+                    },
+                    success: function(response)
+                    {
+
+                    },
+                    error: function(xhr, status, error) {
+                        spinner.hide();
+                        btn.prop("disabled", false).html(
+                            `<i class="fa fa-plus plus"></i> Agregar`);
+                    }
+                });
+            });
+
             // ===================================================================================
 
             // Modal modal_registroProducto (Store)
@@ -874,8 +903,6 @@
 
                 let valorCompra = $('#valor_compra').val();
                 let btnRegistarCompra = $('#btn_registar_compra');
-                console.log(valorCompra);
-                
 
                 if (valorCompra == '' || valorCompra == '0' || valorCompra == 0 ) {
                     btnRegistarCompra.prop('disabled', true);

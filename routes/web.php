@@ -162,6 +162,8 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
             Route::post('anular_compra', 'EntradasController@anularCompra')->name('anular_compra');
             Route::post('reporte_compras_pdf', 'EntradasController@reporteComprasPdf')->name('reporte_compras_pdf');
             Route::get('detalle_compras_pdf/{idCompra}', 'EntradasController@detalleComprasPdf')->name('detalle_compras_pdf');
+
+            Route::post('productos_por_proveedor', 'EntradasController@productosPorProveedor')->name('productos_por_proveedor');
         });
 
         // ========================================================================

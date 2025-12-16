@@ -307,7 +307,7 @@ class ExistenciasController extends Controller
                 } else
                 {
                     $vista = new FechasVencimiento();
-                    return $this->validarAccesos($sesion[0], 34, $vista);
+                    return $this->validarAccesos($sesion[0], 79, $vista);
                 }
             }
         } catch (Exception $e)

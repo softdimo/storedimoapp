@@ -79,8 +79,6 @@
                             </ul>
                         </li>
 
-                        {{-- ==================== --}}
-
                         <li class="nav-item dropdown">
                             <a href="#" title="Notificaciones" class="nav-link text-white" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-bell fa-1x"></i>
@@ -100,8 +98,6 @@
                                 </li> --}}
                             </ul>
                         </li>
-
-                        {{-- ==================== --}}
 
                         <li class="nav-item dropdown" data-bs-toggle="modal" data-bs-target="#modal_usuario">
                             <a  href="#" title="Usuario" class="nav-link dropdown-toggle text-white" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="">

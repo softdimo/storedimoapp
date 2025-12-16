@@ -45,7 +45,7 @@
                                     <th>Nombre Producto</th>
                                     <th>Categoría</th>
                                     <th>Descripción</th>
-                                    <th>Fecha Vencimiento</th>
+                                    <th>Fecha Vencimiento (Y-m-d)</th>
                                     <th>Cantidad</th>
                                 </tr>
                             </thead>

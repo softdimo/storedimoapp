@@ -335,7 +335,8 @@ class EntradasController extends Controller
 
     public function productosTraitCompras()
     {
-        try {
+        try
+        {
             $response = $this->clientApi->get('productos_trait_compras', [
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
@@ -367,6 +368,24 @@ class EntradasController extends Controller
         } catch (Exception $e) {
             alert()->error('Error', 'Error obteniendo proveedores');
             return [];
+        }
+    }
+
+    public function productosPorProveedor(Request $request)
+    {
+        try
+        {
+            $response = $this->clientApi->get('productos_por_proveedor', [
+                'query' => [
+                    'empresa_actual' => session('empresa_actual.id_empresa')
+                ]
+            ]);
+
+            return json_decode($response->getBody()->getContents());
+
+        } catch (Exception $e)
+        {
+            return response()->json('error_exception');
         }
     }
 }
