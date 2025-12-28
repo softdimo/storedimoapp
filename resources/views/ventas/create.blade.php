@@ -1,26 +1,15 @@
 @extends('layouts.app')
 @section('title', 'Registrar Ventas')
 
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-
 @section('css')
     {{-- <link rel="stylesheet" href="{{ asset('css/custom.css') }}"> --}}
 @stop
-
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
 
 @section('content')
     <div class="d-flex p-0">
         <div class="p-0 sidebar-container">
             @include('layouts.sidebarmenu')
         </div>
-
-        {{-- ======================================================================= --}}
-        {{-- ======================================================================= --}}
 
         <div class="p-3 content-container">
             <div class="d-flex justify-content-between pe-3 mt-2 mb-2">
@@ -36,7 +25,6 @@
                     </a>
                 </div>
             </div>
-
 
             <div class="modal fade" id="modalAyudaRegistrarVentas" tabindex="-1" role="dialog"
                 aria-labelledby="myModalLabel" data-keyboard ="false" data-backdrop = "static">
@@ -228,7 +216,6 @@
                                                 <th>Opción</th>
                                             </tr>
                                         </thead>
-                                        {{-- ============================== --}}
                                         <tbody>
 
                                         </tbody>
@@ -329,12 +316,6 @@
         </div> {{-- FIN div_contenido 80% --}}
     </div> {{-- FIN div_ppal (sidemarmenu y contenido derecho del 80%) --}}
 
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-
     {{-- INICIO MODAL REGISTRAR PRODUCTO --}}
     <div class="modal fade" id="modal_registroProducto" data-bs-backdrop="static" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="staticBackdropLabel">
@@ -348,9 +329,6 @@
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                {{-- ====================================================== --}}
-                {{-- ====================================================== --}}
 
                 {!! Form::open([
                     'method' => 'POST',
@@ -717,12 +695,8 @@
                 }
             });
 
-            // ===================================================================================
-            // ===================================================================================
-
-            // INICIO DataTable
             let tablaDetalleVenta = $('#tabla_detalle_venta').DataTable({
-                dom: 'lrtip',
+                dom: 'lfrtip',
                 infoEmpty: 'No hay registros',
                 stripe: true,
                 bSort: false,
@@ -730,14 +704,14 @@
                 scrollX: true,
                 pageLength: 10,
                 responsive: true,
+                ordering: false,
+                info: true,
+                paging: true,
+                searching: true,
                 language: {
-                    emptyTable: "No hay productos agregados"
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
                 }
             });
-            // CIERRE DataTable
-
-            // ===================================================================================
-            // ===================================================================================
 
             // INICIO - Función agregar datos de las ventas
             let productosAgregados = [];
@@ -817,44 +791,33 @@
             });
             // FIN - Función agregar datos de las ventas
 
-            // ===================================================================================
-            // ===================================================================================
+            function actualizarDetalleVenta()
+            {
+                tablaDetalleVenta.clear(); // Limpia la tabla
 
-            function actualizarDetalleVenta() {
-                tablaDetalleVenta.clear().draw();
-
-                let detalleHTML = "";
-                let totalVenta = 0;
-
-                productosAgregados.forEach((producto, index) => {
-                    detalleHTML += `
-                        <tr id="row_${index}">
-                            <td class="text-center align-middle">${producto.nombre}</td>
-                            <td class="text-center align-middle">${producto.cantidad}</td>
-                            <td class="text-center align-middle">$${producto.subtotal}</td>
-                            <td class="text-center align-middle">$${producto.ganancia}</td>
-                            <td class="text-center align-middle">
-                                <button type="button" onclick="eliminarProducto(${index})" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-trash text-white"></i>
-                                </button>
-                            </td>
-
-                            <input type="hidden" name="id_producto_venta[]" value="${producto.idProductoVenta}">
-                            <input type="hidden" name="cantidad_venta[]" value="${producto.cantidad}">
-                            <input type="hidden" name="p_unitario_venta[]" value="${producto.pUnitarioVenta}">
-                            <input type="hidden" name="p_detal_venta[]" value="${producto.pDetalVenta}">
-                            <input type="hidden" name="p_mayor_venta[]" value="${producto.pxMayorVenta}">
-                            <input type="hidden" name="subtotal_venta[]" value="${producto.subtotal}">
-                            <input type="hidden" name="ganancia[]" value="${producto.ganancia}">
-                        </tr>
-                    `;
-
-                    totalVenta += producto.subtotal;
+                productosAgregados.forEach((producto, index) =>
+                {
+                    tablaDetalleVenta.row.add([
+                        producto.nombre,
+                        producto.cantidad,
+                        `$${producto.subtotal}`,
+                        `$${producto.ganancia}`,
+                        `
+                        <button type="button" onclick="eliminarProducto(${index})" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash text-white"></i>
+                        </button>
+                        <input type="hidden" name="id_producto_venta[]" value="${producto.idProductoVenta}">
+                        <input type="hidden" name="cantidad_venta[]" value="${producto.cantidad}">
+                        <input type="hidden" name="p_unitario_venta[]" value="${producto.pUnitarioVenta}">
+                        <input type="hidden" name="p_detal_venta[]" value="${producto.pDetalVenta}">
+                        <input type="hidden" name="p_mayor_venta[]" value="${producto.pxMayorVenta}">
+                        <input type="hidden" name="subtotal_venta[]" value="${producto.subtotal}">
+                        <input type="hidden" name="ganancia[]" value="${producto.ganancia}">
+                        `
+                    ]);
                 });
 
-                $('#tabla_detalle_venta tbody').html(detalleHTML);
-                $('#sub_total_venta').val(totalVenta);
-                $('#total_venta').val(totalVenta);
+                tablaDetalleVenta.draw(); // Redibuja la tabla y actualiza el contador
             }
 
             window.eliminarProducto = function(index) {
@@ -879,9 +842,6 @@
                 }
             };
 
-            // ===================================================================================
-            // ===================================================================================
-
             $('#tipo_pago').on('change', function() {
 
                 let tipoPago = $('#tipo_pago').val();
@@ -895,9 +855,6 @@
                 }
             });
 
-            // ===================================================================================
-            // ===================================================================================
-
             let valorVenta = $('#total_venta').val();
             let btnRegistarVenta = $('#btn_registar_venta');
             console.log(valorVenta);
@@ -908,9 +865,6 @@
             } else {
                 btnRegistarVenta.prop('disabled', false);
             }
-
-            // ===================================================================================
-            // ===================================================================================
 
             // loadingIndicatorCrearProductoVenta para cargar gif en el submit
             $(document).on("submit", "form[id^='formCrearProductoVenta']", function(e) {
@@ -927,9 +881,6 @@
                 // Cargar Spinner
                 loadingIndicator.show();
             });
-
-            // ===================================================================================
-            // ===================================================================================
 
             // loadingIndicatorRegistrarVenta para cargar gif en el submit
             $(document).on("submit", "form[id^='formRegistrarVenta']", function(e) {

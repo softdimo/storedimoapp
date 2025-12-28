@@ -32,7 +32,7 @@
 <div class="d-flex justify-content-around mt-3">
     <button type="submit" class="btn btn-success" id="btn_anular_compra_{{ $entrada->id_compra }}"
         style="background-color: #337AB7">
-        <i class="fa fa-file-pdf-o"> Anular</i>
+        <i class="fa fa-trash"> Anular</i>
     </button>
 
     <button type="button" class="btn btn-secondary" id="btn_cancelar_compra_{{ $entrada->id_compra }}"
