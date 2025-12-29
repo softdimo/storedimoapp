@@ -30,7 +30,6 @@
     <!-- intl-tel-input CSS -->
     <link rel="stylesheet" href="{{ asset('css/intlTelInput.min.css') }}">
 
-
     {{-- Sweetalert2 (No necesita jquery para funcionar) --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert2.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/sweetalert2.min.css') }}">
@@ -46,8 +45,7 @@
     <script src="{{ asset('js/select2.min.js') }}"></script>
 
     <script src="{{ asset('js/intlTelInput.min.js') }}"></script>
-    <script src="{{ asset('js/utils.js') }}"></script>
-
+    <script src="{{ asset('js/utils.min.js') }}"></script>
 
     <!-- Datatable -->
     <!-- <script src="{{ asset('js/datatables.min.js') }}"></script> -->

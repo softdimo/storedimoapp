@@ -100,7 +100,8 @@
         <div class="col-12 col-md-3 mt-4">
             <div class="form-group d-flex flex-column">
                 <label for="celular" class="form-label">
-                    Número de Celular <span class="text-danger">*</span>
+                    Número de Celular
+                    <span class="text-danger"> *</span>
                 </label>
                 {!! Form::text('celular', null, [
                     'class' => 'form-control',
@@ -109,6 +110,7 @@
                 ]) !!}
             </div>
         </div>
+        
         {{-- ======================= --}}
 
         <div class="col-12 col-md-3 mt-4">
