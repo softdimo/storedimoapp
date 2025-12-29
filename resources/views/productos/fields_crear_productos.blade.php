@@ -146,21 +146,27 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-3 d-flex align-items-end gap-2">
-            <div class="form-group flex-grow-1">
+        <div class="col-12 col-md-3 mt-3">
+            <div class="form-group">
                 <label for="id_umd" class="form-label">Unidad de Medida <span class="text-danger">*</span></label>
-                {!! Form::select('id_umd', collect(['' => 'Seleccionar...'])->union($umd), null, [
-                    'class' => 'form-select select2',
-                    'id' => 'id_umd',
-                    'required' => 'required',
-                ]) !!}
-            </div>
+                <div class="d-flex">
+                    {!! Form::select('id_umd', collect(['' => 'Seleccionar...'])->union($umd), null, [
+                        'class' => 'form-select select2',
+                        'id' => 'id_umd',
+                        'required' => 'required',
+                    ]) !!}
 
-            <button type="button" class="btn rounded-2 text-white h-90 px-2" style="background-color: #337AB7; margin-bottom: 1px"
-                title="Crear UMD" data-bs-toggle="modal"
-                data-bs-target="#modalCrearUmd">
-                <i class="fa fa-plus plus"></i>
-            </button>
+                    <button
+                        type="button"
+                        class="btn rounded-2 text-white ms-2"
+                        style="background-color: #337AB7; margin-bottom: 1px"
+                        title="Crear UMD" data-bs-toggle="modal"
+                        data-bs-target="#modalCrearUmd"
+                    >
+                    <i class="fa fa-plus plus"></i>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="col-12 col-md-3 mt-3" id="">
