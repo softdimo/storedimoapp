@@ -48,6 +48,7 @@ class ReporteComprasPdf implements Responsable
         // Encabezado de tabla
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(30, 10, utf8_decode("Código"), 1, 0, 'C');
+        $pdf->Cell(50, 10, "Factura Compra", 1, 0, 'C');
         $pdf->Cell(50, 10, "Fecha Compra", 1, 0, 'C');
         $pdf->Cell(50, 10, "Valor Total Compra", 1, 0, 'C');
         $pdf->Cell(60, 10, utf8_decode("Proveedor"), 1, 0, 'C');
@@ -57,6 +58,7 @@ class ReporteComprasPdf implements Responsable
         $pdf->SetFont('Arial', '', 10);
         foreach ($compras as $compra) {
             $pdf->Cell(30, 10, $compra->id_compra, 1, 0, 'C');
+            $pdf->Cell(50, 10, $compra->factura_compra, 1, 0, 'C');
             $pdf->Cell(50, 10, $compra->fecha_compra, 1, 0, 'C');
             $pdf->Cell(50, 10, "$ " . number_format($compra->valor_compra, 2), 1, 0, 'R');
             $pdf->Cell(60, 10, utf8_decode($compra->nombre_proveedor), 1, 0, 'C');

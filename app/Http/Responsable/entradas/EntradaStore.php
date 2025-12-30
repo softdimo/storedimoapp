@@ -23,6 +23,7 @@ class EntradaStore implements Responsable
     public function toResponse($request)
     {
         $idEmpresa = request('id_empresa', null);
+        $facturaCompra = request('factura_compra', null);
         $fechaCompra = now()->format('Y-m-d H:i:s'); // Formato compatible con DATETIME en MySQL
         $valorCompra = request('valor_compra', null);
         $idProveedor = request('id_tipo_proveedor', null);
@@ -38,6 +39,7 @@ class EntradaStore implements Responsable
             $reqEntradaStore = $this->clientApi->post($this->baseUri.'entrada_store', [
                 'json' => [
                     'id_empresa' => $idEmpresa,
+                    'factura_compra' => $facturaCompra,
                     'fecha_compra' => $fechaCompra,
                     'valor_compra' => $valorCompra,
                     'id_proveedor' => $idProveedor,

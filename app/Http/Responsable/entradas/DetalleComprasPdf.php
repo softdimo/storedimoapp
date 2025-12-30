@@ -41,6 +41,7 @@ class DetalleComprasPdf implements Responsable
 
         // Obtener datos generales de la compra (desde el primer elemento del array)
         $idCompra = $compra[0]->id_compra;
+        $facturaCompra = $compra[0]->factura_compra;
         $fechaCompra = $compra[0]->fecha_compra;
         $valorCompra = $compra[0]->valor_compra;
         $idEstado = $compra[0]->id_estado ?? 1; // Si no viene, asumimos estado activo
@@ -80,6 +81,7 @@ class DetalleComprasPdf implements Responsable
         $pdf->Ln();
 
         $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(50, 10, $facturaCompra, 1, 0, 'C');
         $pdf->Cell(50, 10, $fechaCompra, 1, 0, 'C');
         $pdf->Cell(60, 10, utf8_decode($nombreEmpresa ?? 'Anónimo'), 1, 0, 'C');
         $pdf->Cell(40, 10, '$ ' . number_format($valorCompra, 2), 1, 0, 'R');
