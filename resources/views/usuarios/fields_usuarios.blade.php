@@ -207,7 +207,7 @@
                     'class' => 'form-control',
                     'id' => 'fecha_contrato',
                     'required' => 'required',
-                    'onkeydown' => 'return false',
+                    'onkeydown' => 'return false'
                 ]) !!}
             </div>
         </div>
@@ -221,7 +221,7 @@
                 {!! Form::date('fecha_terminacion_contrato', null, [
                     'class' => 'form-control',
                     'id' => 'fecha_terminacion_contrato',
-                    'onkeydown' => 'return false',
+                    'onkeydown' => 'return false'
                 ]) !!}
             </div>
         </div>

@@ -172,7 +172,7 @@
         <div class="col-12 col-md-3 mt-3" id="">
             <div class="form-group d-flex flex-column">
                 <label for="fecha_vencimiento" class="form-label">Fecha Vencimiento</label>
-                {!! Form::date('fecha_vencimiento', null, ['class' => 'form-control', 'id' => 'fecha_vencimiento']) !!}
+                {!! Form::date('fecha_vencimiento', null, ['class' => 'form-control', 'id' => 'fecha_vencimiento','onkeydown' => 'return false']) !!}
             </div>
         </div>
 

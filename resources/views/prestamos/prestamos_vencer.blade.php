@@ -299,7 +299,7 @@
                                             <span class="input-group-text">
                                                 <i class="fa fa-calendar"></i>
                                             </span>
-                                            {!! Form::date('fecha_limite', null, ['class' => 'form-control', 'id' => 'fecha_limite', 'required']) !!}
+                                            {!! Form::date('fecha_limite', null, ['class' => 'form-control', 'id' => 'fecha_limite', 'required','onkeydown' => 'return false']) !!}
                                         </div>
                                     </div>
                                 </div>

@@ -148,7 +148,7 @@
                                     Fecha Inicial <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group" id="calendar_addon_inicial" style="cursor: pointer;">
-                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required']) !!}
+                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required','onkeydown' => 'return false']) !!}
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </span>
@@ -160,7 +160,7 @@
                                     Fecha Final <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group" id="calendar_addon_final" style="cursor: pointer;">
-                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required']) !!}
+                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required','onkeydown' => 'return false']) !!}
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </span>

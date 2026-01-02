@@ -147,7 +147,7 @@
                     <div class="form-group d-flex flex-column">
                         <label for="fechaVencimientoEdit" class=""
                             style="font-size: 15px">Fecha Vencimiento</label>
-                        {{ Form::date('fechaVencimientoEdit', isset($productoEdit) ? $productoEdit->fecha_vencimiento : null, ['class' => 'form-control', 'id' => 'fechaVencimientoEdit']) }}
+                        {{ Form::date('fechaVencimientoEdit', isset($productoEdit) ? $productoEdit->fecha_vencimiento : null, ['class' => 'form-control', 'id' => 'fechaVencimientoEdit','onkeydown' => 'return false']) }}
                     </div>
                 </div>
 
