@@ -54,7 +54,7 @@
                             <thead>
                                 <tr class="header-table text-center align-middle">
                                     {{-- <th>Empresa</th> --}}
-                                    <th>Código Compra</th>
+                                    <th>IdCompra</th>
                                     <th>Valor Total</th>
                                     <th>Factura Compra</th>
                                     <th>Fecha Compra</th>
