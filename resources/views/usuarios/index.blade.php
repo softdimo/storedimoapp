@@ -123,7 +123,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_usuarios"
                             aria-describedby="users-usuarios">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-centerr align-middle">
                                     <th>Nombres</th>
                                     <th>Apellidos</th>
                                     <th>Usuario</th>
@@ -146,7 +146,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($usuarioIndex as $usuario)
-                                    <tr class="text-center">
+                                    <tr class="text-centerr align-middle">
                                         <td>{{ $usuario->nombre_usuario }}</td>
                                         <td>{{ $usuario->apellido_usuario }}</td>
                                         <td>{{ $usuario->usuario }}</td>

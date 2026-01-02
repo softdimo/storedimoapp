@@ -109,7 +109,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_empresas"
                             aria-describedby="empresas">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-centerr align-middle">
                                     <th>Nit Empresa</th>
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
@@ -129,7 +129,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($empresas as $empresa)
-                                    <tr class="text-center">
+                                    <tr class="text-centerr align-middle">
                                         <td>{{ $empresa->nit_empresa }}</td>
                                         <td>{{ $empresa->nombre_empresa }}</td>
                                         <td>{{ $empresa->telefono_empresa }}</td>
