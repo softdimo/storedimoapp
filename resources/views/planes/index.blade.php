@@ -40,7 +40,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_planes"
                             aria-describedby="users-usuarios">
                             <thead>
-                                <tr class="header-table text-centerr align-middle">
+                                <tr class="header-table text-center align-middle">
                                     <th>Id Plan</th>
                                     <th>Plan</th>
                                     <th>Valor Mensual</th>
@@ -55,7 +55,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($planesIndex as $plan)
-                                    <tr class="text-centerr align-middle">
+                                    <tr class="text-center align-middle">
                                         <td>{{ $plan->id_plan }}</td>
                                         <td>{{ $plan->nombre_plan }}</td>
                                         <td>{{ $plan->valor_mensual }}</td>

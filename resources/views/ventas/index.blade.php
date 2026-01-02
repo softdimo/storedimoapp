@@ -63,7 +63,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_ventas"
                             aria-describedby="ventas">
                             <thead>
-                                <tr class="header-table text-centerr align-middle">
+                                <tr class="header-table text-center align-middle">
                                     <th>Código</th>
                                     <th>Total Venta</th>
                                     <th>Ganancia</th>

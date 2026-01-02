@@ -37,7 +37,7 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_umd" aria-describedby="umd">
                             <thead>
-                                <tr class="header-table text-centerr align-middle">
+                                <tr class="header-table text-center align-middle">
                                     <th class="align-middle">Id</th>
                                     <th class="align-middle">Descripción</th>
                                     <th class="align-middle">Abreviatura</th>
@@ -48,7 +48,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($unidadesMedida as $unidadMedida)
-                                    <tr class="text-centerr align-middle">
+                                    <tr class="text-center align-middle">
                                         <td class="align-middle">{{ $unidadMedida->id }}</td>
                                         <td class="align-middle">{{ $unidadMedida->descripcion }}</td>
                                         <td class="align-middle">{{ $unidadMedida->abreviatura }}</td>

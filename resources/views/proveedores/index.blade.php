@@ -110,7 +110,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_proveedores"
                             aria-describedby="proveedores">
                             <thead>
-                                <tr class="header-table text-centerr align-middle">
+                                <tr class="header-table text-center align-middle">
                                     <th>Tipo Proveedor</th>
                                     <th>Empresa</th>
                                     <th>Nit empresa</th>
@@ -125,7 +125,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($resProveedoresIndex as $proveedor)
-                                    <tr class="text-centerr align-middle">
+                                    <tr class="text-center align-middle">
                                         <td>{{ $proveedor->tipo_persona }}</td>
                                         <td>{{ $proveedor->proveedor_juridico }}</td>
                                         <td>{{ $proveedor->nit_proveedor }}</td>
