@@ -99,16 +99,32 @@
                         <h5 class="border rounded-top text-white p-2" style="background-color: #337AB7">Proveedor <span
                                 class="text-danger">*</span></h5>
                         {{-- ============================================================== --}}
-                        {{ Form::select('id_tipo_proveedor', collect(['' => 'Seleccionar...'])->union($proveedores_compras), 
-                                        null, ['class' => 'form-select select2 select2-spaced',
-                                        'id' => 'id_tipo_proveedor', 'style' => 'width:90%; margin:auto']) }}
+
+                        {{ Form::select('id_tipo_proveedor', collect(['' => 'Seleccionar...'])
+                            ->union($proveedores_compras), null,
+                                [
+                                    'class' => 'form-select select2 select2-spaced',
+                                    'id' => 'id_tipo_proveedor', 'style' => 'width:90%; margin:auto'
+                                ]
+                            )
+                        }}
+
+                        {{-- ======================== --}}
+
+                        <div class="form-group mt-3" style="width:90%; margin:auto">
+                            <label for="factura_compra" class="form-label">Factura Compra<span class="text-danger">*</span></label>
+                            {!! Form::text('factura_compra', null, ['class' => 'form-control', 'id' => 'factura_compra']) !!}
+                        </div>
 
                         {{-- ============================================================== --}}
 
-                        <h5 class="border rounded-top text-white p-2 mt-3" style="background-color: #337AB7">Producto 
+                        <h5 class="border rounded-top text-white p-2 mt-3" style="background-color: #337AB7">
+                            Producto
                             <span class="text-danger">*</span>
                         </h5>
+
                         {{-- ============================================================== --}}
+
                         <div class="pt-3 pe-2 pb-3 ps-3 d-flex justify-content-between" id="" style="">
                             <div class="d-flex justify-content-center w-100">
                                 {{ Form::select('id_producto', collect(['' => 'Seleccionar...'])->union($productos_compras), null, ['class' => 'form-select select2', 'id' => 'id_producto']) }}
@@ -122,7 +138,9 @@
                                 </button>
                             </div> --}}
                         </div>
+
                         {{-- ============================================================== --}}
+
                         <div class="row p-3">
                             <div class="col-md-4 text-center">
                                 <strong for="form-control fw-bold">Precio Unitario</strong>
@@ -170,7 +188,9 @@
                             </button>
                         </div>
                     </div>
+
                     {{-- ============================================================== --}}
+
                     <div class="w-100-div w-48 mt-5 mt-md-0" style="border: solid 1px #337AB7; border-radius: 5px;">
                         <h5 class="border rounded-top text-white p-2 m-0" style="background-color: #337AB7">Detalle
                             Compras: <span id="proveedorCompra"></span></h5>
@@ -607,6 +627,10 @@
                 width: '100%'
             });
 
+            $('.select2').change(function() {
+                $(this).select2('close');
+            });
+
             let idProducto = $('#id_producto').val();
 
             if (idProducto == '') {
@@ -847,6 +871,8 @@
 
                 let spinner = $("#loadingIndicatorAgregarCompra");
 
+                let facturaCompra = $('#factura_compra').val();
+
                 let idTipoProveedor = $('#id_tipo_proveedor').val();
                 let tipoProveedor = $('#id_tipo_proveedor option:selected').text();
 
@@ -856,7 +882,7 @@
                 let pUnitario = parseFloat($('#p_unitario').text());
                 let cantidad = parseInt($('#cantidad').val());
 
-                if (!idTipoProveedor || !idProducto || !cantidad) {
+                if (!idTipoProveedor || !idProducto || !cantidad || !facturaCompra) {
                     Swal.fire(
                         'Cuidado!',
                         'Todos los campos son obligatorios!',

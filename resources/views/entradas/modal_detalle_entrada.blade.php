@@ -2,7 +2,7 @@
 
 <div class="rounded-top" style="border: solid 1px #337AB7;">
     <div class="rounded-top text-white text-center" style="background-color: #337AB7; border: solid 1px #337AB7;">
-        <h5>Detalle Compra Código: {{ $entrada->id_compra }}</h5>
+        <h5 class="m-1">Detalle Compra Código: {{ $entrada->id_compra }}</h5>
     </div>
 
     <div class="mt-3 mb-0 ps-3">
