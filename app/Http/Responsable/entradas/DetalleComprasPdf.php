@@ -58,6 +58,7 @@ class DetalleComprasPdf implements Responsable
 
         // Código de la compra
         $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(0, 10, utf8_decode('Factura Compra: ') . $facturaCompra, 0, 1, 'C');
         $pdf->Cell(0, 10, utf8_decode('Detalle de Compra Código: ') . $idCompra, 0, 1, 'C');
         $pdf->Ln(3);
 
@@ -81,7 +82,6 @@ class DetalleComprasPdf implements Responsable
         $pdf->Ln();
 
         $pdf->SetFont('Arial', '', 12);
-        $pdf->Cell(50, 10, $facturaCompra, 1, 0, 'C');
         $pdf->Cell(50, 10, $fechaCompra, 1, 0, 'C');
         $pdf->Cell(60, 10, utf8_decode($nombreEmpresa ?? 'Anónimo'), 1, 0, 'C');
         $pdf->Cell(40, 10, '$ ' . number_format($valorCompra, 2), 1, 0, 'R');
