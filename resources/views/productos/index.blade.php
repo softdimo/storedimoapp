@@ -104,7 +104,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_productos"
                             aria-describedby="productos">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-center align-middle">
                                     {{-- <th>Código</th> --}}
                                     <th class="align-middle">Referencia</th>
                                     <th class="align-middle">Imagen</th>
@@ -124,7 +124,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($productos as $producto)
-                                    <tr class="text-center">
+                                    <tr class="text-center align-middle">
                                         {{-- <td>{{ $producto->id_producto }}</td> --}}
                                         <td class="align-middle">{{ $producto->referencia }}</td>
 

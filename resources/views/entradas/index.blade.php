@@ -52,11 +52,12 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_entradas"
                             aria-describedby="entradas">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-center align-middle">
                                     {{-- <th>Empresa</th> --}}
-                                    <th>Código Compra</th>
+                                    <th>IdCompra</th>
                                     <th>Valor Total</th>
-                                    <th>Fecha Registro Compra</th>
+                                    <th>Factura Compra</th>
+                                    <th>Fecha Compra</th>
                                     <th>Identificación Proveedor</th>
                                     <th>Nombre Proveedor</th>
                                     <th>Comprador</th>
@@ -66,10 +67,11 @@
                             </thead>
                             <tbody>
                                 @foreach ($entradas as $entrada)
-                                    <tr class="text-center">
+                                    <tr class="text-center align-middle">
                                         {{-- <td>{{$entrada->empresa}}</td> --}}
                                         <td>{{ $entrada->id_compra }}</td>
                                         <td class="text-end">{{ $entrada->valor_compra }}</td>
+                                        <td>{{ $entrada->factura_compra }}</td>
                                         <td>{{ $entrada->fecha_compra }}</td>
 
                                         @if ($entrada->nit_proveedor)

@@ -144,7 +144,7 @@
                 <label for="id_tipo_bd" class="form-label">Db Connection
                     <span class="text-danger">*</span>
                 </label>
-                {!! Form::select('id_tipo_bd', collect(['' => 'Seleccionar...'])->union($tipos_bd), old('id_tipo_bd', isset($empresa) ? $empresa->id_tipo_bd : null), [
+                {!! Form::select('id_tipo_bd', collect(['' => 'Seleccionar...'])->union($tipos_bd), old('id_tipo_bd', isset($empresa) ? $empresa->id_tipo_bd : 1), [
                     'class' => 'form-select',
                     'id' => 'id_tipo_bd',
                     'required' => 'required',

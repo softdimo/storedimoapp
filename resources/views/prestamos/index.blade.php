@@ -132,7 +132,7 @@
                                     Fecha Inicial <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group" id="calendar_addon_inicial" style="cursor: pointer;">
-                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required']) !!}
+                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required','onkeydown' => 'return false']) !!}
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </span>
@@ -144,7 +144,7 @@
                                     Fecha Final <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group" id="calendar_addon_final" style="cursor: pointer;">
-                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required']) !!}
+                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required','onkeydown' => 'return false','onkeydown' => 'return false']) !!}
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </span>
@@ -360,7 +360,7 @@
                                 <div class="row m-0">
                                     <div class="col-12 col-md-6">
                                         <label for="valor_prestamo" class="fw-bold" style="font-size: 12px">Fecha Límite <span class="text-danger">*</span></label>
-                                        {!! Form::date('fecha_limite', isset($prestamo) ? $prestamo->fecha_limite : null, ['class' => 'form-control', 'id' => 'fecha_limite', 'required']) !!}
+                                        {!! Form::date('fecha_limite', isset($prestamo) ? $prestamo->fecha_limite : null, ['class' => 'form-control', 'id' => 'fecha_limite', 'required','onkeydown' => 'return false']) !!}
                                     </div>
                                 </div>
                             </div> <!-- FIN modal-body -->

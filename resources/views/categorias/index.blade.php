@@ -163,7 +163,7 @@
                             <table class="table table-striped table-bordered w-100 mb-0" id="tbl_categorias"
                                 aria-describedby="categorias">
                                 <thead>
-                                    <tr class="header-table text-center">
+                                    <tr class="header-table text-center align-middle">
                                         <th>Código</th>
                                         <th>Nombre Categoría</th>
                                         <th>Estado</th>
@@ -173,7 +173,7 @@
                                 {{-- ============================== --}}
                                 <tbody>
                                     @foreach ($categorias as $categoria)
-                                        <tr class="text-center">
+                                        <tr class="text-center align-middle">
                                             <td>{{ $categoria->id_categoria }}</td>
                                             <td>{{ $categoria->categoria }}</td>
                                             <td>{{ $categoria->estado }}</td>

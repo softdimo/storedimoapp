@@ -2,10 +2,11 @@
 
 <div class="rounded-top" style="border: solid 1px #337AB7;">
     <div class="rounded-top text-white text-center" style="background-color: #337AB7; border: solid 1px #337AB7;">
-        <h5>Detalle de Compra Código: {{ $entrada->id_compra }}</h5>
+        <h5 class="m-1">Detalle Compra Código: {{ $entrada->id_compra }}</h5>
     </div>
 
     <div class="mt-3 mb-0 ps-3">
+        <h5>Factura: {{ $entrada->factura_compra }}</h5>
         <h6>Compra realizada por: <span style="color: #337AB7">{{ $entrada->nombres_usuario }}</span></h6>
     </div>
 
@@ -15,7 +16,8 @@
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered w-100 mb-0" aria-describedby="entradas">
                         <thead>
-                            <tr class="header-table text-center">
+                            <tr class="header-table text-center align-middle">
+                                {{-- <th>Factura</th> --}}
                                 <th>Fecha Compra</th>
                                 {{-- <th>Empresa</th> --}}
                                 <th>Id Proveedor</th>
@@ -24,7 +26,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="text-center">
+                            <tr class="text-center align-middle">
+                                {{-- <td>{{ $entrada->factura_compra }}</td> --}}
                                 <td>{{ $entrada->fecha_compra }}</td>
                                 @if ($entrada->nit_proveedor)
                                     <td>{{ $entrada->nit_proveedor }}</td>

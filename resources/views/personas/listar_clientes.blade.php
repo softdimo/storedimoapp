@@ -109,7 +109,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_clientes"
                             aria-describedby="clientes">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-center align-middle">
                                     <th>Tipo Cliente</th>
                                     <th>Nombres</th>
                                     <th>Apellidos</th>
@@ -123,7 +123,7 @@
                             <tbody>
                                 @foreach ($personaIndex as $persona)
                                     @if ($persona->id_tipo_persona == 5 || $persona->id_tipo_persona == 6)
-                                        <tr class="text-center">
+                                        <tr class="text-center align-middle">
                                             <td>{{ $persona->tipo_persona }}</td>
                                             <td>{{ $persona->nombres_persona }}</td>
                                             <td>{{ $persona->apellidos_persona }}</td>

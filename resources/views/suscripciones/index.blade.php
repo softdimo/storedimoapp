@@ -41,7 +41,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_suscripciones"
                             aria-describedby="users-usuarios">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-center align-middle">
                                     <th>Id</th>
                                     <th>Empresa</th>
                                     <th>Plan</th>
@@ -60,7 +60,7 @@
                             
                             <tbody>
                                 @foreach ($suscripcionesIndex as $suscripcion)
-                                    <tr class="text-center">
+                                    <tr class="text-center align-middle">
                                         <td>{{ $suscripcion->id_suscripcion }}</td>
                                         <td>{{ $suscripcion->nombre_empresa }}</td>
                                         <td>{{ $suscripcion->nombre_plan }}</td>

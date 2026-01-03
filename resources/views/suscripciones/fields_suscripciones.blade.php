@@ -143,7 +143,7 @@
                 'class' => 'form-control',
                 'id' => 'fecha_inicial',
                 'required' => 'required',
-                // 'onkeydown' => 'return false',
+                'onkeydown' => 'return false'
             ]) !!}
         </div>
     </div>
@@ -157,7 +157,7 @@
                 'class' => 'form-control',
                 'id' => 'fecha_final',
                 'required' => 'required'
-                // 'onkeydown' => 'return false',
+                'onkeydown' => 'return false'
             ]) !!}
         </div>
     </div>
@@ -180,7 +180,7 @@
     <div class="col-12 col-md-3 mt-3">
         <div class="form-group d-flex flex-column">
             <label for="fecha_cancelacion" class="form-label">Fecha Cancelación</label>
-            {!! Form::date('fecha_cancelacion', old('fecha_cancelacion', isset($suscripcionEdit) ? $suscripcionEdit->fecha_cancelacion : null), ['class' => 'form-control', 'id' => 'fecha_cancelacion']) !!}
+            {!! Form::date('fecha_cancelacion', old('fecha_cancelacion', isset($suscripcionEdit) ? $suscripcionEdit->fecha_cancelacion : null), ['class' => 'form-control', 'id' => 'fecha_cancelacion','onkeydown' => 'return false']) !!}
         </div>
     </div>
 

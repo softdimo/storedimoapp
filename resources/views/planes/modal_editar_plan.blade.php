@@ -230,6 +230,7 @@
                     'class' => 'form-control',
                     'id' => 'fecha_contrato',
                     'required' => 'required',
+                    'onkeydown' => 'return false',
                 ]) !!}
             </div>
         </div>
@@ -242,6 +243,7 @@
                 {!! Form::date('fecha_terminacion_contrato', isset($usuario) ? $usuario->fecha_terminacion_contrato : null, [
                     'class' => 'form-control',
                     'id' => 'fecha_terminacion_contrato_' . $usuario->id_usuario,
+                    'onkeydown' => 'return false',
                 ]) !!}
             </div>
         </div>

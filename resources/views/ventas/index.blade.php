@@ -63,7 +63,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_ventas"
                             aria-describedby="ventas">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-center align-middle">
                                     <th>Código</th>
                                     <th>Total Venta</th>
                                     <th>Ganancia</th>
@@ -148,7 +148,7 @@
                                     Fecha Inicial <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group" id="calendar_addon_inicial" style="cursor: pointer;">
-                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required']) !!}
+                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required','onkeydown' => 'return false']) !!}
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </span>
@@ -160,7 +160,7 @@
                                     Fecha Final <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group" id="calendar_addon_final" style="cursor: pointer;">
-                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required']) !!}
+                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required','onkeydown' => 'return false']) !!}
                                     <span class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </span>

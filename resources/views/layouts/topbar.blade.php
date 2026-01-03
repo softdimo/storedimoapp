@@ -153,14 +153,14 @@
                         <div class="col-12 col-md-6">
                             <div class="form-group d-flex flex-column">
                                 <label for="fecha_inicial" class="">Fecha Inicial<span class="textx-danger">*</span></label>
-                                {{ Form::date('fecha_inicial', null, ['class'=>'form-control', 'id'=>'fecha_inicial']) }}
+                                {{ Form::date('fecha_inicial', null, ['class'=>'form-control', 'id'=>'fecha_inicial','onkeydown' => 'return false']) }}
                             </div>
                         </div>
 
                         <div class="col-12 col-md-6 form-group d-flex flex-column">
                             <div class="form-group d-flex flex-column">
                                 <label for="fecha_final" class="">Fecha Final<span class="textx-danger">*</span></label>
-                                {{ Form::date('fecha_final', null,['class' => 'form-control', 'id' => 'fecha_final']) }}
+                                {{ Form::date('fecha_final', null,['class' => 'form-control', 'id' => 'fecha_final','onkeydown' => 'return false']) }}
                             </div>
                         </div>
                     </div>

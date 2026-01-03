@@ -115,7 +115,7 @@
                         <table class="table table-striped table-bordered w-100 mb-0" id="tbl_bajas"
                             aria-describedby="bajas">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="header-table text-center align-middle">
                                     <th>Código Bajas</th>
                                     <th>Empleado Responsable Baja</th>
                                     <th>Fecha Baja</th>
@@ -126,7 +126,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($bajasIndex as $baja)
-                                    <tr class="text-center">
+                                    <tr class="text-center align-middle">
                                         <td>{{ $baja->id_baja }}</td>
                                         <td>{{ $baja->nombres_usuario }}</td>
                                         <td>{{ $baja->fecha_baja }}</td>
