@@ -161,7 +161,13 @@
                                         <td>{{ $usuario->direccion }}</td>
                                         <td>{{ $usuario->genero }}</td>
                                         <td>{{ $usuario->fecha_contrato }}</td>
-                                        <td>{{ $usuario->estado }}</td>
+                                        <td>
+                                            @if($usuario->id_estado == 1)
+                                                <span class="badge text-bg-success">{{ $usuario->estado }}</span>
+                                            @else
+                                                <span class="badge text-bg-danger">{{ $usuario->estado }}</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $usuario->fecha_terminacion_contrato }}</td>
                                         <td>
                                             <button type="button"

@@ -200,19 +200,28 @@ class EntradasController extends Controller
     public function anularCompra(Request $request)
     {
         $idCompra = request('id_compra', null);
+        $motivoAnulacion = request('motivo', null);
 
         try
         {
+            if(is_null($motivoAnulacion) || $motivoAnulacion == "")
+            {
+                alert()->error('Error', 'El motivo de anulación es obligatorio');
+                return redirect()->to(route('entradas.index'));
+            }
+
             $reqAnularCompra = $this->clientApi->post($this->baseUri.'anular_compra/'.$idCompra, [
                 'json' => [
                     'id_audit' => session('id_usuario'),
-                    'empresa_actual' => session('empresa_actual.id_empresa')]
+                    'empresa_actual' => session('empresa_actual.id_empresa'),
+                    'motivo' => $motivoAnulacion
+                ]
             ]);
             $resAnularCompra = json_decode($reqAnularCompra->getBody()->getContents());
 
             if(isset($resAnularCompra) && !empty($resAnularCompra) && !is_null($resAnularCompra))
             {
-                alert()->success('Proceso Exitoso', 'Estado compra cambiado satisfactoriamente');
+                alert()->success('Proceso Exitoso', 'La compra ha sido anulada satisfactoriamente');
                 return redirect()->to(route('entradas.index'));
             }
         } catch (Exception $e)

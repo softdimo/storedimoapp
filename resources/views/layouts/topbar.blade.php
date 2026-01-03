@@ -58,10 +58,9 @@
                                 </li> -->
 
                                 @if(!is_null(session('sesion_iniciada')) && session('id_rol') == 3)
-                                
                                 <!-- Submenú de Permisos -->
-                                <li class="dropdown-submenu">
-                                    <a class="dropdown-item dropdown-toggle text-dark hover-li" href="#">Roles y Permisos</a>
+                                    <li class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle text-dark hover-li" href="#">Roles y Permisos</a>
                                         <ul class="dropdown-menu bg-white">
                                             <li data-bs-toggle="modal" data-bs-target="#modal_crear_permiso">
                                                 <a href="#" class="dropdown-item text-dark hover-li">Creación de Permisos</a>
@@ -74,7 +73,6 @@
                                             </li>
                                         </ul>
                                     </li>
-
                                 @endif
                             </ul>
                         </li>

@@ -11,7 +11,7 @@
                  ->where('model_has_permissions.model_id', '=', $user_id)
                  ->where('model_has_permissions.model_type', '=', $user_type);
         })
-        ->where('menu.estado_id', 1)
+        ->where('menu.estado', 1)
         ->select('menu.*')
         ->distinct()
         ->orderBy('menu.id_menu')

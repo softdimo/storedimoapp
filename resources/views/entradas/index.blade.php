@@ -60,6 +60,7 @@
                                     <th>Identificación Proveedor</th>
                                     <th>Nombre Proveedor</th>
                                     <th>Comprador</th>
+                                    <th>Estado Compra</th>
                                     <th>Opciones</th>
                                 </tr>
                             </thead>
@@ -84,6 +85,14 @@
                                         @endif
 
                                         <td>{{ $entrada->nombres_usuario }}</td>
+                                        
+                                        <td>
+                                            @if ($entrada->id_estado == 1)
+                                                <span class="badge text-bg-success">Exitosa</span>
+                                            @else
+                                                <span class="badge text-bg-danger">Anulada</span>
+                                            @endif
+                                        </td>
 
                                         @if ($entrada->id_estado == 1)
                                             <td>
@@ -378,7 +387,8 @@
             // =========================================================================
             // =========================================================================
 
-            $(document).on('click', '.btn-anular-entrada', function() {
+            $(document).on('click', '.btn-anular-entrada', function()
+            {
                 const idEntrada = $(this).data('id');
 
                 $.ajax({
