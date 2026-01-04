@@ -20,8 +20,6 @@ class DetalleEntrada implements Responsable
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
-
-            // ==============================================================
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'entrada/'. $this->idEntrada, [
@@ -29,6 +27,7 @@ class DetalleEntrada implements Responsable
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
             ]);
+
             $entrada = json_decode($peticion->getBody()->getContents());
 
             // Obtener detalles de cada compra
