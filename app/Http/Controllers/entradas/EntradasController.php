@@ -12,7 +12,7 @@ use App\Http\Responsable\entradas\DetalleEntrada;
 use App\Http\Responsable\entradas\EntradaStore;
 use App\Http\Responsable\entradas\ReporteComprasPdf;
 use App\Http\Responsable\entradas\DetalleComprasPdf;
-
+use Carbon\Carbon;
 
 class EntradasController extends Controller
 {
@@ -214,9 +214,12 @@ class EntradasController extends Controller
                 'json' => [
                     'id_audit' => session('id_usuario'),
                     'empresa_actual' => session('empresa_actual.id_empresa'),
-                    'motivo' => $motivoAnulacion
+                    'motivo' => $motivoAnulacion,
+                    'fechaAnulacion' => Carbon::now()->timestamp,
+                    'usuarioAnulacion' => session('id_usuario')
                 ]
             ]);
+
             $resAnularCompra = json_decode($reqAnularCompra->getBody()->getContents());
 
             if(isset($resAnularCompra) && !empty($resAnularCompra) && !is_null($resAnularCompra))
