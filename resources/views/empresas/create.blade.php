@@ -159,8 +159,7 @@
                     "div[id^='loadingIndicatorEmpresaStore']"); // Busca el GIF del form actual
 
                 // Dessactivar Botones
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Mostrar Spinner
                 loadingIndicator.show();
@@ -230,6 +229,41 @@
             });
             //================================
             // Fin de validación de nit de empresa
+            //================================
+
+            // =========================================================================
+
+            //================================
+            // Inicio validación correo
+            //================================
+
+            $('#email_empresa').blur(function() {
+                let emailEmpresa = $('#email_empresa').val();
+
+                $.ajax({
+                    url: "{{ route('validar_correo_empresa') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        'email_empresa': emailEmpresa
+                    },
+                    success: function(respuesta) {
+                        console.log(respuesta);
+                        
+
+                        // if (respuesta.cantidad == null || respuesta.cantidad < cantidad) {
+                        //     Swal.fire('Cuidado!',
+                        //         'Este correo ya está registrado',
+                        //         'warning')
+                        //     $('#email_empresa').val('');
+                        // }
+                    }
+                });
+            });
+
+            //================================
+            // Fin validación correo
             //================================
         }); // FIN document.ready
 

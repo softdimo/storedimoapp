@@ -159,7 +159,6 @@
                                                 <i class="fa fa-pencil-square-o"></i>
                                             </a>
                                         </td>
-
                                     </tr>
                                 @endforeach
                             </tbody>
