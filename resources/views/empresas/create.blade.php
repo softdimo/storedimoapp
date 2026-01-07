@@ -250,14 +250,19 @@
                     },
                     success: function(respuesta) {
                         console.log(respuesta);
-                        
 
-                        // if (respuesta.cantidad == null || respuesta.cantidad < cantidad) {
-                        //     Swal.fire('Cuidado!',
-                        //         'Este correo ya está registrado',
-                        //         'warning')
-                        //     $('#email_empresa').val('');
-                        // }
+                        // Validamos si el objeto respuesta tiene datos (no está vacío)
+                        // y si el email coincide con el que escribió el usuario
+                        if (respuesta && respuesta.email_empresa == emailEmpresa) {
+                            Swal.fire('Cuidado!',
+                                'Este correo ya está registrado',
+                                'warning'
+                            )
+                            $('#email_empresa').val('');
+                        }
+                    },
+                    error: function(error) {
+                        console.error("Error en la validación:", error);
                     }
                 });
             });
