@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     window.initIntlPhone = function (selector) {
         const input = document.querySelector(selector);
+        const errorMsg = document.querySelector(`${selector}-error`); // Busca el span basado en el id del input
 
         if (!input) return;
 
@@ -17,6 +18,34 @@ document.addEventListener("DOMContentLoaded", function () {
             separateDialCode: true,
             utilsScript: "/js/utils.js", // ojo: asegúrate que existe en public/js
         });
+
+        // Función auxiliar para mostrar/ocultar errores
+        const validate = () => {
+            input.classList.remove("is-invalid");
+            errorMsg.classList.add("d-none");
+            errorMsg.innerHTML = "";
+
+            if (input.value.trim()) {
+                if (!iti.isValidNumber()) {
+                    input.classList.add("is-invalid");
+                    errorMsg.innerHTML = "Número de celular no válido para el país seleccionado.";
+                    errorMsg.classList.remove("d-none");
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        // Bloquear letras en tiempo real
+        input.addEventListener("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            // Opcional: Validar mientras escribe o limpiar el error al escribir
+            errorMsg.classList.add("d-none");
+            input.classList.remove("is-invalid");
+        });
+
+        // Validar al salir del campo (Blur)
+        input.addEventListener("blur", validate);
 
         // Longitudes por país (ISO2 -> [min, max])
         const phoneLengths = {
@@ -37,15 +66,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Cuando cambie el país
         input.addEventListener("countrychange", function () {
-            const countryCode = iti.getSelectedCountryData().iso2;
-            setInputLength(countryCode);
-            input.value = ""; // opcional: limpiar
+            setInputLength(iti.getSelectedCountryData().iso2);
+            input.value = "";
+            validate(); // Limpia errores previos
         });
 
         // Antes de enviar el formulario -> guardamos en formato internacional
         if (input.form) {
-            input.form.addEventListener("submit", function () {
-                input.value = iti.getNumber();
+            input.form.addEventListener("submit", function (e) {
+                if (!validate()) {
+                    e.preventDefault();
+                    input.focus(); // Lleva al usuario al campo con error
+                } else {
+                    // Si todo está bien, guardamos el formato completo (+57310...)
+                    input.value = iti.getNumber();
+                }
             });
         }
     };
@@ -55,32 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // ====================
 // Validación Teléfono Fijo
 // ====================
-// function initPhoneValidation(inputSelector, errorSelector) {
-//     $(document).on("blur", inputSelector, function() {
-//         const value = $(this).val().trim();
-//         const errorMsg = $(errorSelector);
-
-//         errorMsg.text("").addClass("d-none");
-
-//         if (!value) return;
-
-//         if (!/^\d*$/.test(value)) {
-//             errorMsg.text("Solo se permiten números.").removeClass("d-none");
-//         } else if (!value.startsWith("60")) {
-//             errorMsg.text("El número debe iniciar con 60.").removeClass("d-none");
-//         } else if (value.length < 7 || value.length > 10) {
-//             errorMsg.text("El número debe tener entre 7 y 10 dígitos.").removeClass("d-none");
-//         }
-
-//         if (!errorMsg.hasClass("d-none")) {
-//             setTimeout(() => {
-//                 errorMsg.addClass("d-none");
-//                 $(this).val(""); //Se limpia el campo del teléfono cuando hay error
-//             }, 4000);
-//         }
-//     });
-// }
-
 function initPhoneValidation(inputSelector, errorSelector) {
     // 1. Bloqueo de entrada en tiempo real (solo números)
     $(document).on("input", inputSelector, function() {
@@ -219,6 +228,3 @@ function initEmailValidation(inputSelector, errorSelector) {
         }
     });
 }
-
-
-

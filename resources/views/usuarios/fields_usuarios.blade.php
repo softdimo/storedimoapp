@@ -107,7 +107,10 @@
                     'class' => 'form-control',
                     'id' => 'celular',
                     'required' => 'required',
+                    'inputmode' => 'numeric'
                 ]) !!}
+                {{-- <span id="celular-error" class="text-danger d-none mt-1"></span> --}}
+                <span id="celular-error" class="text-danger d-none mt-1" style="font-size: 0.85rem;"></span>
             </div>
         </div>
         
