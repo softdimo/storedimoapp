@@ -55,9 +55,9 @@
                     'class' => 'form-control',
                     'id' => 'nombre_usuario',
                     'required' => 'required',
-                    'pattern' => '^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]{2,50}$',
-                    'title' => 'Solo letras y espacios. Mínimo 2 y máximo 50 caracteres.',
-                    'maxlength' => 50,
+                    'pattern' => '^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]{2,30}$',
+                    'title' => 'Solo letras y espacios. Mínimo 2 y máximo 30 caracteres.',
+                    'maxlength' => 30,
                 ]) !!}
             </div>
         </div>
@@ -71,9 +71,9 @@
                     'class' => 'form-control',
                     'id' => 'apellido_usuario',
                     'required' => 'required',
-                    'pattern' => '^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]{2,50}$',
-                    'title' => 'Solo letras y espacios. Mínimo 2 y máximo 50 caracteres.',
-                    'maxlength' => 50,
+                    'pattern' => '^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]{2,30}$',
+                    'title' => 'Solo letras y espacios. Mínimo 2 y máximo 30 caracteres.',
+                    'maxlength' => 30,
                 ]) !!}
             </div>
         </div>
