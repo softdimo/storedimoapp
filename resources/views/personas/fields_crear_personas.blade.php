@@ -109,6 +109,7 @@
                         'maxlength' => 15,
                         'minlength' => 7,
                     ]) !!}
+                    <span id="celular-error" class="text-danger d-none mt-1" style="font-size: 0.85rem;"></span>
                 </div>
             </div>
 
