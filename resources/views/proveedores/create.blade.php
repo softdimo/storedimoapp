@@ -110,7 +110,7 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2({
-                placeholder: "Seleccionar...",
+                // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });
@@ -121,7 +121,9 @@
             // Inicializar función de validación de número de teléfono
             initPhoneValidation("#numero_telefono", "#telefono-error");
 
+            $('#div_nit_proveedor').hide();
             $('#div_proveedor_juridico').hide();
+            $('#div_telefono_empresa').hide();
 
             $('#id_tipo_persona').change(function() {
                 let idTipoPersona = $('#id_tipo_persona').val();
@@ -143,11 +145,11 @@
                     $('#numero_telefono').removeAttr('required');
 
                     $('#div_celular').show('slow');
-                    $('#div_celular').removeClass('mt-3');
+                    $('#div_celular').addClass('mt-3');
                     $('#celular').attr('required');
 
                     $('#div_email').show('slow');
-                    $('#div_email').removeClass('mt-3');
+                    $('#div_email').addClass('mt-3');
                     $('#email').attr('required');
 
                     $('#div_direccion').show('slow');
@@ -157,9 +159,12 @@
                     $('#id_genero').removeAttr('required');
                     $('#id_genero').val('').trigger('change');
 
-                    $('#div_proveedor_juridico').show();
+                    $('#div_nit_proveedor').show();
                     $('#nit_empresa').attr('required');
+                    $('#div_proveedor_juridico').show();
                     $('#nombre_empresa').attr('required');
+                    $('#div_telefono_empresa').show();
+                    $('#div_telefono_empresa').addClass('mt-3');
                     $('#telefono_empresa').attr('required');
                 } else {
                     $('#div_identificacion').show('slow');
@@ -188,11 +193,13 @@
                     $('#div_id_genero').show('slow');
                     $('#id_genero').attr('required');
 
-                    $('#div_proveedor_juridico').hide();
+                    $('#div_nit_proveedor').hide();
                     $('#nit_empresa').removeAttr('required');
                     $('#nit_empresa').val('');
+                    $('#div_proveedor_juridico').hide();
                     $('#nombre_empresa').removeAttr('required');
                     $('#nombre_empresa').val('');
+                    $('#div_telefono_empresa').hide();
                     $('#telefono_empresa').removeAttr('required');
                     $('#telefono_empresa').val('');
                 }
@@ -206,13 +213,11 @@
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 const cancelButton = form.find('button[type="button"]');
-                const loadingIndicator = form.find(
-                    "div[id^='loadingIndicatorPersonaStore']"); // Busca el GIF del form actual
+                const loadingIndicator = form.find("div[id^='loadingIndicatorPersonaStore']");
 
                 // Dessactivar Botones
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Mostrar Spinner
                 loadingIndicator.show();
