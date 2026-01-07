@@ -46,9 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (input.form) {
             input.form.addEventListener("submit", function () {
                 input.value = iti.getNumber();
-
-                /* const n = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
-            input.value = n.replace(/\D/g, ''); */
             });
         }
     };
@@ -58,33 +55,76 @@ document.addEventListener("DOMContentLoaded", function () {
 // ====================
 // Validación Teléfono Fijo
 // ====================
-function initPhoneValidation(inputSelector, errorSelector) {
-    $(document).on("blur", inputSelector, function() {
-        const value = $(this).val().trim();
-        const errorMsg = $(errorSelector);
+// function initPhoneValidation(inputSelector, errorSelector) {
+//     $(document).on("blur", inputSelector, function() {
+//         const value = $(this).val().trim();
+//         const errorMsg = $(errorSelector);
 
-        errorMsg.text("").addClass("d-none");
+//         errorMsg.text("").addClass("d-none");
+
+//         if (!value) return;
+
+//         if (!/^\d*$/.test(value)) {
+//             errorMsg.text("Solo se permiten números.").removeClass("d-none");
+//         } else if (!value.startsWith("60")) {
+//             errorMsg.text("El número debe iniciar con 60.").removeClass("d-none");
+//         } else if (value.length < 7 || value.length > 10) {
+//             errorMsg.text("El número debe tener entre 7 y 10 dígitos.").removeClass("d-none");
+//         }
+
+//         if (!errorMsg.hasClass("d-none")) {
+//             setTimeout(() => {
+//                 errorMsg.addClass("d-none");
+//                 $(this).val(""); //Se limpia el campo del teléfono cuando hay error
+//             }, 4000);
+//         }
+//     });
+// }
+
+function initPhoneValidation(inputSelector, errorSelector) {
+    // 1. Bloqueo de entrada en tiempo real (solo números)
+    $(document).on("input", inputSelector, function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // 2. Validación al salir del campo (blur)
+    $(document).on("blur", inputSelector, function() {
+        const $input = $(this);
+        const value = $input.val().trim();
+        const $errorMsg = $(errorSelector);
+
+        // Limpiar estado previo
+        $errorMsg.text("").addClass("d-none");
 
         if (!value) return;
 
-        if (!/^\d*$/.test(value)) {
-            errorMsg.text("Solo se permiten números.").removeClass("d-none");
-        } else if (!value.startsWith("60")) {
-            errorMsg.text("El número debe iniciar con 60.").removeClass("d-none");
-        } else if (value.length < 7 || value.length > 10) {
-            errorMsg.text("El número debe tener entre 7 y 10 dígitos.").removeClass("d-none");
+        let mensaje = "";
+
+        // Validaciones en orden de importancia
+        if (!value.startsWith("60")) {
+            mensaje = "El número telefónico fijo debe iniciar con 60.";
+        } else if (value.length < 10) { 
+            // Nota: En Colombia, los fijos con el indicativo 60 ahora siempre son de 10 dígitos
+            mensaje = "El número debe tener 10 dígitos (ej: 6012345678).";
         }
 
-        if (!errorMsg.hasClass("d-none")) {
+        if (mensaje !== "") {
+            $errorMsg.text(mensaje).removeClass("d-none");
+            
+            // En lugar de borrar de inmediato, resaltamos el error
+            $input.addClass("is-invalid");
+
             setTimeout(() => {
-                errorMsg.addClass("d-none");
-                $(this).val(""); //Se limpia el campo del teléfono cuando hay error
+                $errorMsg.fadeOut(500, function() {
+                    $(this).addClass("d-none").show();
+                    $input.val("").removeClass("is-invalid"); 
+                });
             }, 4000);
+        } else {
+            $input.removeClass("is-invalid").addClass("is-valid");
         }
     });
 }
-
-
 
 // ====================
 // Validación NIT (9 dígitos exactos, solo números)
