@@ -93,22 +93,23 @@
                 "infoEmpty": "No hay registros",
                 stripe: true,
                 bSort: true,
-                buttons: [{
-                        extend: 'pdfHtml5',
-                        text: 'PDF',
-                        className: 'btn btn-sm btn-danger',
-                        orientation: 'landscape',
-                        pageSize: 'A4',
-                        title: 'Productos en Stock Mínimo',
-                        exportOptions: {
-                            columns: ':visible:not(:last-child)'
-                        },
-                        customize: function(doc) {
-                            const columnCount = $('#tbl_stock_minimo thead th').length;
-                            doc.pageSize = 'A5';
-                            doc.defaultStyle.fontSize = 12;
-                        }
-                    },
+                buttons: [
+                    // {
+                    //     extend: 'pdfHtml5',
+                    //     text: 'PDF',
+                    //     className: 'btn btn-sm btn-danger',
+                    //     orientation: 'landscape',
+                    //     pageSize: 'A4',
+                    //     title: 'Productos en Stock Mínimo',
+                    //     exportOptions: {
+                    //         columns: ':visible:not(:last-child)'
+                    //     },
+                    //     customize: function(doc) {
+                    //         const columnCount = $('#tbl_stock_minimo thead th').length;
+                    //         doc.pageSize = 'A5';
+                    //         doc.defaultStyle.fontSize = 12;
+                    //     }
+                    // },
                     {
                         extend: 'excelHtml5',
                         text: 'Excel',
