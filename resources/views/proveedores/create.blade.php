@@ -121,6 +121,9 @@
             // Inicializar función de validación de número de teléfono
             initPhoneValidation("#numero_telefono", "#telefono-error");
 
+            // Inicializar función de validación de NIT
+            initNitValidation("#nit_proveedor", "#nit-error");
+
             $('#div_nit_proveedor').hide();
             $('#div_proveedor_juridico').hide();
             $('#div_telefono_empresa').hide();

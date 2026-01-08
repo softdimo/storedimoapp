@@ -136,7 +136,7 @@
         $(document).ready(function() {
 
             $('.select2').select2({
-                placeholder: "Seleccionar...",
+                // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });

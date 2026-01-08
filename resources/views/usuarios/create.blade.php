@@ -127,19 +127,17 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2({
-                placeholder: "Seleccionar...",
+                // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });
             // Inicializamos el plugin para el campo celular de usuarios
             initIntlPhone("#celular");
 
-
             // =========================== Validación número de telefono =========================
             // Para un campo
             initPhoneValidation("#numero_telefono", "#telefono-error");
             // =========================== Fin validación número de telefono =========================
-
 
             let idEstado = $('#id_estado').val();
 
@@ -163,11 +161,7 @@
                 }
             });
 
-            // ===================================================================================
-
-
             //======================== Validación de correo ==============================//
-
 
             const emailInput = document.getElementById('email');
             const errorMsg = document.getElementById('email-error');
@@ -221,7 +215,6 @@
             //========================== Fin validación correo=================================//
 
             //==================== Validación de documento ====================//
-
 
             const tipoDocumentoSelect = document.getElementById('id_tipo_documento');
             const documentoInput = document.getElementById('identificacion');

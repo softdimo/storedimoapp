@@ -42,13 +42,14 @@
                         <label for="nit_proveedor" class="form-label">Nit Proveedor<span class="text-danger">*</span></label>
                         {!! Form::text('nit_proveedor', old('nit_proveedor'), [
                             'class' => 'form-control',
-                            'id' => 'nit_empresa',
+                            'id' => 'nit_proveedor',
                             // 'required' => 'required',
-                            'pattern' => '^\d{5,10}$',
-                            'minlength' => '7',
-                            'maxlength' => '10',
-                            'title' => 'Ingrese un NIT válido de 7 a 10 dígitos, sin guion ni dígito verificador',
+                            'pattern' => '^\d{5,9}$',
+                            'minlength' => '9',
+                            'maxlength' => '9',
+                            'title' => 'Ingrese un NIT válido de 9 dígitos, sin guión ni dígito verificador',
                         ]) !!}
+                        <span id="nit-error" class="text-danger d-none mt-1"></span>
                     </div>
                 </div>
 
@@ -74,9 +75,7 @@
 
                 <div class="col-12 col-md-3" id="div_telefono_empresa">
                     <div class="form-group d-flex flex-column">
-                        <label for="telefono_empresa" class="form-label">Teléfono Jurídico
-                            <span class="text-danger">*</span>
-                        </label>
+                        <label for="telefono_empresa" class="form-label">Teléfono Jurídico</label>
                         {!! Form::text('telefono_juridico', old('telefono_juridico'), [
                             'class' => 'form-control',
                             'id' => 'telefono_empresa',

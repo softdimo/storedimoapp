@@ -42,8 +42,8 @@ class ProveedorStore implements Responsable
 
             $consultarIdentificacionProveedor = $this->consultarIdentificacionProveedor($identificacion);
         } else {
-            if(strlen($nitProveedor) < 10) {
-                alert()->info('Info', 'El Nit debe se de mínimo 10 caracteres incuyendo el dígito de verificación');
+            if(strlen($nitProveedor) < 9) {
+                alert()->info('Info', 'El Nit debe se de mínimo 9 caracteres incuyendo sin el dígito de verificación');
                 return back()->withInput();
             }
 
