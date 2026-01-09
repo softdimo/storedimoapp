@@ -91,11 +91,10 @@
                 'route' => ['proveedores.store'],
                 'class' => 'mt-2',
                 'autocomplete' => 'off',
-                'id' => 'formCrearProveedores',
-            ]) !!}
-            @csrf
+                'id' => 'formCrearProveedores' ]) !!}
+                @csrf
 
-            @include('proveedores.fields_crear_proveedores')
+                @include('proveedores.fields_crear_proveedores')
 
             {!! Form::close() !!}
         </div>
@@ -118,8 +117,11 @@
             // Inicializar intlTelInput para el campo celular en el modal
             initIntlPhone("#celular_proveedor");
 
-            // Inicializar función de validación de número de teléfono
+            // Inicializar función de validación de número de teléfono fijo natural
             initPhoneValidation("#numero_telefono", "#telefono-error");
+
+            // Inicializar función de validación de número de teléfono fijo jurídico
+            initPhoneValidation("#telefono_empresa", "#telefono-error");
 
             // Inicializar función de validación de NIT
             initNitValidation("#nit_proveedor", "#nit-error");
@@ -146,6 +148,7 @@
 
                     $('#div_numero_telefono').hide('slow');
                     $('#numero_telefono').removeAttr('required');
+                    $('#numero_telefono').val('');
 
                     $('#div_celular').show('slow');
                     $('#div_celular').addClass('mt-3');
@@ -153,22 +156,24 @@
 
                     $('#div_email').show('slow');
                     $('#div_email').addClass('mt-3');
-                    $('#email').attr('required');
+                    $('#email_proveedor').attr('required');
 
                     $('#div_direccion').show('slow');
-                    $('#direccion').attr('required');
+                    $('#direccion_proveedor').attr('required');
 
                     $('#div_id_genero').hide('slow');
                     $('#id_genero').removeAttr('required');
                     $('#id_genero').val('').trigger('change');
 
                     $('#div_nit_proveedor').show();
-                    $('#nit_empresa').attr('required');
+                    $('#nit_proveedor').attr('required');
+
                     $('#div_proveedor_juridico').show();
                     $('#nombre_empresa').attr('required');
+
                     $('#div_telefono_empresa').show();
                     $('#div_telefono_empresa').addClass('mt-3');
-                    $('#telefono_empresa').attr('required');
+                    $('#telefono_empresa').removeAttr('required');
                 } else {
                     $('#div_identificacion').show('slow');
                     $('#identificacion').attr('required');
@@ -188,20 +193,22 @@
 
                     $('#div_email').show('slow');
                     $('#div_email').addClass('mt-3');
-                    $('#email').attr('required');
+                    $('#email_proveedor').attr('required');
 
                     $('#div_direccion').show('slow');
-                    $('#direccion').attr('required');
+                    $('#direccion_proveedor').attr('required');
 
                     $('#div_id_genero').show('slow');
                     $('#id_genero').attr('required');
 
                     $('#div_nit_proveedor').hide();
-                    $('#nit_empresa').removeAttr('required');
-                    $('#nit_empresa').val('');
+                    $('#nit_proveedor').removeAttr('required');
+                    $('#nit_proveedor').val('');
+
                     $('#div_proveedor_juridico').hide();
                     $('#nombre_empresa').removeAttr('required');
                     $('#nombre_empresa').val('');
+
                     $('#div_telefono_empresa').hide();
                     $('#telefono_empresa').removeAttr('required');
                     $('#telefono_empresa').val('');
@@ -211,19 +218,56 @@
             // ===================================================================================
             // ===================================================================================
 
-            // formCrearPersonas para cargar gif en el submit
             $(document).on("submit", "form[id^='formCrearProveedores']", function(e) {
+                e.preventDefault();
+                
                 const form = $(this);
+                const emailInput = $('#email_proveedor');
+                const emailValue = emailInput.val();
                 const submitButton = form.find('button[type="submit"]');
                 const cancelButton = form.find('button[type="button"]');
                 const loadingIndicator = form.find("div[id^='loadingIndicatorPersonaStore']");
 
-                // Dessactivar Botones
-                cancelButton.prop("disabled", true);
-                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                if (!emailValue) return;
 
-                // Mostrar Spinner
+                cancelButton.prop("disabled", true);
+                submitButton.prop("disabled", true).html("Validando... <i class='fa fa-spinner fa-spin'></i>");
                 loadingIndicator.show();
+
+                $.ajax({
+                    url: "{{ route('validar_correo_proveedor') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        'email_proveedor': emailValue
+                    },
+                    success: function(respuesta) {
+                        // Si el objeto respuesta existe y trae el email, está duplicado
+                        if (respuesta && respuesta.email_proveedor == emailValue) {
+                            Swal.fire('Cuidado!', 'Este correo ya está registrado', 'warning');
+                            
+                            emailInput.val('').addClass('is-invalid');
+                            cancelButton.prop("disabled", false);
+                            submitButton.prop("disabled", false).html("Guardar");
+                            loadingIndicator.hide();
+                        } else {
+                            // EL CORREO ES VÁLIDO
+                            submitButton.html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                            
+                            // --- CAMBIO CLAVE AQUÍ ---
+                            // form[0] accede al elemento DOM puro.
+                            // El método .submit() nativo NO dispara los eventos de jQuery, evitando el bucle.
+                            form[0].submit(); 
+                        }
+                    },
+                    error: function() {
+                        // En caso de error de servidor, rehabilitamos para intentar de nuevo
+                        cancelButton.prop("disabled", false);
+                        submitButton.prop("disabled", false).html("Guardar");
+                        loadingIndicator.hide();
+                    }
+                });
             });
         }); // FIN document.ready
     </script>

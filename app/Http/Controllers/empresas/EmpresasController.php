@@ -291,12 +291,6 @@ class EmpresasController extends Controller
             return json_decode($response->getBody()->getContents());
 
         } catch (Exception $e) {
-            dd($e);
-            // return response()->json([
-            //     'error' => 'No se pudo validar el correo en la BD',
-            //     'valido' => false
-            // ], 500);
-
             alert()->error('Consultando el correo de la empresa, contacte a Soporte.');
             return back();
         }

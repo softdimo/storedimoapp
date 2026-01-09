@@ -26,6 +26,9 @@ class ProveedoresController extends Controller
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
     
+    // ======================================================================
+    // ======================================================================
+
     /**
      * Display a listing of the resource.
      *
@@ -59,6 +62,7 @@ class ProveedoresController extends Controller
         }
     }
 
+    // ======================================================================
     // ======================================================================
 
     /**
@@ -94,6 +98,7 @@ class ProveedoresController extends Controller
     }
 
     // ======================================================================
+    // ======================================================================
 
     /**
      * Store a newly created resource in storage.
@@ -127,6 +132,7 @@ class ProveedoresController extends Controller
     }
 
     // ======================================================================
+    // ======================================================================
 
     /**
      * Display the specified resource.
@@ -139,6 +145,7 @@ class ProveedoresController extends Controller
         //
     }
 
+    // ======================================================================
     // ======================================================================
 
     /**
@@ -170,6 +177,7 @@ class ProveedoresController extends Controller
         }
     }
     
+    // ======================================================================
     // ======================================================================
 
     /**
@@ -207,6 +215,7 @@ class ProveedoresController extends Controller
     }
 
     // ======================================================================
+    // ======================================================================
 
     /**
      * Remove the specified resource from storage.
@@ -217,5 +226,25 @@ class ProveedoresController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    // ======================================================================
+    // ======================================================================
+
+    public function validarCorreoProveedor(Request $request)
+    {
+        try {
+            $response = $this->clientApi->post($this->baseUri . 'validar_correo_proveedor', [
+                'json' => [
+                    'email_proveedor' => $request->input('email_proveedor')
+                ]
+            ]);
+
+            return json_decode($response->getBody()->getContents());
+
+        } catch (Exception $e) {
+            alert()->error('Consultando el correo del proveedor, contacte a Soporte.');
+            return back();
+        }
     }
 }

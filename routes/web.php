@@ -90,6 +90,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         Route::group(['namespace' => 'App\Http\Controllers\proveedores'], function () {
             Route::resource('proveedores', 'ProveedoresController');
             Route::get('proveedor_edit/{idProveedor}', 'ProveedoresController@edit')->name('proveedor_edit');
+            Route::post('validar_correo_proveedor', 'ProveedoresController@validarCorreoProveedor')->name('validar_correo_proveedor');
         });
 
         // ========================================================================

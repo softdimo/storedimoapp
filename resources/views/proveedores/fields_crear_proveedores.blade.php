@@ -39,11 +39,14 @@
             {{-- <div class="row mt-5" id="div_proveedor_juridico"> --}}
                 <div class="col-12 col-md-3" id="div_nit_proveedor">
                     <div class="form-group d-flex flex-column">
-                        <label for="nit_proveedor" class="form-label">Nit Proveedor<span class="text-danger">*</span></label>
+                        <label for="nit_proveedor" class="form-label">
+                            Nit Proveedor
+                            <span class="text-danger">*</span>
+                        </label>
                         {!! Form::text('nit_proveedor', old('nit_proveedor'), [
                             'class' => 'form-control',
                             'id' => 'nit_proveedor',
-                            // 'required' => 'required',
+                            'required' => 'required',
                             'pattern' => '^\d{5,9}$',
                             'minlength' => '9',
                             'maxlength' => '9',
@@ -57,13 +60,13 @@
 
                 <div class="col-12 col-md-3" id="div_proveedor_juridico">
                     <div class="form-group d-flex flex-column">
-                        <label for="proveedor_juridico" class="form-label">Nombre Jurídico
+                        <label for="nombre_empresa" class="form-label">Nombre Jurídico
                             <span class="text-danger">*</span>
                         </label>
                         {!! Form::text('proveedor_juridico', old('proveedor_juridico'), [
                             'class' => 'form-control',
                             'id' => 'nombre_empresa',
-                            // 'required' => 'required',
+                            'required' => 'required',
                             'pattern' => '^[a-zA-ZÁÉÍÓÚÑáéíóúñ0-9\s\.,&\-]{2,100}$',
                             'title' => 'El nombre puede incluir letras, números, espacios y algunos caracteres como ., - &',
                             'maxlength' => 100,
@@ -85,6 +88,7 @@
                             'minlength' => 7,
                             'maxlength' => 10,
                         ]) !!}
+                        <span id="telefono-error" class="text-danger d-none mt-1"></span>
                     </div>
                 </div>
             {{-- </div> --}}
@@ -95,8 +99,10 @@
 
             <div class="col-12 col-md-3" id="div_identificacion">
                 <div class="form-group d-flex flex-column">
-                    <label for="identificacion" class="form-label">Documento Natural<span
-                            class="text-danger">*</span></label>
+                    <label for="identificacion" class="form-label">
+                        Documento Natural
+                        <span class="text-danger">*</span>
+                    </label>
                     {!! Form::text('identificacion', old('identificacion'), [
                         'class' => 'form-control',
                         'id' => 'identificacion',
@@ -153,7 +159,7 @@
                         'maxlength' => 10,
                         'onkeypress' => 'return event.charCode >= 48 && event.charCode <= 57'
                     ]) !!}
-                <span id="telefono-error" class="text-danger d-none mt-1"></span>
+                    <span id="telefono-error" class="text-danger d-none mt-1"></span>
                 </div>
             </div>
 
@@ -178,13 +184,13 @@
 
             <div class="col-12 col-md-3 mt-3" id="div_email">
                 <div class="form-group d-flex flex-column">
-                    <label for="email" class="form-label">Correo Electrónico
+                    <label for="email_proveedor" class="form-label">Correo Electrónico
                         <span class="text-danger"> *</span>
                     </label>
                     {!! Form::email('email_proveedor', old('email_proveedor'), [
                         'class' => 'form-control',
-                        'id' => 'email',
-                        'pattern' => '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                        'id' => 'email_proveedor',
+                        'pattern' => '^[a-zA-Z0-9._%+ \-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$',
                         'required' =>'required',
                         'title' => 'Debe ser una dirección de correo electrónico válida.',
                         'maxlength' => 100,
@@ -196,14 +202,14 @@
 
             <div class="col-12 col-md-3 mt-3" id="div_direccion">
                 <div class="form-group d-flex flex-column">
-                    <label for="direccion" class="form-label">Dirección</label>
+                    <label for="direccion_proveedor" class="form-label">Dirección</label>
                     {!! Form::text('direccion_proveedor', old('direccion_proveedor'), [
                         'class' => 'form-control',
-                        'id' => 'direccion',
+                        'id' => 'direccion_proveedor',
                         'pattern' => '^[a-zA-Z0-9\s.,-]{5,100}$',
                         'title' => 'Debe contener entre 5 y 100 caracteres, permitidos letras, números, espacios, puntos, comas y guiones.',
-                       'maxlength' => 100,
-                       'minlength' => 5,
+                        'maxlength' => 100,
+                        'minlength' => 5,
                     ]) !!}
                 </div>
             </div>
@@ -216,6 +222,7 @@
                     {!! Form::select('id_genero', collect(['' => 'Seleccionar...'])->union($generos), old('id_genero'), [
                         'class' => 'form-select select2',
                         'id' => 'id_genero',
+                        'required' =>'required',
                     ]) !!}
                 </div>
             </div>

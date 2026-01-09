@@ -34,6 +34,16 @@ class ProveedorStore implements Responsable
         $proveedorJuridico = request('proveedor_juridico', null);
         $telefonoJuridico = request('telefono_juridico', null);
 
+        // ===================================================================
+        // ===================================================================
+
+        $validarCorreoProveedor = $this->validarCorreoProveedor($emailProveedor);
+
+        if ($validarCorreoProveedor && isset($validarCorreoProveedor->email_proveedor) && $validarCorreoProveedor->email_proveedor == $emailProveedor) {
+            alert()->info('Info', 'El correo ya existe');
+            return back()->withInput();
+        }
+
         if (isset($identificacion) && !is_null($identificacion) && !empty($identificacion)) {
             if(strlen($identificacion) < 6) {
                 alert()->info('Info', 'El documento debe se de mínimo 6 caracteres');
@@ -115,6 +125,27 @@ class ProveedorStore implements Responsable
             ]
         ]);
         return json_decode($queryNitProveedor->getBody()->getContents());
+    }
+
+    // ======================================================================
+    // ======================================================================
+
+    public function validarCorreoProveedor($emailProveedor)
+    {
+        try {
+            $response = $this->clientApi->post($this->baseUri . 'validar_correo_proveedor', [
+                'json' => [
+                    'email_proveedor' => $emailProveedor
+                ]
+            ]);
+
+            return json_decode($response->getBody()->getContents());
+
+        } catch (Exception $e) {
+            dd($e);
+            alert()->error('Consultando el correo del proveedor, contacte a Soporte.');
+            return back();
+        }
     }
 
     // ===================================================================
