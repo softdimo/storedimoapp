@@ -156,7 +156,7 @@
             {!! Form::date('fecha_final', old('fecha_final', isset($suscripcionEdit) ? $suscripcionEdit->fecha_final : null), [
                 'class' => 'form-control',
                 'id' => 'fecha_final',
-                'required' => 'required'
+                'required' => 'required',
                 'onkeydown' => 'return false'
             ]) !!}
         </div>
