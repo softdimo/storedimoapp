@@ -95,6 +95,40 @@ trait MetodosTrait
         return str_replace($no_permitidas, $permitidas, $cadena);
     }
 
+    // ======================================
+
+    protected $configData = null;
+
+    public function cargarConfiguracionInicial()
+    {
+        // 1. Verificamos si ya tenemos los datos en memoria para evitar llamadas extra
+        if ($this->configData !== null) {
+            return $this->configData;
+        }
+
+        try {
+            // 2. Aseguramos que el cliente HTTP esté inicializado
+            $this->initHttpClient();
+
+            // 3. Realizamos la petición (usando la ruta relativa, ya que base_uri ya está configurada)
+            $response = $this->clientApi->get('config_inicial_trait');
+
+            // 4. Asignamos el resultado a la propiedad
+            $this->configData = json_decode($response->getBody()->getContents(), true);
+
+            return $this->configData;
+
+        } catch (Exception $e) {
+            // Log del error para debugging, evita el dd() en producción
+            logger()->error("Error en cargarConfiguracionInicial: " . $e->getMessage());
+            
+            alert()->error('Error', 'No se pudo cargar la configuración inicial.');
+            return null;
+        }
+    }
+
+    // ======================================
+
     public function shareData()
     {
         // Compartir datos básicos que no requieren la API
