@@ -28,7 +28,7 @@ trait MetodosTrait
 {
     protected $baseUri;
     protected $clientApi;
-    protected $apiTimeout = 5.0; // Timeout en segundos
+    protected $apiTimeout = 10.0; // Timeout en segundos
 
     protected function initHttpClient()
     {
@@ -122,7 +122,7 @@ trait MetodosTrait
             // Log del error para debugging, evita el dd() en producción
             logger()->error("Error en cargarConfiguracionInicial: " . $e->getMessage());
             
-            alert()->error('Error', 'No se pudo cargar la configuración inicial.');
+            alert()->error('Error', 'No se pudo cargar la configuración inicial Traits.');
             return null;
         }
     }
@@ -140,10 +140,15 @@ trait MetodosTrait
 
     protected function shareBasicData()
     {
-        view()->share('roles', Rol::orderBy('name')->pluck('name', 'id'));
-        view()->share('estados', Estado::whereIn('id_estado', [1,2])->orderBy('estado')->pluck('estado', 'id_estado'));
-        view()->share('estados_suscripciones', Estado::whereIn('id_estado', [1,2,10,11,12])->orderBy('estado')->pluck('estado', 'id_estado'));
-        view()->share('tipos_documento', TipoDocumento::orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
+        view()->share('roles',$this->roles());
+        // view()->share('roles', Rol::orderBy('name')->pluck('name', 'id'));
+        view()->share('estados',$this->estados());
+        // view()->share('estados', Estado::whereIn('id_estado', [1,2])->orderBy('estado')->pluck('estado', 'id_estado'));
+        view()->share('estados_suscripciones',$this->estadosSuscripciones());
+        // view()->share('estados_suscripciones', Estado::whereIn('id_estado', [1,2,10,11,12])->orderBy('estado')->pluck('estado', 'id_estado'));
+        view()->share('tipos_documento',$this->tiposDocumento());
+        // view()->share('tipos_documento', TipoDocumento::orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
+        // view()->share('tipos_documento_usuario',$this->tiposDocumentoUsuario());
         view()->share('tipos_documento_usuario', TipoDocumento::whereNotIn('id_tipo_documento', [3])
                                                                 ->orderBy('tipo_documento')
                                                                 ->pluck('tipo_documento', 'id_tipo_documento'));
@@ -183,6 +188,38 @@ trait MetodosTrait
         view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
         
     } // FIN shareBasicData()
+
+    // =======================================================================================
+
+    public function roles()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['roles'] ?? [])->pluck('name', 'id');
+    }
+
+    public function estados()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['estados'] ?? [])->pluck('estado', 'id_estado');
+    }
+
+    public function estadosSuscripciones()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['estados_suscripciones'] ?? [])->pluck('estado', 'id_estado');
+    }
+
+    public function tiposDocumento()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_documento'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
+    }
+
+    public function tiposDocumentoUsuario()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_documento_usuario'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
+    }
 
     // =======================================================================================
 
