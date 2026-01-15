@@ -3,26 +3,10 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\DB;
-use App\Models\Rol;
-use App\Models\Estado;
-use App\Models\TipoDocumento;
-use App\Models\TipoPersona;
-use App\Models\Genero;
-use App\Models\TipoBaja;
-use App\Models\TipoPago;
-use App\Models\PeriodoPago;
-use App\Models\PorcentajeComision;
-use App\Models\Empresa;
-use App\Models\Usuario;
-use App\Models\TipoBd;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Exception;
 use Illuminate\Support\Facades\Cache;
-use App\Models\InformeCampo;
-use App\Models\Informe;
-use App\Models\Plan;
-use App\Models\Suscripcion;
 
 trait MetodosTrait
 {
@@ -141,59 +125,30 @@ trait MetodosTrait
     protected function shareBasicData()
     {
         view()->share('roles',$this->roles());
-        // view()->share('roles', Rol::orderBy('name')->pluck('name', 'id'));
         view()->share('estados',$this->estados());
-        // view()->share('estados', Estado::whereIn('id_estado', [1,2])->orderBy('estado')->pluck('estado', 'id_estado'));
         view()->share('estados_suscripciones',$this->estadosSuscripciones());
-        // view()->share('estados_suscripciones', Estado::whereIn('id_estado', [1,2,10,11,12])->orderBy('estado')->pluck('estado', 'id_estado'));
         view()->share('tipos_documento',$this->tiposDocumento());
-        // view()->share('tipos_documento', TipoDocumento::orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
         view()->share('tipos_documento_usuario',$this->tiposDocumentoUsuario());
-        // view()->share('tipos_documento_usuario', TipoDocumento::whereNotIn('id_tipo_documento', [3])->orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
         view()->share('tipos_persona',$this->tiposPersona());
-        // view()->share('tipos_persona', TipoPersona::whereNotIn('id_tipo_persona', [1,2])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
         view()->share('tipos_empleado',$this->tiposEmpleado());
-        // view()->share('tipos_empleado', TipoPersona::whereIn('id_tipo_persona', [1,2])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
         view()->share('tipos_proveedor',$this->tiposProveedor());
-        // view()->share('tipos_proveedor', TipoPersona::whereIn('id_tipo_persona', [3,4])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
         view()->share('generos',$this->generos());
-        // view()->share('generos', Genero::orderBy('genero')->pluck('genero', 'id_genero'));
         view()->share('tipos_baja',$this->tiposBaja());
-        // view()->share('tipos_baja', TipoBaja::orderBy('tipo_baja','asc')->pluck('tipo_baja', 'id_tipo_baja'));
         view()->share('tipos_pago_ventas',$this->tiposPagoVentas());
-        // view()->share('tipos_pago_ventas', TipoPago::whereNotIn('id_tipo_pago', [4,5])->where('id_estado',1)->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('tipos_pago_nomina',$this->tiposPagoNomina());
-        // view()->share('tipos_pago_nomina', TipoPago::whereIn('id_tipo_pago', [4,5])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('tipos_pago_suscripcion',$this->tiposPagoSuscripcion());
-        // view()->share('tipos_pago_suscripcion', TipoPago::whereIn('id_tipo_pago', [6,7,8,9])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
         view()->share('periodos_pago',$this->periodosPago());
-        // view()->share('periodos_pago', PeriodoPago::orderBy('periodo_pago')->pluck('periodo_pago', 'id_periodo_pago'));
         view()->share('porcentajes_comision',$this->porcentajesComision());
-        // view()->share('porcentajes_comision', PorcentajeComision::orderBy('porcentaje_comision')->pluck('porcentaje_comision', 'id_porcentaje_comision'));
         view()->share('empresas',$this->empresas());
-        // view()->share('empresas', Empresa::orderBy('nombre_empresa')->where('id_estado', 1)->pluck('nombre_empresa', 'id_empresa'));
         view()->share('tipos_bd',$this->tiposBd());
-        // view()->share('tipos_bd', TipoBd::orderBy('tipo_bd')->pluck('tipo_bd', 'id_tipo_bd'));
         view()->share('usuarios',$this->usuarios());
-        // view()->share('usuarios', Usuario::orderBy('id_usuario')
-        //                             ->select(
-        //                                 DB::raw("CONCAT(nombre_usuario, ' ', apellido_usuario, ' => ', usuario) AS user"),
-        //                                 'id_usuario'
-        //                             )
-        //                             ->where('id_estado', 1)
-        //                             ->pluck('user', 'id_usuario'));
-
         view()->share('tipos_cliente',$this->tiposCliente());
-        // view()->share('tipos_cliente', TipoPersona::whereIn('id_tipo_persona', [5,6])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
 
         // Para el pluck del select normal
         view()->share('planes',$this->planes());
-        // view()->share('planes', Plan::orderBy('nombre_plan')->where('id_estado_plan', 1)->pluck('nombre_plan', 'id_plan'));
 
         // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
         view()->share('planesData', $this->planesData());
-        // view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
-        
     } // FIN shareBasicData()
 
     // =======================================================================================
