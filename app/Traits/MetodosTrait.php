@@ -148,44 +148,51 @@ trait MetodosTrait
         // view()->share('estados_suscripciones', Estado::whereIn('id_estado', [1,2,10,11,12])->orderBy('estado')->pluck('estado', 'id_estado'));
         view()->share('tipos_documento',$this->tiposDocumento());
         // view()->share('tipos_documento', TipoDocumento::orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
-        // view()->share('tipos_documento_usuario',$this->tiposDocumentoUsuario());
-        view()->share('tipos_documento_usuario', TipoDocumento::whereNotIn('id_tipo_documento', [3])
-                                                                ->orderBy('tipo_documento')
-                                                                ->pluck('tipo_documento', 'id_tipo_documento'));
-        view()->share('tipos_persona', TipoPersona::whereNotIn('id_tipo_persona', [1,2])
-                                                    ->orderBy('tipo_persona')
-                                                    ->pluck('tipo_persona', 'id_tipo_persona'));
-        view()->share('tipos_empleado', TipoPersona::whereIn('id_tipo_persona', [1,2])
-                                                    ->orderBy('tipo_persona')
-                                                    ->pluck('tipo_persona', 'id_tipo_persona'));
-        view()->share('tipos_proveedor', TipoPersona::whereIn('id_tipo_persona', [3,4])
-                                                    ->orderBy('tipo_persona')
-                                                    ->pluck('tipo_persona', 'id_tipo_persona'));
-        view()->share('generos', Genero::orderBy('genero')->pluck('genero', 'id_genero'));
-        view()->share('tipos_baja', TipoBaja::orderBy('tipo_baja','asc')->pluck('tipo_baja', 'id_tipo_baja'));
-        view()->share('tipos_pago_ventas', TipoPago::whereNotIn('id_tipo_pago', [4,5])->where('id_estado',1)->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
-        view()->share('tipos_pago_nomina', TipoPago::whereIn('id_tipo_pago', [4,5])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
-        view()->share('tipos_pago_suscripcion', TipoPago::whereIn('id_tipo_pago', [6,7,8,9])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
-        view()->share('periodos_pago', PeriodoPago::orderBy('periodo_pago')->pluck('periodo_pago', 'id_periodo_pago'));
-        view()->share('porcentajes_comision', PorcentajeComision::orderBy('porcentaje_comision')->pluck('porcentaje_comision', 'id_porcentaje_comision'));
-        view()->share('empresas', Empresa::orderBy('nombre_empresa')->where('id_estado', 1)->pluck('nombre_empresa', 'id_empresa'));
-        view()->share('tipos_bd', TipoBd::orderBy('tipo_bd')->pluck('tipo_bd', 'id_tipo_bd'));
-        view()->share('usuarios', Usuario::orderBy('id_usuario')
-                                    ->select(
-                                        DB::raw("CONCAT(nombre_usuario, ' ', apellido_usuario, ' => ', usuario) AS user"),
-                                        'id_usuario'
-                                    )
-                                    ->where('id_estado', 1)
-                                    ->pluck('user', 'id_usuario'));
+        view()->share('tipos_documento_usuario',$this->tiposDocumentoUsuario());
+        // view()->share('tipos_documento_usuario', TipoDocumento::whereNotIn('id_tipo_documento', [3])->orderBy('tipo_documento')->pluck('tipo_documento', 'id_tipo_documento'));
+        view()->share('tipos_persona',$this->tiposPersona());
+        // view()->share('tipos_persona', TipoPersona::whereNotIn('id_tipo_persona', [1,2])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
+        view()->share('tipos_empleado',$this->tiposEmpleado());
+        // view()->share('tipos_empleado', TipoPersona::whereIn('id_tipo_persona', [1,2])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
+        view()->share('tipos_proveedor',$this->tiposProveedor());
+        // view()->share('tipos_proveedor', TipoPersona::whereIn('id_tipo_persona', [3,4])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
+        view()->share('generos',$this->generos());
+        // view()->share('generos', Genero::orderBy('genero')->pluck('genero', 'id_genero'));
+        view()->share('tipos_baja',$this->tiposBaja());
+        // view()->share('tipos_baja', TipoBaja::orderBy('tipo_baja','asc')->pluck('tipo_baja', 'id_tipo_baja'));
+        view()->share('tipos_pago_ventas',$this->tiposPagoVentas());
+        // view()->share('tipos_pago_ventas', TipoPago::whereNotIn('id_tipo_pago', [4,5])->where('id_estado',1)->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
+        view()->share('tipos_pago_nomina',$this->tiposPagoNomina());
+        // view()->share('tipos_pago_nomina', TipoPago::whereIn('id_tipo_pago', [4,5])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
+        view()->share('tipos_pago_suscripcion',$this->tiposPagoSuscripcion());
+        // view()->share('tipos_pago_suscripcion', TipoPago::whereIn('id_tipo_pago', [6,7,8,9])->orderBy('tipo_pago')->pluck('tipo_pago', 'id_tipo_pago'));
+        view()->share('periodos_pago',$this->periodosPago());
+        // view()->share('periodos_pago', PeriodoPago::orderBy('periodo_pago')->pluck('periodo_pago', 'id_periodo_pago'));
+        view()->share('porcentajes_comision',$this->porcentajesComision());
+        // view()->share('porcentajes_comision', PorcentajeComision::orderBy('porcentaje_comision')->pluck('porcentaje_comision', 'id_porcentaje_comision'));
+        view()->share('empresas',$this->empresas());
+        // view()->share('empresas', Empresa::orderBy('nombre_empresa')->where('id_estado', 1)->pluck('nombre_empresa', 'id_empresa'));
+        view()->share('tipos_bd',$this->tiposBd());
+        // view()->share('tipos_bd', TipoBd::orderBy('tipo_bd')->pluck('tipo_bd', 'id_tipo_bd'));
+        view()->share('usuarios',$this->usuarios());
+        // view()->share('usuarios', Usuario::orderBy('id_usuario')
+        //                             ->select(
+        //                                 DB::raw("CONCAT(nombre_usuario, ' ', apellido_usuario, ' => ', usuario) AS user"),
+        //                                 'id_usuario'
+        //                             )
+        //                             ->where('id_estado', 1)
+        //                             ->pluck('user', 'id_usuario'));
 
-
-        view()->share('tipos_cliente', TipoPersona::whereIn('id_tipo_persona', [5,6])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
+        view()->share('tipos_cliente',$this->tiposCliente());
+        // view()->share('tipos_cliente', TipoPersona::whereIn('id_tipo_persona', [5,6])->orderBy('tipo_persona')->pluck('tipo_persona', 'id_tipo_persona'));
 
         // Para el pluck del select normal
-        view()->share('planes', Plan::orderBy('nombre_plan')->where('id_estado_plan', 1)->pluck('nombre_plan', 'id_plan'));
+        view()->share('planes',$this->planes());
+        // view()->share('planes', Plan::orderBy('nombre_plan')->where('id_estado_plan', 1)->pluck('nombre_plan', 'id_plan'));
 
         // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
-        view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
+        view()->share('planesData', $this->planesData());
+        // view()->share('planesData', Plan::orderBy('nombre_plan')->get()->keyBy('id_plan'));
         
     } // FIN shareBasicData()
 
@@ -221,6 +228,103 @@ trait MetodosTrait
         return collect($data['tipos_documento_usuario'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
     }
 
+    public function tiposPersona()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_persona'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
+    }
+
+    public function tiposEmpleado()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_empleado'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
+    }
+
+    public function tiposProveedor()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_proveedor'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
+    }
+
+    public function generos()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['generos'] ?? [])->pluck('genero', 'id_genero');
+    }
+
+    public function tiposBaja()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_baja'] ?? [])->pluck('tipo_baja', 'id_tipo_baja');
+    }
+
+    public function tiposPagoVentas()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_pago_ventas'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
+    }
+
+    public function tiposPagoNomina()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_pago_nomina'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
+    }
+
+    public function tiposPagoSuscripcion()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_pago_suscripcion'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
+    }
+
+    public function periodosPago()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['periodos_pago'] ?? [])->pluck('periodo_pago', 'id_periodo_pago');
+    }
+
+    public function porcentajesComision()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['porcentajes_comision'] ?? [])->pluck('porcentaje_comision', 'id_porcentaje_comision');
+    }
+
+    public function empresas()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['empresas'] ?? [])->pluck('nombre_empresa', 'id_empresa');
+    }
+
+    public function tiposBd()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_bd'] ?? [])->pluck('tipo_bd', 'id_tipo_bd');
+    }
+
+    public function usuarios()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['usuarios'] ?? [])->pluck('user', 'id_usuario');
+    }
+
+    public function tiposCliente()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tipos_cliente'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
+    }
+
+    public function planes()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['planes'] ?? [])->pluck('nombre_plan', 'id_plan');
+    }
+
+    public function planesData()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        // No usamos pluck aquí porque queremos el objeto completo indexado por ID
+        return collect($data['planesData'] ?? []);
+    }
+
     // =======================================================================================
 
     /**
@@ -231,43 +335,22 @@ trait MetodosTrait
      */
     public function shareEmpresasSuscripciones(?int $idEmpresaActual = null): void
     {
-        // --- Configuración de Exclusiones ---
-        
-        // 1. IDs de empresas que YA tienen una suscripción (activa o inactiva, según tu lógica de negocio)
-        $empresasConSuscripcion = Suscripcion::whereNotNull('id_empresa_suscrita')
-                                            ->pluck('id_empresa_suscrita')
-                                            ->toArray();
+        try {
+            $this->initHttpClient();
+            $id = $idEmpresaActual ?? 'null';
+            
+            $response = $this->clientApi->get("administracion/empresas_disponibles_suscripcion/{$id}");
+            $data = json_decode($response->getBody()->getContents(), true);
 
-        // 2. IDs fijos a excluir (ej. ID 5)
-        $idsFijosAExcluir = [5];
-        
-        // 3. Unir todas las exclusiones
-        $idsAExcluir = array_merge($empresasConSuscripcion, $idsFijosAExcluir);
+            // El pluck se hace aquí sobre la colección final que ya trae la unión hecha desde la API
+            $empresasDisponibles = collect($data)->pluck('nombre_empresa', 'id_empresa');
 
-        // 4. Si estamos en modo EDICIÓN, quitamos la empresa actual de la lista de exclusión.
-        // Esto es CRUCIAL para que la empresa editada aparezca en el select.
-        if ($idEmpresaActual) {
-            $idsAExcluir = array_diff($idsAExcluir, [$idEmpresaActual]);
+            view()->share('empresas_suscripciones', $empresasDisponibles);
+            
+        } catch (Exception $e) {
+            logger()->error("Error en shareEmpresasSuscripciones: " . $e->getMessage());
+            view()->share('empresas_suscripciones', collect([]));
         }
-        
-        // --- Consulta de Empresas ---
-        
-        $empresasDisponibles = Empresa::orderBy('nombre_empresa')
-            ->where('id_estado', 1)
-            ->whereNotIn('id_empresa', $idsAExcluir)
-            ->pluck('nombre_empresa', 'id_empresa');
-
-        // 5. Si estamos en EDICIÓN y la empresa actual fue excluida (como debería ser),
-        // la agregamos manualmente a la lista para que el select la muestre seleccionada.
-        // Esto es necesario porque el paso 4 solo quita el ID de la lista de exclusión,
-        // pero si la empresa no está disponible para nadie más, debe ser agregada.
-        if ($idEmpresaActual) {
-            $empresaActual = Empresa::where('id_empresa', $idEmpresaActual)->pluck('nombre_empresa', 'id_empresa');
-            // Usamos union para agregar la empresa actual a la colección de disponibles
-            $empresasDisponibles = $empresasDisponibles->union($empresaActual);
-        }
-        
-        view()->share('empresas_suscripciones', $empresasDisponibles);
     }
 
     // =======================================================================================
