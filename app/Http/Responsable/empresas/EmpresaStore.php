@@ -23,7 +23,9 @@ class EmpresaStore implements Responsable
 
     public function toResponse($request)
     {
+        $idTipoDocumento = request('id_tipo_documento', null);
         $nitEmpresa = request('nit_empresa', null);
+        $identEmpresaNatural = request('ident_empresa_natural', null);
         $nombreEmpresa = request('nombre_empresa', null);
         $telefonoEmpresa = request('telefono_empresa', null);
         $celularEmpresa = request('celular_empresa');
@@ -79,7 +81,9 @@ class EmpresaStore implements Responsable
             } else {
                 $reqEmpresaStore = $this->clientApi->post($this->baseUri.'administracion/empresa_store', [
                     'json' => [
+                        'id_tipo_documento' => $idTipoDocumento,
                         'nit_empresa' => $nitEmpresa,
+                        'ident_empresa_natural' => $identEmpresaNatural,
                         'nombre_empresa' => $nombreEmpresa,
                         'telefono_empresa' => $telefonoEmpresa,
                         'celular_empresa' => $celularEmpresa,

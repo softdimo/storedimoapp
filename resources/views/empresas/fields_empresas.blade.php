@@ -3,14 +3,45 @@
 @endphp
 <div class="m-0 p-3" id="div_campos_empresas">
     <div class="row">
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3" id="div_id_tipo_documento">
             <div class="form-group d-flex flex-column">
-                <label for="nit_empresa" class="form-label">Nit (Sin dígito verificador)<span class="text-danger">*</span></label>
+                <label for="id_tipo_documento" class="form-label">Tipo Documento
+                    <span class="text-danger">*</span>
+                </label>
+                {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tipos_documento), old('id_tipo_documento', isset($empresa) ? $empresa->id_tipo_documento : null), [
+                    'class' => 'form-select',
+                    'id' => 'id_tipo_documento',
+                    'required' => 'required',
+                ]) !!}
+            </div>
+        </div>
+
+        {{-- ======================= --}}
+
+        <div class="col-12 col-md-3" id="div_nit_empresa">
+            <div class="form-group d-flex flex-column">
+                <label for="nit_empresa" class="form-label">Nit (Con dígito verificador)<span class="text-danger">*</span></label>
                 {!! Form::text('nit_empresa', old('nit_empresa', isset($empresa) ? $empresa->nit_empresa : null), [
                     'class' => 'form-control',
                     'id' => 'nit_empresa',
                     'required' => 'required',
                     'maxlength' => '9',
+                    'title' => 'Ingrese un NIT válido de 9 dígitos, sin guion ni dígito verificador',
+                ]) !!}
+                <span id="nit-error" class="text-danger d-none mt-1"></span>
+            </div>
+        </div>
+
+        {{-- ======================= --}}
+        
+        <div class="col-12 col-md-3" id="div_ident_empresa_natural">
+            <div class="form-group d-flex flex-column">
+                <label for="ident_empresa_natural" class="form-label">Id Persona Natural<span class="text-danger">*</span></label>
+                {!! Form::text('ident_empresa_natural', old('ident_empresa_natural', isset($empresa) ? $empresa->ident_empresa_natural : null), [
+                    'class' => 'form-control',
+                    'id' => 'ident_empresa_natural',
+                    'required' => 'required',
+                    // 'maxlength' => '9',
                     'title' => 'Ingrese un NIT válido de 9 dígitos, sin guion ni dígito verificador',
                 ]) !!}
                 <span id="nit-error" class="text-danger d-none mt-1"></span>

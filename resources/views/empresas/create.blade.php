@@ -141,6 +141,8 @@
                 width: '100%'
             });
 
+            //================================
+
             // Inicializar intlTelInput para el campo celular en el modal
             initIntlPhone("#celular_empresa");
 
@@ -150,6 +152,77 @@
             // Inicializar función de validación de NIT
             initNitValidation("#nit_empresa", "#nit-error");
 
+            //================================
+
+            $('#div_nit_empresa').hide();
+            $('#nit_empresa').removeAttr('required');
+
+            $('#div_ident_empresa_natural').hide();
+            $('#ident_empresa_natural').removeAttr('required');
+
+            //================================
+
+            $('#id_tipo_documento').change(function() {
+                let idTipoDocumento = $('#id_tipo_documento').val();
+
+                console.log(idTipoDocumento);
+
+                if (idTipoDocumento == 3) { // Nit
+                    $('#div_nit_empresa').show();
+                    $('#nit_empresa').attr('required');
+
+                    $('#div_ident_empresa_natural').hide();
+                    $('#ident_empresa_natural').removeAttr('required');
+
+                    $('#div_celular').addClass('mt-3');
+                    
+                } else if (idTipoDocumento != 3 && idTipoDocumento != '') {
+                    $('#div_nit_empresa').hide();
+                    $('#nit_empresa').removeAttr('required');
+
+                    $('#div_ident_empresa_natural').show();
+                    $('#ident_empresa_natural').attr('required');
+
+                    $('#div_celular').addClass('mt-3');
+
+                } else {
+                    $('#div_nit_empresa').hide();
+                    $('#nit_empresa').removeAttr('required');
+
+                    $('#div_ident_empresa_natural').hide();
+                    $('#ident_empresa_natural').removeAttr('required');
+
+                    $('#div_celular').removeClass('mt-3');
+                }
+
+                // $.ajax({
+                    
+                //     type: "POST",
+                //     dataType: "JSON",
+                //     data: {
+                //         '_token': "{{ csrf_token() }}",
+                //         'email_empresa': emailEmpresa
+                //     },
+                //     success: function(respuesta) {
+                //         console.log(respuesta);
+
+                //         // Validamos si el objeto respuesta tiene datos (no está vacío)
+                //         // y si el email coincide con el que escribió el usuario
+                //         if (respuesta && respuesta.email_empresa == emailEmpresa) {
+                //             Swal.fire('Cuidado!',
+                //                 'Este correo ya está registrado',
+                //                 'warning'
+                //             )
+                //             $('#email_empresa').val('');
+                //         }
+                //     },
+                //     error: function(error) {
+                //         console.error("Error en la validación:", error);
+                //     }
+                // });
+            });
+
+            //================================
 
             // formCrearEmpresas para cargar gif en el submit
             $(document).on("submit", "form[id^='formCrearEmpresas']", function(e) {
@@ -185,10 +258,14 @@
 
             };
 
+            //================================
+
             const limpiarErrorNit = () => {
                 errorNitMsg.classList.add('d-none');
                 nitInput.classList.remove('is-invalid');
             };
+
+            //================================
 
             nitInput.addEventListener('blur', async () => {
                 const nit = nitInput.value.trim();
@@ -271,8 +348,6 @@
             // Fin validación correo
             //================================
         }); // FIN document.ready
-
-
 
         // =============================================
 

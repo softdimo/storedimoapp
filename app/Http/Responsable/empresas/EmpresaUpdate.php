@@ -24,7 +24,9 @@ class EmpresaUpdate implements Responsable
 
     public function toResponse($request)
     {
+        $idTipoDocumento = request('id_tipo_documento', null);
         $nitEmpresa = request('nit_empresa', null);
+        $identEmpresaNatural = request('ident_empresa_natural', null);
         $nombreEmpresa = request('nombre_empresa', null);
         $telefonoEmpresa = request('telefono_empresa', null);
         $celularEmpresa = request('celular_empresa');
@@ -78,7 +80,9 @@ class EmpresaUpdate implements Responsable
         try {
             $reqEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/empresa_update/'.$this->idEmpresa, [
                 'json' => [
+                    'id_tipo_documento' => $idTipoDocumento ?? $empresaActual->id_tipo_documento,
                     'nit_empresa' => $nitEmpresa ?? $empresaActual->nit_empresa,
+                    'ident_empresa_natural' => $identEmpresaNatural ?? $empresaActual->ident_empresa_natural,
                     'nombre_empresa' => $nombreEmpresa ?? $empresaActual->nombre_empresa,
                     'telefono_empresa' => $telefonoEmpresa ?? $empresaActual->telefono_empresa,
                     'celular_empresa' => $celularEmpresa ?? $empresaActual->celular_empresa,
