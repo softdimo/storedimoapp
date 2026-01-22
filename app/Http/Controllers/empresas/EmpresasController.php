@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Traits\MetodosTrait;
 use Exception;
+use Illuminate\Validation\ValidationException;
 use App\Http\Responsable\empresas\EmpresaIndex;
 use App\Http\Responsable\empresas\EmpresaStore;
 use App\Http\Responsable\empresas\EmpresaUpdate;
@@ -243,13 +244,16 @@ class EmpresasController extends Controller
     {
         try {
             $request->validate([
-                'nit_empresa' => [
-                    'required',
-                    'regex:/^[0-9]{9}$/',
-                ]
+                'nit_empresa' => 'required|numeric|digits:10' // Mucho más seguro y limpio
+                // 'nit_empresa' => [
+                //     'required',
+                //     'regex:/^[0-9]{10}$/',
+                // ]
             ], [
                 'nit_empresa.required' => 'El NIT es obligatorio.',
-                'nit_empresa.regex'    => 'El NIT debe contener exactamente 9 dígitos numéricos.',
+                'nit_empresa.digits'   => 'El NIT debe tener exactamente 10 dígitos.',
+                // 'nit_empresa.regex'    => 'El NIT debe contener exactamente 10 dígitos numéricos.',
+
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -268,7 +272,8 @@ class EmpresasController extends Controller
             return response()->json(
                 json_decode($response->getBody()->getContents(), true)
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            dd($e);
             return response()->json([
                 'error' => 'No se pudo validar el NIT en el servicio externo.',
                 'valido' => false

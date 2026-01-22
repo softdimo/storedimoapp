@@ -138,38 +138,84 @@ function initPhoneValidation(inputSelector, errorSelector) {
 // ====================
 // Validación NIT (9 dígitos exactos, solo números)
 // ====================
-function initNitValidation(inputSelector, errorSelector) {
-    // Validación en tiempo real (solo números y máximo 9 caracteres)
+// function initNitValidation(inputSelector, errorSelector) {
+//     // Validación en tiempo real (solo números y máximo 9 caracteres)
+//     $(document).on("input", inputSelector, function() {
+//         let value = $(this).val();
+
+//         // Eliminar todo lo que no sea número
+//         value = value.replace(/\D/g, "");
+
+//         // Limitar a 9 caracteres
+//         if (value.length > 10) {
+//             value = value.substring(0, 10);
+//         }
+
+//         $(this).val(value);
+//     });
+
+//     // Validación al salir del campo
+//     $(document).on("blur", inputSelector, function() {
+//         const value = $(this).val().trim();
+//         const errorMsg = $(errorSelector);
+
+//         errorMsg.text("").addClass("d-none");
+
+//         if (!value) return;
+
+//         if (value.length !== 10) {
+//             errorMsg.text("El NIT debe tener exactamente 10 dígitos incluyendo el de verificación sin el guión.").removeClass("d-none");
+
+//             setTimeout(() => {
+//                 errorMsg.addClass("d-none");
+//                 $(this).val(""); // limpiar el campo
+//             }, 4000);
+//         }
+//     });
+// }
+
+// En validation.js
+function initNitValidation(inputSelector, errorSelector, serverValidationCallback = null) {
+    const $input = $(inputSelector);
+    const $errorMsg = $(errorSelector);
+
+    // Bloqueo de entrada: solo números y máximo 10
     $(document).on("input", inputSelector, function() {
-        let value = $(this).val();
-
-        // Eliminar todo lo que no sea número
-        value = value.replace(/\D/g, "");
-
-        // Limitar a 9 caracteres
-        if (value.length > 9) {
-            value = value.substring(0, 9);
+        this.value = this.value.replace(/\D/g, "");
+        if (this.value.length > 10) {
+            this.value = this.value.substring(0, 10);
         }
-
-        $(this).val(value);
     });
 
     // Validación al salir del campo
-    $(document).on("blur", inputSelector, function() {
-        const value = $(this).val().trim();
-        const errorMsg = $(errorSelector);
+    $(document).on("blur", inputSelector, async function() {
+        const value = $input.val().trim();
 
-        errorMsg.text("").addClass("d-none");
+        // Limpiar estados previos
+        $errorMsg.addClass("d-none").text("");
+        $input.removeClass("is-invalid is-valid");
 
         if (!value) return;
 
-        if (value.length !== 9) {
-            errorMsg.text("El NIT debe tener exactamente 9 dígitos.").removeClass("d-none");
+        // --- VALIDACIÓN DE FORMATO (Local) ---
+        if (value.length !== 10) {
+            $errorMsg.text("El NIT debe tener exactamente 10 dígitos.").removeClass("d-none");
+            $input.addClass("is-invalid");
 
             setTimeout(() => {
-                errorMsg.addClass("d-none");
-                $(this).val(""); // limpiar el campo
+                $errorMsg.addClass("d-none");
+                $input.val("").removeClass("is-invalid");
             }, 4000);
+            return; // Detenemos aquí, no llamamos al servidor si el formato es inválido
+        }
+
+        // --- VALIDACIÓN DE DISPONIBILIDAD (Servidor) ---
+        // Si el formato es correcto y existe un callback (la lógica de la vista), se ejecuta
+        if (serverValidationCallback && typeof serverValidationCallback === "function") {
+            serverValidationCallback(value, $input, $errorMsg);
+        } else {
+            // Si no hay callback, simplemente marcamos como válido localmente
+            $input.addClass("is-valid");
         }
     });
 }

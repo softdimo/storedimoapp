@@ -150,7 +150,38 @@
             initPhoneValidation("#telefono_empresa", "#telefono-error");
 
             // Inicializar función de validación de NIT
-            initNitValidation("#nit_empresa", "#nit-error");
+            // initNitValidation("#nit_empresa", "#nit-error");
+
+            // Inicializamos el NIT pasando la lógica del servidor como tercer parámetro
+            initNitValidation("#nit_empresa", "#nit-error", async function(nit, $input, $errorMsg) {
+                try {
+                    const response = await fetch("{{ route('nit_validator') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: JSON.stringify({ nit_empresa: nit })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) { // Si el controlador devuelve 422 o 500
+                        $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
+                        $input.addClass("is-invalid").val("");
+                    } else if (data.valido === false) { // Si el NIT ya existe
+                        $errorMsg.text("Este NIT ya está registrado.").removeClass("d-none");
+                        $input.addClass("is-invalid").val("");
+                    } else {
+                        // Todo perfecto
+                        $input.addClass("is-valid");
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    $errorMsg.text("Error al conectar con el servidor.").removeClass("d-none");
+                }
+            });
 
             //================================
 
@@ -195,31 +226,6 @@
                     $('#div_celular').removeClass('mt-3');
                 }
 
-                // $.ajax({
-                    
-                //     type: "POST",
-                //     dataType: "JSON",
-                //     data: {
-                //         '_token': "{{ csrf_token() }}",
-                //         'email_empresa': emailEmpresa
-                //     },
-                //     success: function(respuesta) {
-                //         console.log(respuesta);
-
-                //         // Validamos si el objeto respuesta tiene datos (no está vacío)
-                //         // y si el email coincide con el que escribió el usuario
-                //         if (respuesta && respuesta.email_empresa == emailEmpresa) {
-                //             Swal.fire('Cuidado!',
-                //                 'Este correo ya está registrado',
-                //                 'warning'
-                //             )
-                //             $('#email_empresa').val('');
-                //         }
-                //     },
-                //     error: function(error) {
-                //         console.error("Error en la validación:", error);
-                //     }
-                // });
             });
 
             //================================
@@ -245,18 +251,18 @@
             const errorNitMsg = document.getElementById('nit-error');
             let errorTimeout;
 
-            const mostrarErrorNit = (mensaje) => {
-                errorNitMsg.textContent = mensaje;
-                errorNitMsg.classList.remove('d-none');
-                nitInput.classList.add('is-invalid');
+            // const mostrarErrorNit = (mensaje) => {
+            //     errorNitMsg.textContent = mensaje;
+            //     errorNitMsg.classList.remove('d-none');
+            //     nitInput.classList.add('is-invalid');
 
-                clearTimeout(errorTimeout);
+            //     clearTimeout(errorTimeout);
 
-                errorTimeout = setTimeout(() => {
-                    limpiarErrorNit();
-                }, 4000);
+            //     errorTimeout = setTimeout(() => {
+            //         limpiarErrorNit();
+            //     }, 4000);
 
-            };
+            // };
 
             //================================
 
@@ -267,43 +273,43 @@
 
             //================================
 
-            nitInput.addEventListener('blur', async () => {
-                const nit = nitInput.value.trim();
-                limpiarErrorNit();
+            // nitInput.addEventListener('blur', async () => {
+            //     const nit = nitInput.value.trim();
+            //     limpiarErrorNit();
 
-                if (nit === '') {
-                    mostrarErrorNit('El NIT es obligatorio.');
-                    return;
-                }
+            //     if (nit === '') {
+            //         mostrarErrorNit('El NIT es obligatorio.');
+            //         return;
+            //     }
 
-                try {
-                    const response = await fetch("{{ route('nit_validator') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .content
-                        },
-                        body: JSON.stringify({
-                            nit_empresa: nit
-                        })
-                    });
+            //     try {
+            //         const response = await fetch("{{ route('nit_validator') }}", {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //                 'Accept': 'application/json',
+            //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+            //                     .content
+            //             },
+            //             body: JSON.stringify({
+            //                 nit_empresa: nit
+            //             })
+            //         });
 
-                    if (!response.ok) throw new Error('Error en la petición');
+            //         if (!response.ok) throw new Error('Error en la petición');
 
-                    const data = await response.json();
+            //         const data = await response.json();
 
-                    if (!data.valido) {
-                        mostrarErrorNit('Este NIT ya está registrado.');
-                        nitInput.value = '';
-                    }
+            //         if (!data.valido) {
+            //             mostrarErrorNit('Este NIT ya está registrado.');
+            //             nitInput.value = '';
+            //         }
 
-                } catch (error) {
-                    console.error('Error al validar el NIT:', error);
-                    mostrarErrorNit('Ocurrió un error. Intente más tarde.');
-                }
-            });
+            //     } catch (error) {
+            //         console.error('Error al validar el NIT:', error);
+            //         mostrarErrorNit('Ocurrió un error consultando el Nit de la empresa. Intente más tarde.');
+            //     }
+            // });
             //================================
             // Fin de validación de nit de empresa
             //================================

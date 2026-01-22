@@ -47,14 +47,27 @@
                             'class' => 'form-control',
                             'id' => 'nit_proveedor',
                             'required' => 'required',
-                            'pattern' => '^\d{5,9}$',
-                            'minlength' => '9',
-                            'maxlength' => '9',
-                            'title' => 'Ingrese un NIT válido de 9 dígitos, sin guión ni dígito verificador',
+                            // 'pattern' => '^\d{5,9}$',
+                            'minlength' => '10',
+                            'maxlength' => '10',
+                            'placeholder' => 'Ej: 9001234567',
+                            'title' => 'Ingrese un NIT válido de 10 dígitos',
                         ]) !!}
                         <span id="nit-error" class="text-danger d-none mt-1"></span>
                     </div>
                 </div>
+
+                {{-- Cambié maxlength y minlength a 10 para ser consistente con la validación general --}}
+                {!! Form::text('nit_proveedor', old('nit_proveedor'), [
+                    'class' => 'form-control',
+                    'id' => 'nit_proveedor',
+                    'required' => 'required',
+                    'minlength' => '10',
+                    'maxlength' => '10',
+                    'placeholder' => 'Ej: 9001234567',
+                    'title' => 'Ingrese un NIT válido de 10 dígitos'
+                ]) !!}
+                <span id="nit-error" class="text-danger d-none mt-1"></span>
 
                 {{-- ======================= --}}
 
