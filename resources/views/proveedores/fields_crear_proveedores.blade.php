@@ -36,75 +36,60 @@
             {{-- ========================================================= --}}
             {{-- ========================================================= --}}
 
-            {{-- <div class="row mt-5" id="div_proveedor_juridico"> --}}
-                <div class="col-12 col-md-3" id="div_nit_proveedor">
-                    <div class="form-group d-flex flex-column">
-                        <label for="nit_proveedor" class="form-label">
-                            Nit Proveedor
-                            <span class="text-danger">*</span>
-                        </label>
-                        {!! Form::text('nit_proveedor', old('nit_proveedor'), [
-                            'class' => 'form-control',
-                            'id' => 'nit_proveedor',
-                            'required' => 'required',
-                            // 'pattern' => '^\d{5,9}$',
-                            'minlength' => '10',
-                            'maxlength' => '10',
-                            'placeholder' => 'Ej: 9001234567',
-                            'title' => 'Ingrese un NIT válido de 10 dígitos',
-                        ]) !!}
-                        <span id="nit-error" class="text-danger d-none mt-1"></span>
-                    </div>
+            <div class="col-12 col-md-3" id="div_nit_proveedor">
+                <div class="form-group d-flex flex-column">
+                    <label for="nit_proveedor" class="form-label">
+                        Nit Proveedor
+                        <span class="text-danger">*</span>
+                    </label>
+                    {!! Form::text('nit_proveedor', old('nit_proveedor'), [
+                        'class' => 'form-control',
+                        'id' => 'nit_proveedor',
+                        'required' => 'required',
+                        'minlength' => '10',
+                        'maxlength' => '10',
+                        'placeholder' => 'Ej: 9001234567',
+                        'title' => 'Ingrese un NIT válido de 10 dígitos',
+                    ]) !!}
+                    <span id="nit-error" class="text-danger d-none mt-1"></span>
                 </div>
+            </div>
 
-                {{-- Cambié maxlength y minlength a 10 para ser consistente con la validación general --}}
-                {!! Form::text('nit_proveedor', old('nit_proveedor'), [
-                    'class' => 'form-control',
-                    'id' => 'nit_proveedor',
-                    'required' => 'required',
-                    'minlength' => '10',
-                    'maxlength' => '10',
-                    'placeholder' => 'Ej: 9001234567',
-                    'title' => 'Ingrese un NIT válido de 10 dígitos'
-                ]) !!}
-                <span id="nit-error" class="text-danger d-none mt-1"></span>
+            {{-- ======================= --}}
 
-                {{-- ======================= --}}
-
-                <div class="col-12 col-md-3" id="div_proveedor_juridico">
-                    <div class="form-group d-flex flex-column">
-                        <label for="nombre_empresa" class="form-label">Nombre Jurídico
-                            <span class="text-danger">*</span>
-                        </label>
-                        {!! Form::text('proveedor_juridico', old('proveedor_juridico'), [
-                            'class' => 'form-control',
-                            'id' => 'nombre_empresa',
-                            'required' => 'required',
-                            'pattern' => '^[a-zA-ZÁÉÍÓÚÑáéíóúñ0-9\s\.,&\-]{2,100}$',
-                            'title' => 'El nombre puede incluir letras, números, espacios y algunos caracteres como ., - &',
-                            'maxlength' => 100,
-                        ]) !!}
-                    </div>
+            <div class="col-12 col-md-3" id="div_proveedor_juridico">
+                <div class="form-group d-flex flex-column">
+                    <label for="nombre_empresa" class="form-label">Nombre Jurídico
+                        <span class="text-danger">*</span>
+                    </label>
+                    {!! Form::text('proveedor_juridico', old('proveedor_juridico'), [
+                        'class' => 'form-control',
+                        'id' => 'nombre_empresa',
+                        'required' => 'required',
+                        'pattern' => '^[a-zA-ZÁÉÍÓÚÑáéíóúñ0-9\s\.,&\-]{2,100}$',
+                        'title' => 'El nombre puede incluir letras, números, espacios y algunos caracteres como ., - &',
+                        'maxlength' => 100,
+                    ]) !!}
                 </div>
+            </div>
 
-                {{-- ======================= --}}
+            {{-- ======================= --}}
 
-                <div class="col-12 col-md-3" id="div_telefono_empresa">
-                    <div class="form-group d-flex flex-column">
-                        <label for="telefono_empresa" class="form-label">Teléfono Jurídico</label>
-                        {!! Form::text('telefono_juridico', old('telefono_juridico'), [
-                            'class' => 'form-control',
-                            'id' => 'telefono_empresa',
-                            // 'required' => 'required',
-                            'pattern' => '^\d{7,10}$',
-                            'title' => 'Debe tener entre 7 y 10 dígitos.',
-                            'minlength' => 7,
-                            'maxlength' => 10,
-                        ]) !!}
-                        <span id="telefono-error" class="text-danger d-none mt-1"></span>
-                    </div>
+            <div class="col-12 col-md-3" id="div_telefono_empresa">
+                <div class="form-group d-flex flex-column">
+                    <label for="telefono_empresa" class="form-label">Teléfono Jurídico</label>
+                    {!! Form::text('telefono_juridico', old('telefono_juridico'), [
+                        'class' => 'form-control',
+                        'id' => 'telefono_empresa',
+                        // 'required' => 'required',
+                        'pattern' => '^\d{7,10}$',
+                        'title' => 'Debe tener entre 7 y 10 dígitos.',
+                        'minlength' => 7,
+                        'maxlength' => 10,
+                    ]) !!}
+                    <span id="telefono-error" class="text-danger d-none mt-1"></span>
                 </div>
-            {{-- </div> --}}
+            </div>
 
             {{-- ========================================================= --}}
             {{-- ========================================================= --}}

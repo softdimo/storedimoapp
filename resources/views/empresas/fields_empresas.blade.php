@@ -42,9 +42,9 @@
                     'id' => 'ident_empresa_natural',
                     'required' => 'required',
                     // 'maxlength' => '9',
-                    'title' => 'Ingrese un NIT válido de 9 dígitos, sin guion ni dígito verificador',
+                    'title' => 'Ingrese una Identificación válida',
                 ]) !!}
-                <span id="nit-error" class="text-danger d-none mt-1"></span>
+                <span id="ident-natural-error" class="text-danger d-none mt-1"></span>
             </div>
         </div>
 

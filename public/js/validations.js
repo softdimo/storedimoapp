@@ -83,9 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         }
-    };
-});
+    }; // FIN window.initIntlPhone (CELULAR)
+}); // FIN document.addEventListener("DOMContentLoaded")
 
+// ==========================================================================================
 
 // ====================
 // Validación Teléfono Fijo
@@ -133,48 +134,13 @@ function initPhoneValidation(inputSelector, errorSelector) {
             $input.removeClass("is-invalid").addClass("is-valid");
         }
     });
-}
+} // FIN function initPhoneValidation()
+
+// ==========================================================================================
 
 // ====================
-// Validación NIT (9 dígitos exactos, solo números)
+// Validación NIT (10 dígitos exactos, solo números)
 // ====================
-// function initNitValidation(inputSelector, errorSelector) {
-//     // Validación en tiempo real (solo números y máximo 9 caracteres)
-//     $(document).on("input", inputSelector, function() {
-//         let value = $(this).val();
-
-//         // Eliminar todo lo que no sea número
-//         value = value.replace(/\D/g, "");
-
-//         // Limitar a 9 caracteres
-//         if (value.length > 10) {
-//             value = value.substring(0, 10);
-//         }
-
-//         $(this).val(value);
-//     });
-
-//     // Validación al salir del campo
-//     $(document).on("blur", inputSelector, function() {
-//         const value = $(this).val().trim();
-//         const errorMsg = $(errorSelector);
-
-//         errorMsg.text("").addClass("d-none");
-
-//         if (!value) return;
-
-//         if (value.length !== 10) {
-//             errorMsg.text("El NIT debe tener exactamente 10 dígitos incluyendo el de verificación sin el guión.").removeClass("d-none");
-
-//             setTimeout(() => {
-//                 errorMsg.addClass("d-none");
-//                 $(this).val(""); // limpiar el campo
-//             }, 4000);
-//         }
-//     });
-// }
-
-// En validation.js
 function initNitValidation(inputSelector, errorSelector, serverValidationCallback = null) {
     const $input = $(inputSelector);
     const $errorMsg = $(errorSelector);
@@ -218,7 +184,75 @@ function initNitValidation(inputSelector, errorSelector, serverValidationCallbac
             $input.addClass("is-valid");
         }
     });
-}
+} // FIN function initNitValidation()
+
+// ==========================================================================================
+
+// validation.js
+
+/**
+ * Validación Dinámica de Identificación según Tipo de Documento
+ */
+function initDynamicIdValidation(config) {
+    const {
+        selectSelector,
+        inputSelector,
+        errorSelector,
+        map // Mapa de reglas
+    } = config;
+
+    const $select = $(selectSelector);
+    const $input = $(inputSelector);
+    const $errorMsg = $(errorSelector);
+
+    function getActiveRule() {
+        const typeId = $select.val();
+        // Si el tipo no está en el mapa, usamos una regla por defecto (alfanumérico flexible)
+        return map[typeId] || { onlyNumbers: false, min: 5, max: 15, label: "documento" };
+    }
+
+    // 1. Bloqueo de entrada según la regla activa
+    $(document).on("input", inputSelector, function() {
+        const rule = getActiveRule();
+        if (rule.onlyNumbers) {
+            this.value = this.value.replace(/\D/g, "");
+        }
+        if (this.value.length > rule.max) {
+            this.value = this.value.substring(0, rule.max);
+        }
+    });
+
+    // 2. Validación al salir
+    $(document).on("blur", inputSelector, function() {
+        const value = $input.val().trim();
+        const rule = getActiveRule();
+
+        $errorMsg.addClass("d-none").text("");
+        $input.removeClass("is-invalid is-valid");
+
+        if (!value) return;
+
+        if (value.length < rule.min) {
+            $errorMsg.text(`El ${rule.label} debe tener al menos ${rule.min} caracteres.`).removeClass("d-none");
+            $input.addClass("is-invalid");
+            
+            setTimeout(() => {
+                $errorMsg.addClass("d-none");
+                $input.val("").removeClass("is-invalid");
+            }, 4000);
+        } else {
+            $input.addClass("is-valid");
+        }
+    });
+
+    // 3. Limpiar el input si cambian el tipo de documento para evitar conflictos
+    $select.on("change", function() {
+        $input.val("").removeClass("is-invalid is-valid");
+        $errorMsg.addClass("d-none");
+    });
+} // FIN function initDynamicIdValidation(config) Tipos de documentos a parte del NIT
+
+// ==========================================================================================
 
 // Validar correo electrónico
 function validarEmail(input) {
@@ -238,8 +272,9 @@ function validarEmail(input) {
         errorSpan.textContent = "";
         input.classList.remove("is-invalid");
     }
-}
+} // FIN function validarEmail(input)
 
+// ==========================================================================================
 
 // Función para validar email
 function initEmailValidation(inputSelector, errorSelector) {
@@ -273,4 +308,4 @@ function initEmailValidation(inputSelector, errorSelector) {
             }, 4000);
         }
     });
-}
+} // FIN function initEmailValidation()

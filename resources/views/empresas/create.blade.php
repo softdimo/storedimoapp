@@ -185,6 +185,21 @@
 
             //================================
 
+            initDynamicIdValidation({
+                selectSelector: "#id_tipo_documento", // Cambia por el ID real de tu select
+                inputSelector: "#ident_empresa_natural",
+                errorSelector: "#ident-natural-error",
+                map: {
+                    "1": { onlyNumbers: true,  min: 7, max: 10, label: "número de cédula" },
+                    "2": { onlyNumbers: false, min: 6, max: 15, label: "pasaporte" },
+                    "4": { onlyNumbers: false, min: 10, max: 15, label: "permiso especial" },
+                    "5": { onlyNumbers: false, min: 6, max: 12, label: "cédula de extranjería" }
+                    // El NIT (3) lo manejamos con su propia función initNitValidation ya creada
+                }
+            });
+
+            //================================
+
             $('#div_nit_empresa').hide();
             $('#nit_empresa').removeAttr('required');
 

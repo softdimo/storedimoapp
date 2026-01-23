@@ -109,7 +109,6 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2({
-                // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });
@@ -129,7 +128,7 @@
             /* // DESCOMENTAR ESTO CUANDO SE NECESITE VALIDAR EL NIT CONTRA EL SERVIDOR
             initNitValidation("#nit_proveedor", "#nit-error", async function(nit, $input, $errorMsg) {
                 try {
-                    const response = await fetch("{{ route('nit_validator_proveedor') }}", {
+                    const response = await fetch("@{{ url('#') }}", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -159,130 +158,129 @@
             $('#div_proveedor_juridico').hide();
             $('#div_telefono_empresa').hide();
 
-            // 3. Lógica de visibilidad por Tipo de Persona
             $('#id_tipo_persona').change(function() {
-                let idTipoPersona = $(this).val();
+                let idTipoPersona = $('#id_tipo_persona').val();
+                console.log(idTipoPersona);
+                
+                if (idTipoPersona == 4) { // Proveedor-juridico
+                    $('#div_identificacion').hide('slow');
+                    $('#identificacion').removeAttr('required');
+                    $('#identificacion').val('');
 
-                // Limpiar errores visuales previos
-                $('.text-danger').addClass('d-none');
-                $('.is-invalid').removeClass('is-invalid');
+                    $('#div_nombres_persona').hide('slow');
+                    $('#nombres_persona').removeAttr('required');
+                    $('#nombres_persona').val('');
 
-                if (idTipoPersona == 4) { // Proveedor-jurídico
-                    // OCULTAR campos de persona natural
-                    $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_numero_telefono, #div_id_genero').hide('slow');
-                    $('#identificacion, #nombres_persona, #apellidos_persona, #numero_telefono').removeAttr('required').val('');
-                    $('#id_genero').removeAttr('required').val('').trigger('change'); // Limpia select2
+                    $('#div_apellidos_persona').hide('slow');
+                    $('#apellidos_persona').removeAttr('required');
+                    $('#apellidos_persona').val('');
 
-                    // MOSTRAR campos de empresa
-                    $('#div_nit_proveedor, #div_proveedor_juridico, #div_telefono_empresa').show('slow');
-                    $('#nit_proveedor, #nombre_empresa').attr('required', 'required');
-                    
-                    // REPLICAR TUS ESTILOS mt-3
-                    $('#div_celular, #div_email, #div_telefono_empresa').addClass('mt-3');
-                    $('#celular, #email_proveedor').attr('required', 'required');
+                    $('#div_numero_telefono').hide('slow');
+                    $('#numero_telefono').removeAttr('required');
+                    $('#numero_telefono').val('');
 
-                } else { // Natural u otros
-                    // MOSTRAR campos de persona natural
-                    $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_numero_telefono, #div_id_genero').show('slow');
-                    $('#identificacion, #nombres_persona, #apellidos_persona, #id_genero').attr('required', 'required');
+                    $('#div_celular').show('slow');
+                    $('#div_celular').addClass('mt-3');
+                    $('#celular').attr('required');
+
+                    $('#div_email').show('slow');
+                    $('#div_email').addClass('mt-3');
+                    $('#email_proveedor').attr('required');
+
+                    $('#div_direccion').show('slow');
+                    $('#direccion_proveedor').attr('required');
+
+                    $('#div_id_genero').hide('slow');
+                    $('#id_genero').removeAttr('required');
+                    $('#id_genero').val('').trigger('change');
+
+                    $('#div_nit_proveedor').show();
+                    $('#nit_proveedor').attr('required');
+
+                    $('#div_proveedor_juridico').show();
+                    $('#nombre_empresa').attr('required');
+
+                    $('#div_telefono_empresa').show();
+                    $('#div_telefono_empresa').addClass('mt-3');
+                    $('#telefono_empresa').removeAttr('required');
+                } else {
+                    $('#div_identificacion').show('slow');
+                    $('#identificacion').attr('required');
+
+                    $('#div_nombres_persona').show('slow');
+                    $('#nombres_persona').attr('required');
+
+                    $('#div_apellidos_persona').show('slow');
+                    $('#apellidos_persona').attr('required');
+
+                    $('#div_numero_telefono').show('slow');
                     $('#numero_telefono').removeAttr('required');
 
-                    // OCULTAR campos de empresa
-                    $('#div_nit_proveedor, #div_proveedor_juridico, #div_telefono_empresa').hide('slow');
-                    $('#nit_proveedor, #nombre_empresa, #telefono_empresa').removeAttr('required').val('');
+                    $('#div_celular').show('slow');
+                    $('#div_celular').addClass('mt-3');
+                    $('#celular').attr('required');
 
-                    // REPLICAR TUS ESTILOS mt-3
-                    $('#div_celular, #div_email').addClass('mt-3');
-                    $('#celular, #email_proveedor').attr('required', 'required');
+                    $('#div_email').show('slow');
+                    $('#div_email').addClass('mt-3');
+                    $('#email_proveedor').attr('required');
+
+                    $('#div_direccion').show('slow');
+                    $('#direccion_proveedor').attr('required');
+
+                    $('#div_id_genero').show('slow');
+                    $('#id_genero').attr('required');
+
+                    $('#div_nit_proveedor').hide();
+                    $('#nit_proveedor').removeAttr('required');
+                    $('#nit_proveedor').val('');
+
+                    $('#div_proveedor_juridico').hide();
+                    $('#nombre_empresa').removeAttr('required');
+                    $('#nombre_empresa').val('');
+
+                    $('#div_telefono_empresa').hide();
+                    $('#telefono_empresa').removeAttr('required');
+                    $('#telefono_empresa').val('');
                 }
-            }).trigger('change');
+            }); // FIN Tipo Persona Jurídica
 
+            // 3. Lógica de visibilidad por Tipo de Persona
             // $('#id_tipo_persona').change(function() {
-            //     let idTipoPersona = $('#id_tipo_persona').val();
+            //     let idTipoPersona = $(this).val();
 
-            //     if (idTipoPersona == 4) { // Proveedor-juridico
-            //         $('#div_identificacion').hide('slow');
-            //         $('#identificacion').removeAttr('required');
-            //         $('#identificacion').val('');
+            //     // Limpiar errores visuales previos
+            //     $('.text-danger').addClass('d-none');
+            //     $('.is-invalid').removeClass('is-invalid');
 
-            //         $('#div_nombres_persona').hide('slow');
-            //         $('#nombres_persona').removeAttr('required');
-            //         $('#nombres_persona').val('');
+            //     if (idTipoPersona == 4) { // Proveedor-jurídico
+            //         // OCULTAR campos de persona natural
+            //         $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_numero_telefono, #div_id_genero').hide('slow');
+            //         $('#identificacion, #nombres_persona, #apellidos_persona, #numero_telefono').removeAttr('required').val('');
+            //         $('#id_genero').removeAttr('required').val('').trigger('change'); // Limpia select2
 
-            //         $('#div_apellidos_persona').hide('slow');
-            //         $('#apellidos_persona').removeAttr('required');
-            //         $('#apellidos_persona').val('');
+            //         // MOSTRAR campos de empresa
+            //         $('#div_nit_proveedor, #div_proveedor_juridico, #div_telefono_empresa').show('slow');
+            //         $('#nit_proveedor, #nombre_empresa').attr('required', 'required');
+                    
+            //         // REPLICAR TUS ESTILOS mt-3
+            //         $('#div_celular, #div_email, #div_telefono_empresa').addClass('mt-3');
+            //         $('#celular, #email_proveedor').attr('required', 'required');
 
-            //         $('#div_numero_telefono').hide('slow');
-            //         $('#numero_telefono').removeAttr('required');
-            //         $('#numero_telefono').val('');
-
-            //         $('#div_celular').show('slow');
-            //         $('#div_celular').addClass('mt-3');
-            //         $('#celular').attr('required');
-
-            //         $('#div_email').show('slow');
-            //         $('#div_email').addClass('mt-3');
-            //         $('#email_proveedor').attr('required');
-
-            //         $('#div_direccion').show('slow');
-            //         $('#direccion_proveedor').attr('required');
-
-            //         $('#div_id_genero').hide('slow');
-            //         $('#id_genero').removeAttr('required');
-            //         $('#id_genero').val('').trigger('change');
-
-            //         $('#div_nit_proveedor').show();
-            //         $('#nit_proveedor').attr('required');
-
-            //         $('#div_proveedor_juridico').show();
-            //         $('#nombre_empresa').attr('required');
-
-            //         $('#div_telefono_empresa').show();
-            //         $('#div_telefono_empresa').addClass('mt-3');
-            //         $('#telefono_empresa').removeAttr('required');
-            //     } else {
-            //         $('#div_identificacion').show('slow');
-            //         $('#identificacion').attr('required');
-
-            //         $('#div_nombres_persona').show('slow');
-            //         $('#nombres_persona').attr('required');
-
-            //         $('#div_apellidos_persona').show('slow');
-            //         $('#apellidos_persona').attr('required');
-
-            //         $('#div_numero_telefono').show('slow');
+            //     } else { // Natural u otros
+            //         // MOSTRAR campos de persona natural
+            //         $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_numero_telefono, #div_id_genero').show('slow');
+            //         $('#identificacion, #nombres_persona, #apellidos_persona, #id_genero').attr('required', 'required');
             //         $('#numero_telefono').removeAttr('required');
 
-            //         $('#div_celular').show('slow');
-            //         $('#div_celular').addClass('mt-3');
-            //         $('#celular').attr('required');
+            //         // OCULTAR campos de empresa
+            //         $('#div_nit_proveedor, #div_proveedor_juridico, #div_telefono_empresa').hide('slow');
+            //         $('#nit_proveedor, #nombre_empresa, #telefono_empresa').removeAttr('required').val('');
 
-            //         $('#div_email').show('slow');
-            //         $('#div_email').addClass('mt-3');
-            //         $('#email_proveedor').attr('required');
-
-            //         $('#div_direccion').show('slow');
-            //         $('#direccion_proveedor').attr('required');
-
-            //         $('#div_id_genero').show('slow');
-            //         $('#id_genero').attr('required');
-
-            //         $('#div_nit_proveedor').hide();
-            //         $('#nit_proveedor').removeAttr('required');
-            //         $('#nit_proveedor').val('');
-
-            //         $('#div_proveedor_juridico').hide();
-            //         $('#nombre_empresa').removeAttr('required');
-            //         $('#nombre_empresa').val('');
-
-            //         $('#div_telefono_empresa').hide();
-            //         $('#telefono_empresa').removeAttr('required');
-            //         $('#telefono_empresa').val('');
+            //         // REPLICAR TUS ESTILOS mt-3
+            //         $('#div_celular, #div_email').addClass('mt-3');
+            //         $('#celular, #email_proveedor').attr('required', 'required');
             //     }
-            // }); // FIN Tipo Persona Jurídica
-
-            
+            // }).trigger('change');
 
             // ===================================================================================
             // ===================================================================================
