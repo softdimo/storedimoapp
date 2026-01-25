@@ -104,10 +104,12 @@
                     {!! Form::text('identificacion', old('identificacion'), [
                         'class' => 'form-control',
                         'id' => 'identificacion',
-                        'minlength' => 6,
-                        'maxlength' => 10,
+                        // 'minlength' => 6,
+                        // 'maxlength' => 10,
                         'required' => 'required',
+                        'title' => 'Ingrese una Identificación válida',
                     ]) !!}
+                    <span id="ident-natural-error" class="text-danger d-none mt-1"></span>
                 </div>
             </div>
 
@@ -170,10 +172,9 @@
                         'class' => 'form-control',
                         'id' => 'celular',
                         'required' => 'required',
-                        'title' => 'El número de celular debe contener exactamente 10 dígitos numéricos',
-                        'maxlength' => '10',
-                        'minlength' => '10',
-                        'onkeypress' => 'return event.charCode >= 48 && event.charCode <= 57'
+                        'title' => 'Debe ser un número de celular válido, sin indicativos, entre 7 y 15 dígitos.',
+                        'minlength' => 7,
+                        'maxlength' => 15,
                     ]) !!}
                 </div>
             </div>
