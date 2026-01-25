@@ -111,6 +111,7 @@
                             <thead>
                                 <tr class="header-table text-center align-middle">
                                     <th>Nit Empresa</th>
+                                    <th>Id Persona Natural</th>
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
                                     <th>Celular</th>
@@ -131,6 +132,7 @@
                                 @foreach ($empresas as $empresa)
                                     <tr class="text-center align-middle">
                                         <td>{{ $empresa->nit_empresa }}</td>
+                                        <td>{{ $empresa->ident_empresa_natural }}</td>
                                         <td>{{ $empresa->nombre_empresa }}</td>
                                         <td>{{ $empresa->telefono_empresa }}</td>
                                         <td>{{ $empresa->celular_empresa }}</td>

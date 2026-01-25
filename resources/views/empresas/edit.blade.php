@@ -184,9 +184,6 @@
 
             //================================
 
-            // Inicializamos el NIT sin validrlo con el servidor como tercer parámetro por ser edit
-            // initNitValidation("#nit_proveedor", "#nit-error");
-
             // Inicializamos el NIT pasando la lógica del servidor como tercer parámetro
             initNitValidation("#nit_empresa", "#nit-error", async function(nit, $input, $errorMsg) {
                 try {
@@ -201,13 +198,11 @@
                     });
 
                     const data = await response.json();
-                    // console.log(`Responde el Response = ${response}`);
-                    console.log(`Responde el data.valido = ${data.valido}`);
-                    
 
                     if (!response.ok) { // Si el controlador devuelve 422 o 500
                         $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
                         $input.addClass("is-invalid").val("");
+
                     } else if (data.valido === false) { // Si el NIT ya existe
                         // Datos Formulario                        
                         let idEmpresa = $('#id_empresa').val();
@@ -215,19 +210,11 @@
                         let nitEmpresa = $('#nit_empresa').val();
                         let identEmpresaNatural = $('#ident_empresa_natural').val();
 
-                        console.log("ID empresa Formulario:", idEmpresa);
-                        console.log("Empresa Formulario:", nombreEmpresa);
-                        console.log("NIT Empresa Formulario:", nitEmpresa);
-
                         // Empresa Consultada:
                         const empresaConsultada = data.empresa; // El objeto completo
                         const idEmpresaConsultada = data.empresa.id_empresa;
                         const nombreEmpresaConsultada = data.empresa.nombre_empresa;
                         const nitEmpresaConsultada = data.empresa.nit_empresa;
-
-                        console.log("ID empresa Consultada:", idEmpresaConsultada);
-                        console.log("Empresa Consultada:", nombreEmpresaConsultada);
-                        console.log("NIT Empresa Consultada:", nitEmpresaConsultada);
 
                         if (idEmpresa != idEmpresaConsultada && nitEmpresa == nitEmpresaConsultada) {
                             $errorMsg.text(`El NIT ${nitEmpresaConsultada} ya pertenece a la empresa: (${nombreEmpresaConsultada}).`).removeClass("d-none");
