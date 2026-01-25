@@ -134,17 +134,152 @@
         $(document).ready(function() {
 
             $('.select2').select2({
-                // placeholder: "Seleccionar...",
                 allowClear: false,
                 width: '100%'
             });
 
+            // ===========================================================================================
+            // ===========================================================================================
+
+            let idTipoDocumento = $('#id_tipo_documento').val();
+
+            if (idTipoDocumento == 3) { // Nit
+                $('#div_nit_empresa').show();
+                $('#nit_empresa').attr('required');
+
+                $('#div_ident_empresa_natural').hide();
+                $('#ident_empresa_natural').removeAttr('required');
+
+                $('#div_celular').addClass('mt-3');
+                
+            } else if (idTipoDocumento != 3 && idTipoDocumento != '') {
+                $('#div_nit_empresa').hide();
+                $('#nit_empresa').removeAttr('required');
+
+                $('#div_ident_empresa_natural').show();
+                $('#ident_empresa_natural').attr('required');
+
+                $('#div_celular').addClass('mt-3');
+
+            } else {
+                $('#div_nit_empresa').hide();
+                $('#nit_empresa').removeAttr('required');
+
+                $('#div_ident_empresa_natural').hide();
+                $('#ident_empresa_natural').removeAttr('required');
+
+                $('#div_celular').removeClass('mt-3');
+            }
+
+            // ===========================================================================================
+            // ===========================================================================================
+
             // Inicializar intlTelInput para el campo celular en el modal
             initIntlPhone("#celular_empresa");
+
+            //================================
 
             // Inicializar función de validación de número de teléfono
             initPhoneValidation("#telefono_empresa", "#telefono-error");
 
+            //================================
+
+            // Inicializamos el NIT sin validrlo con el servidor como tercer parámetro por ser edit
+            initNitValidation("#nit_proveedor", "#nit-error");
+
+            // Inicializamos el NIT pasando la lógica del servidor como tercer parámetro
+            // initNitValidation("#nit_empresa", "#nit-error", async function(nit, $input, $errorMsg) {
+            //     try {
+            //         const response = await fetch("{{ route('nit_validator') }}", {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //                 'Accept': 'application/json',
+            //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //             },
+            //             body: JSON.stringify({ nit_empresa: nit })
+            //         });
+
+            //         const data = await response.json();
+            //         console.log(response);
+            //         console.log(data.valido);
+                    
+
+            //         if (!response.ok) { // Si el controlador devuelve 422 o 500
+            //             $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
+            //             $input.addClass("is-invalid").val("");
+            //         } else if (data.valido === false) { // Si el NIT ya existe
+            //             let idEmpresa = $('#id_empresa').val();
+            //             let nitEmpresa = $('#nit_empresa').val();
+
+            //             // if (idEmpresa == ) {
+                            
+            //             // }
+
+
+            //             $errorMsg.text("Este NIT ya está registrado.").removeClass("d-none");
+            //             $input.addClass("is-invalid").val("");
+            //         } else {
+            //             // Todo perfecto
+            //             $input.addClass("is-valid");
+            //         }
+            //     } catch (error) {
+            //         console.error('Error:', error);
+            //         $errorMsg.text("Error al conectar con el servidor.").removeClass("d-none");
+            //     }
+            // });
+
+            //================================
+
+            initDynamicIdValidation({
+                selectSelector: "#id_tipo_documento", // Cambia por el ID real de tu select
+                inputSelector: "#ident_empresa_natural",
+                errorSelector: "#ident-natural-error",
+                map: {
+                    "1": { onlyNumbers: true,  min: 7, max: 10, label: "número de cédula" },
+                    "2": { onlyNumbers: false, min: 6, max: 15, label: "pasaporte" },
+                    "4": { onlyNumbers: false, min: 10, max: 15, label: "permiso especial" },
+                    "5": { onlyNumbers: false, min: 6, max: 12, label: "cédula de extranjería" }
+                    // El NIT (3) lo manejamos con su propia función initNitValidation ya creada
+                }
+            });
+
+            // ===========================================================================================
+            // ===========================================================================================
+
+            $('#id_tipo_documento').change(function() {
+                let idTipoDocumento = $('#id_tipo_documento').val();
+
+                console.log(idTipoDocumento);
+
+                if (idTipoDocumento == 3) { // Nit
+                    $('#div_nit_empresa').show();
+                    $('#nit_empresa').attr('required');
+
+                    $('#div_ident_empresa_natural').hide();
+                    $('#ident_empresa_natural').removeAttr('required');
+
+                    $('#div_celular').addClass('mt-3');
+                    
+                } else if (idTipoDocumento != 3 && idTipoDocumento != '') {
+                    $('#div_nit_empresa').hide();
+                    $('#nit_empresa').removeAttr('required');
+
+                    $('#div_ident_empresa_natural').show();
+                    $('#ident_empresa_natural').attr('required');
+
+                    $('#div_celular').addClass('mt-3');
+
+                } else {
+                    $('#div_nit_empresa').hide();
+                    $('#nit_empresa').removeAttr('required');
+
+                    $('#div_ident_empresa_natural').hide();
+                    $('#ident_empresa_natural').removeAttr('required');
+
+                    $('#div_celular').removeClass('mt-3');
+                }
+            });
 
             // ===========================================================================================
             // ===========================================================================================
