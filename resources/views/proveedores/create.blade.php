@@ -154,6 +154,21 @@
 
             // ======================================================
 
+            initDynamicIdValidation({
+                selectSelector: "#id_tipo_documento", // Cambia por el ID real de tu select
+                inputSelector: "#identificacion",
+                errorSelector: "#ident-natural-error",
+                map: {
+                    "1": { onlyNumbers: true,  min: 7, max: 10, label: "número de cédula" },
+                    "2": { onlyNumbers: false, min: 6, max: 15, label: "pasaporte" },
+                    "4": { onlyNumbers: false, min: 10, max: 15, label: "permiso especial" },
+                    "5": { onlyNumbers: false, min: 6, max: 12, label: "cédula de extranjería" }
+                    // El NIT (3) lo manejamos con su propia función initNitValidation ya creada
+                }
+            });
+
+            // ======================================================
+
             $('#div_nit_proveedor').hide();
             $('#div_proveedor_juridico').hide();
             $('#div_telefono_empresa').hide();
@@ -182,7 +197,7 @@
                     $('#celular, #email_proveedor').attr('required', 'required');
 
                     // Asignar NIT (3) al select y marcar como requerido, Nit=.val('3').trigger('change') los scripts dependientes de este select saben del cambio
-                    $('#id_tipo_documento').val('3').trigger('change').attr('required', 'required');
+                    $('#id_tipo_documento').val('3').trigger('change').prop('required', true);
 
                 } else { // Natural u otros
                     // MOSTRAR campos de persona natural
@@ -199,7 +214,7 @@
                     $('#celular, #email_proveedor').attr('required', 'required');
 
                     // Al volver a Persona Natural, resetear el tipo de documento a vacío o a Cédula (1)
-                    $('#id_tipo_documento').val('').trigger('change');
+                    $('#id_tipo_documento').val('').trigger('change').prop('required', true);
                 }
             }).trigger('change');
 

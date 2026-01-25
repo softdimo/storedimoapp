@@ -214,9 +214,16 @@ function initDynamicIdValidation(config) {
     // 1. Bloqueo de entrada según la regla activa
     $(document).on("input", inputSelector, function() {
         const rule = getActiveRule();
+        
         if (rule.onlyNumbers) {
+            // Solo números
             this.value = this.value.replace(/\D/g, "");
+        } else {
+            // Alfanumérico estricto: Solo letras (A-Z, a-z) y números (0-9)
+            // Eliminamos cualquier cosa que NO sea letra o número
+            this.value = this.value.replace(/[^a-zA-Z0-9]/g, "");
         }
+
         if (this.value.length > rule.max) {
             this.value = this.value.substring(0, rule.max);
         }

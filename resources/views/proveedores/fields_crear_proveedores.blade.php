@@ -104,10 +104,12 @@
                     {!! Form::text('identificacion', old('identificacion'), [
                         'class' => 'form-control',
                         'id' => 'identificacion',
-                        'minlength' => 6,
-                        'maxlength' => 10,
+                        // 'minlength' => 6,
+                        // 'maxlength' => 10,
                         'required' => 'required',
+                        'title' => 'Ingrese una Identificación válida',
                     ]) !!}
+                    <span id="ident-natural-error" class="text-danger d-none mt-1"></span>
                 </div>
             </div>
 
