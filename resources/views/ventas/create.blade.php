@@ -791,34 +791,43 @@
             });
             // FIN - Función agregar datos de las ventas
 
-            function actualizarDetalleVenta()
-            {
-                tablaDetalleVenta.clear(); // Limpia la tabla
+        function actualizarDetalleVenta()
+        {
+            tablaDetalleVenta.clear(); // Limpia la tabla
 
-                productosAgregados.forEach((producto, index) =>
-                {
-                    tablaDetalleVenta.row.add([
-                        producto.nombre,
-                        producto.cantidad,
-                        `$${producto.subtotal}`,
-                        `$${producto.ganancia}`,
-                        `
-                        <button type="button" onclick="eliminarProducto(${index})" class="btn btn-danger btn-sm">
-                            <i class="fa fa-trash text-white"></i>
-                        </button>
-                        <input type="hidden" name="id_producto_venta[]" value="${producto.idProductoVenta}">
-                        <input type="hidden" name="cantidad_venta[]" value="${producto.cantidad}">
-                        <input type="hidden" name="p_unitario_venta[]" value="${producto.pUnitarioVenta}">
-                        <input type="hidden" name="p_detal_venta[]" value="${producto.pDetalVenta}">
-                        <input type="hidden" name="p_mayor_venta[]" value="${producto.pxMayorVenta}">
-                        <input type="hidden" name="subtotal_venta[]" value="${producto.subtotal}">
-                        <input type="hidden" name="ganancia[]" value="${producto.ganancia}">
-                        `
-                    ]);
-                });
+            let subtotalGeneral = 0;
+            let totalGeneral = 0;
 
-                tablaDetalleVenta.draw(); // Redibuja la tabla y actualiza el contador
-            }
+            productosAgregados.forEach((producto, index) => {
+                tablaDetalleVenta.row.add([
+                    producto.nombre,
+                    producto.cantidad,
+                    `$${producto.subtotal}`,
+                    `$${producto.ganancia}`,
+                    `
+                    <button type="button" onclick="eliminarProducto(${index})" class="btn btn-danger btn-sm">
+                        <i class="fa fa-trash text-white"></i>
+                    </button>
+                    <input type="hidden" name="id_producto_venta[]" value="${producto.idProductoVenta}">
+                    <input type="hidden" name="cantidad_venta[]" value="${producto.cantidad}">
+                    <input type="hidden" name="p_unitario_venta[]" value="${producto.pUnitarioVenta}">
+                    <input type="hidden" name="p_detal_venta[]" value="${producto.pDetalVenta}">
+                    <input type="hidden" name="p_mayor_venta[]" value="${producto.pxMayorVenta}">
+                    <input type="hidden" name="subtotal_venta[]" value="${producto.subtotal}">
+                    <input type="hidden" name="ganancia[]" value="${producto.ganancia}">
+                    `
+                ]);
+
+                subtotalGeneral += producto.subtotal;
+                totalGeneral += producto.subtotal; // Puedes ajustar esto si el total incluye impuestos u otros cargos
+            });
+
+            tablaDetalleVenta.draw(); // Redibuja la tabla
+
+            // Actualiza los campos en el DOM
+            $("#sub_total_venta").val(`$${subtotalGeneral}`);
+            $("#total_venta").val(`$${totalGeneral}`);
+        }
 
             window.eliminarProducto = function(index) {
                 productosAgregados.splice(index, 1);
@@ -832,9 +841,7 @@
 
                 let valorVenta = $('#total_venta').val();
                 let btnRegistarVenta = $('#btn_registar_venta');
-                console.log(valorVenta);
                 
-
                 if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
                     btnRegistarVenta.prop('disabled', true);
                 } else {
@@ -857,8 +864,6 @@
 
             let valorVenta = $('#total_venta').val();
             let btnRegistarVenta = $('#btn_registar_venta');
-            console.log(valorVenta);
-            
 
             if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
                 btnRegistarVenta.prop('disabled', true);
@@ -905,9 +910,6 @@
                 // Cargar Spinner
                 loadingIndicator.show();
             });
-
-            // ===================================================================================
-            // ===================================================================================
         }); // FIN document.ready
     </script>
 @stop
