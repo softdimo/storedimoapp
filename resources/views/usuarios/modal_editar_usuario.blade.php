@@ -146,9 +146,13 @@
                 <label for="id_rol" class="" style="font-size: 15px">Rol
                     <span class="text-danger">*</span>
                 </label>
+                @php
+                    $rolesFinales = (session('id_empresa') == 5) ? $roles : $rolesTenant;
+                @endphp
+
                 {!! Form::select(
                     'id_rol',
-                    collect(['' => 'Seleccionar...'])->union($roles),
+                    collect(['' => 'Seleccionar...'])->union($rolesFinales),
                     isset($usuario) ? $usuario->id_rol : null,
                     ['class' => 'form-select select2', 'id' => 'id_rol'],
                 ) !!}
