@@ -125,6 +125,7 @@ trait MetodosTrait
     protected function shareBasicData()
     {
         view()->share('roles',$this->roles());
+        view()->share('rolesTenant',$this->rolesTenant());
         view()->share('estados',$this->estados());
         view()->share('estados_suscripciones',$this->estadosSuscripciones());
         view()->share('tipos_documento',$this->tiposDocumento());
@@ -157,6 +158,12 @@ trait MetodosTrait
     {
         $data = $this->cargarConfiguracionInicial();
         return collect($data['roles'] ?? [])->pluck('name', 'id');
+    }
+
+    public function rolesTenant()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['rolesTenant'] ?? [])->pluck('name', 'id');
     }
 
     public function estados()
