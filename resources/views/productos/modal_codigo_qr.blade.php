@@ -19,6 +19,7 @@
             {{ Form::hidden('id_producto_input', isset($productoEdit) ? $productoEdit->id_producto : null, ['class' => '', 'id' => 'id_producto_input', 'required' => 'required']) }}
             {{ Form::hidden('referencia_input', isset($productoEdit) ? $productoEdit->referencia : null, ['class' => '', 'id' => 'referencia_input', 'required' => 'required']) }}
             {{ Form::hidden('nombre_producto_input', isset($productoEdit) ? $productoEdit->nombre_producto : null, ['class' => 'form-control', 'id' => 'nombre_producto_input', 'required' => 'required']) }}
+            {{ Form::hidden('cantidad_consultada_qr', isset($productoEdit) ? $productoEdit->cantidad : null, ['id' => 'cantidad_consultada_qr_'.$productoEdit->id_producto]) }}
         </div>
 
         <div class="modal-body p-0 m-0">
@@ -30,6 +31,7 @@
                         'placeholder' => 'Ingresar cantidad',
                         'min' => '1',
                     ]) }}
+                    {{-- <span id="cantidad-error" class="text-danger d-none mt-1"></span> --}}
                 </div>
 
                 <div class="">
