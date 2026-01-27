@@ -24,8 +24,8 @@ class UnidadMedidaUpdate implements Responsable
 
     public function toResponse($request)
     {
-        $descripcionUmd = ucwords(strtolower(request('descripcion_umd', null)));
-        $abreviaturaUmd = ucwords(strtolower(request('abreviatura_umd', null)));
+        $descripcionUmd = strtolower(request('descripcion_umd', null));
+        $abreviaturaUmd = strtolower(request('abreviatura_umd', null));
 
         // ===================================================================
 
