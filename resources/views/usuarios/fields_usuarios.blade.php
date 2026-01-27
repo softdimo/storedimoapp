@@ -164,7 +164,12 @@
         <div class="col-12 col-md-3 mt-4">
             <div class="form-group d-flex flex-column">
                 <label for="id_rol" class="form-label">Rol<span class="text-danger">*</span></label>
-                {!! Form::select('id_rol', collect(['' => 'Seleccionar...'])->union($roles), null, [
+
+                @php
+                    $rolesFinales = (session('id_empresa') == 5) ? $roles : $rolesTenant;
+                @endphp
+
+                {!! Form::select('id_rol', collect(['' => 'Seleccionar...'])->union($rolesFinales), null, [
                     'class' => 'form-select select2',
                     'id' => 'id_rol',
                     'required' => 'required',

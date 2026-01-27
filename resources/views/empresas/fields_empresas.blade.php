@@ -50,6 +50,8 @@
 
         {{-- ======================= --}}
 
+        {!! Form::hidden('id_empresa', old('id_empresa', isset($empresa) ? $empresa->id_empresa : null), ['id' => 'id_empresa']) !!}
+
         <div class="col-12 col-md-3">
             <div class="form-group d-flex flex-column">
                 <label for="nombre_empresa" class="form-label">Nombre Empresa

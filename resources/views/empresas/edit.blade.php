@@ -184,52 +184,54 @@
 
             //================================
 
-            // Inicializamos el NIT sin validrlo con el servidor como tercer parámetro por ser edit
-            initNitValidation("#nit_proveedor", "#nit-error");
-
             // Inicializamos el NIT pasando la lógica del servidor como tercer parámetro
-            // initNitValidation("#nit_empresa", "#nit-error", async function(nit, $input, $errorMsg) {
-            //     try {
-            //         const response = await fetch("{{ route('nit_validator') }}", {
-            //             method: 'POST',
-            //             headers: {
-            //                 'Content-Type': 'application/json',
-            //                 'Accept': 'application/json',
-            //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //             },
-            //             body: JSON.stringify({ nit_empresa: nit })
-            //         });
+            initNitValidation("#nit_empresa", "#nit-error", async function(nit, $input, $errorMsg) {
+                try {
+                    const response = await fetch("{{ route('nit_validator') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: JSON.stringify({ nit_empresa: nit })
+                    });
 
-            //         const data = await response.json();
-            //         console.log(response);
-            //         console.log(data.valido);
-                    
+                    const data = await response.json();
 
-            //         if (!response.ok) { // Si el controlador devuelve 422 o 500
-            //             $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
-            //             $input.addClass("is-invalid").val("");
-            //         } else if (data.valido === false) { // Si el NIT ya existe
-            //             let idEmpresa = $('#id_empresa').val();
-            //             let nitEmpresa = $('#nit_empresa').val();
+                    if (!response.ok) { // Si el controlador devuelve 422 o 500
+                        $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
+                        $input.addClass("is-invalid").val("");
 
-            //             // if (idEmpresa == ) {
-                            
-            //             // }
+                    } else if (data.valido === false) { // Si el NIT ya existe
+                        // Datos Formulario                        
+                        let idEmpresa = $('#id_empresa').val();
+                        let nombreEmpresa = $('#nombre_empresa').val();
+                        let nitEmpresa = $('#nit_empresa').val();
+                        let identEmpresaNatural = $('#ident_empresa_natural').val();
 
+                        // Empresa Consultada:
+                        const empresaConsultada = data.empresa; // El objeto completo
+                        const idEmpresaConsultada = data.empresa.id_empresa;
+                        const nombreEmpresaConsultada = data.empresa.nombre_empresa;
+                        const nitEmpresaConsultada = data.empresa.nit_empresa;
 
-            //             $errorMsg.text("Este NIT ya está registrado.").removeClass("d-none");
-            //             $input.addClass("is-invalid").val("");
-            //         } else {
-            //             // Todo perfecto
-            //             $input.addClass("is-valid");
-            //         }
-            //     } catch (error) {
-            //         console.error('Error:', error);
-            //         $errorMsg.text("Error al conectar con el servidor.").removeClass("d-none");
-            //     }
-            // });
+                        if (idEmpresa != idEmpresaConsultada && nitEmpresa == nitEmpresaConsultada) {
+                            $errorMsg.text(`El NIT ${nitEmpresaConsultada} ya pertenece a la empresa: (${nombreEmpresaConsultada}).`).removeClass("d-none");
+                            $input.addClass("is-invalid").val("");    
+                        }
 
-            //================================
+                    } else {
+                        // Todo perfecto
+                        $input.addClass("is-valid");
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    $errorMsg.text("Error al conectar con el servidor.").removeClass("d-none");
+                }
+            });
+
+            // ================================
 
             initDynamicIdValidation({
                 selectSelector: "#id_tipo_documento", // Cambia por el ID real de tu select
