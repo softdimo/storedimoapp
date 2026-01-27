@@ -127,7 +127,12 @@
 
                         <div class="pt-3 pe-2 pb-3 ps-3 d-flex justify-content-between" id="" style="">
                             <div class="d-flex justify-content-center w-100">
-                                {{ Form::select('id_producto', collect(['' => 'Seleccionar...'])->union($productos_compras), null, ['class' => 'form-select select2', 'id' => 'id_producto']) }}
+                                {{-- {{ Form::select('id_producto', collect(['' => 'Seleccionar...'])->union($productos_compras), null, ['class' => 'form-select select2', 'id' => 'id_producto']) }} --}}
+
+                                {{ Form::select('id_producto', ['' => 'Seleccionar...'], null, [
+                                    'class' => 'form-select select2',
+                                    'id' => 'id_producto'
+                                ]) }}
                             </div>
 
                             {{-- <div class="d-flex justify-content-center w-25">
@@ -712,6 +717,8 @@
             $('#id_tipo_proveedor').change(function ()
             {
                 let idProveedor = $('#id_tipo_proveedor').val();
+                console.log(idProveedor);
+                
 
                 $.ajax({
                     async: true,
@@ -725,18 +732,44 @@
                     beforeSend: function()
                     {
                         // Desactivar botón
-                        spinner.show();
-                        btn.prop("disabled", true).html(
-                            `<i class="fa fa-spinner fa-spin"></i> Procesando...`);
+                        // spinner.show();
+                        // btn.prop("disabled", true).html(`<i class="fa fa-spinner fa-spin"></i> Procesando...`);
                     },
                     success: function(response)
                     {
+                        console.log(response);
+
+                        // 1. Referencia al select de productos
+                        const $selectProducto = $('#id_producto');
+
+                        // 2. Limpiar las opciones actuales
+                        $selectProducto.empty();
+
+                        // 3. Agregar la opción por defecto
+                        $selectProducto.append('<option value="">Seleccionar...</option>');
+
+                        // 4. Recorrer la respuesta y llenar el select
+                        // 'response' es el array de objetos que mostraste en el log
+                        if (response.length > 0) {
+                            $.each(response, function(index, producto) {
+                                $selectProducto.append(
+                                    $('<option>', {
+                                        value: producto.id_producto,
+                                        text: `${producto.nombre_producto} - ${producto.referencia}`
+                                    })
+                                );
+                            });
+                        } else {
+                            console.warn("No se encontraron productos para este proveedor.");
+                        }
+
+                        // 5. IMPORTANTE: Refrescar Select2 para que muestre los cambios
+                        $selectProducto.trigger('change');
 
                     },
                     error: function(xhr, status, error) {
-                        spinner.hide();
-                        btn.prop("disabled", false).html(
-                            `<i class="fa fa-plus plus"></i> Agregar`);
+                        // spinner.hide();
+                        // btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
                     }
                 });
             });
