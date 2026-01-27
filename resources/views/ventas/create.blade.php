@@ -794,8 +794,6 @@
 
                 let valorVenta = $('#total_venta').val();
                 let btnRegistarVenta = $('#btn_registar_venta');
-                console.log(valorVenta);
-                
 
                 if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
                     btnRegistarVenta.prop('disabled', true);
@@ -869,8 +867,6 @@
 
                 let valorVenta = $('#total_venta').val();
                 let btnRegistarVenta = $('#btn_registar_venta');
-                console.log(valorVenta);
-                
 
                 if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
                     btnRegistarVenta.prop('disabled', true);
@@ -900,8 +896,6 @@
 
             let valorVenta = $('#total_venta').val();
             let btnRegistarVenta = $('#btn_registar_venta');
-            console.log(valorVenta);
-            
 
             if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
                 btnRegistarVenta.prop('disabled', true);
