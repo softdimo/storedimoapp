@@ -148,18 +148,17 @@
 
             {{-- ======================= --}}
 
-            <div class="col-12 col-md-3 mt-3" id="div_numero_telefono">
+            <div class="col-12 col-md-3 mt-3" id="div_telefono_proveedor">
                 <div class="form-group d-flex flex-column">
-                    <label for="numero_telefono" class="form-label">Teléfono Fijo</label>
+                    <label for="telefono_proveedor" class="form-label">Teléfono Fijo</label>
                     {!! Form::text('telefono_proveedor', old('telefono_proveedor'), [
                         'class' => 'form-control',
-                        'id' => 'numero_telefono',
+                        'id' => 'telefono_proveedor',
                         'title' => 'Debe tener entre 7 y 10 dígitos.',
                         'minlength' => 7,
                         'maxlength' => 10,
-                        'onkeypress' => 'return event.charCode >= 48 && event.charCode <= 57'
                     ]) !!}
-                    <span id="telefono-error" class="text-danger d-none mt-1"></span>
+                    <span id="tel_fijo_error" class="text-danger d-none mt-1"></span>
                 </div>
             </div>
 
@@ -176,6 +175,7 @@
                         'minlength' => 7,
                         'maxlength' => 15,
                     ]) !!}
+                    <span id="celular-error" class="text-danger d-none mt-1" style="font-size: 0.85rem;"></span>
                 </div>
             </div>
 

@@ -72,13 +72,10 @@
 
         <div class="col-12 col-md-3">
             <div class="form-group d-flex flex-column">
-                <label for="telefono_empresa" class="form-label">Teléfono Empresa
-                    <span class="text-danger">*</span>
-                </label>
+                <label for="telefono_empresa" class="form-label">Teléfono Empresa</label>
                 {!! Form::text('telefono_empresa', old('telefono_empresa', isset($empresa) ? $empresa->telefono_empresa : null), [
                     'class' => 'form-control',
                     'id' => 'telefono_empresa',
-                    'required' => 'required',
                     'title' => 'Debe tener entre 7 y 10 dígitos.',
                     'maxlength' => 10,
                     'minlength' => 7,
