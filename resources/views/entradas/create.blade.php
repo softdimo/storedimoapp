@@ -668,8 +668,7 @@
                             $('#p_x_mayor').html(0);
                             // Desactivar botón
                             spinner.show();
-                            btn.prop("disabled", true).html(
-                                `<i class="fa fa-spinner fa-spin"></i> Procesando...`);
+                            btn.prop("disabled", true).html(`<i class="fa fa-spinner fa-spin"></i> Procesando...`);
                         },
                         success: function(respuesta) {
 
@@ -693,15 +692,13 @@
                                     $('#id_producto_compra').val(respuesta.id_producto);
 
                                     spinner.hide();
-                                    btn.prop("disabled", false).html(
-                                        `<i class="fa fa-plus plus"></i> Agregar`);
+                                    btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
                                 }, 1000);
                             }
                         },
                         error: function(xhr, status, error) {
                             spinner.hide();
-                            btn.prop("disabled", false).html(
-                                `<i class="fa fa-plus plus"></i> Agregar`);
+                            btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
                         }
                     });
                 } else {
@@ -716,9 +713,11 @@
 
             $('#id_tipo_proveedor').change(function ()
             {
+                let btn = $('#btn_add_entrada');
+                let spinner = $("#loadingIndicatorAgregarCompra");
+
                 let idProveedor = $('#id_tipo_proveedor').val();
                 console.log(idProveedor);
-                
 
                 $.ajax({
                     async: true,
@@ -731,9 +730,18 @@
                     },
                     beforeSend: function()
                     {
-                        // Desactivar botón
-                        // spinner.show();
-                        // btn.prop("disabled", true).html(`<i class="fa fa-spinner fa-spin"></i> Procesando...`);
+                        // 1. Mostrar loading y bloquear botón
+                        spinner.show();
+                        btn.prop("disabled", true).html(`<i class="fa fa-spinner fa-spin"></i> Procesando...`);
+
+                        // 2. Limpiar el select de productos inmediatamente
+                        const $selectProducto = $('#id_producto');
+                        
+                        $selectProducto.empty(); // Elimina todas las <option>
+                        $selectProducto.append('<option value="">Cargando productos...</option>'); // Feedback visual
+                        
+                        // 3. Notificar a Select2 que el contenido cambió (para que se vea vacío/cargando)
+                        $selectProducto.trigger('change');
                     },
                     success: function(response)
                     {
@@ -766,10 +774,13 @@
                         // 5. IMPORTANTE: Refrescar Select2 para que muestre los cambios
                         $selectProducto.trigger('change');
 
+                        spinner.hide();
+                        btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
+
                     },
                     error: function(xhr, status, error) {
-                        // spinner.hide();
-                        // btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
+                        spinner.hide();
+                        btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
                     }
                 });
             });
