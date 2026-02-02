@@ -104,11 +104,21 @@
                                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                                 </button>
 
-                                                <button title="Anular"
-                                                    class="btn rounded-circle btn-circle text-white btn-danger btn-anular-entrada"
-                                                    data-id="{{ $entrada->id_compra }}">
-                                                    <i class="fa fa-remove"></i>
-                                                </button>
+                                                {{-- Lógica para el botón Anular --}}
+                                                @php
+                                                    // Creamos un objeto Carbon con la fecha de la compra
+                                                    $fechaCompra = \Carbon\Carbon::parse($entrada->fecha_compra);
+                                                    // Verificamos si la diferencia en minutos respecto a "ahora" es menor o igual a 60
+                                                    $esEditable = $fechaCompra->diffInMinutes(now(), false) <= 60;
+                                                @endphp
+
+                                                @if ($esEditable)
+                                                    <button title="Anular"
+                                                        class="btn rounded-circle btn-circle text-white btn-danger btn-anular-entrada"
+                                                        data-id="{{ $entrada->id_compra }}">
+                                                        <i class="fa fa-remove"></i>
+                                                    </button>
+                                                @endif
                                             </td>
                                         @else
                                             <td>
