@@ -24,6 +24,9 @@ class EntradaStore implements Responsable
     {
         $idEmpresa = request('id_empresa', null);
         $facturaCompra = request('factura_compra', null);
+        // $facturaOriginal = request('factura_compra', '');
+        $facturaCompra = strtoupper(str_replace(' ', '', request('factura_compra', '')));
+        $facturaCompra = strtoupper(preg_replace('/\s+/', '', request('factura_compra', '')));
         $fechaCompra = now()->format('Y-m-d H:i:s'); // Formato compatible con DATETIME en MySQL
         $valorCompra = request('valor_compra', null);
         $idProveedor = request('id_tipo_proveedor', null);

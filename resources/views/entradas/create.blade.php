@@ -113,7 +113,7 @@
 
                         <div class="form-group mt-3" style="width:90%; margin:auto">
                             <label for="factura_compra" class="form-label">Factura Compra<span class="text-danger">*</span></label>
-                            {!! Form::text('factura_compra', null, ['class' => 'form-control', 'id' => 'factura_compra']) !!}
+                            {!! Form::text('factura_compra', null, ['class' => 'form-control text-uppercase', 'id' => 'factura_compra']) !!}
                         </div>
 
                         {{-- ============================================================== --}}
@@ -907,6 +907,42 @@
             // ===================================================================================
             // ===================================================================================
 
+            $('#factura_compra').on('input', function() {
+                // 1. Quitar espacios
+                // 2. Convertir a mayúsculas
+                $(this).val($(this).val().replace(/\s+/g, '').toUpperCase());
+            });
+
+            // ===================================================================================
+            // ===================================================================================
+
+            // Función para bloquear/desbloquear encabezado
+            function actualizarEstadoEncabezado() {
+                // Usamos la instancia 'tablaCompras' que definiste arriba
+                let tieneProductos = tablaCompras.rows().count() > 0;
+                let $selectProveedor = $('#id_tipo_proveedor');
+                let $inputFactura = $('#factura_compra');
+
+                if (tieneProductos) {
+                    // Bloquear factura (readonly permite que el valor se envíe al servidor)
+                    $inputFactura.attr('readonly', true).css('background-color', '#e9ecef');
+                    
+                    // Bloquear Select2 (se desactiva la interacción visual)
+                    $selectProveedor.next('.select2-container').css({
+                        'pointer-events': 'none',
+                        'opacity': '0.8'
+                    }).find('.select2-selection').css('background-color', '#e9ecef');
+                } else {
+                    // Desbloquear todo
+                    $inputFactura.removeAttr('readonly').css('background-color', '#fff');
+                    
+                    $selectProveedor.next('.select2-container').css({
+                        'pointer-events': 'auto',
+                        'opacity': '1'
+                    }).find('.select2-selection').css('background-color', '#fff');
+                }
+            }
+
             // INICIO - Función para agregar fila x fila cada producto para comprar
             let totalVenta = 0;
             let indiceSiguienteFila = 0;
@@ -990,6 +1026,8 @@
 
                 spinner.hide();
 
+                actualizarEstadoEncabezado();
+
                 indiceSiguienteFila++;
             });
             // FIN - Función para agregar fila x fila cada producto para comprar
@@ -1018,44 +1056,11 @@
                 // ✅ Eliminar correctamente la fila desde DataTables
                 tablaCompras.row(row).remove().draw();
 
+                actualizarEstadoEncabezado();
+
                 // ✅ También eliminar los inputs ocultos
                 $(`#input_group_${idFila}`).remove();
             });
-
-
-            // $(document).on('click', '.btn-eliminar-fila', function() {
-            //     let idFila = $(this).data('id');
-
-            //     // Obtener texto del subtotal y convertir a número
-            //     let subtotalTexto = $(`#row_${idFila} td:nth-child(3)`).text().trim();
-            //     let subtotal = parseFloat(subtotalTexto);
-
-            //     if (isNaN(subtotal)) {
-            //         console.warn(
-            //             `No se pudo obtener el subtotal de la fila ${idFila}. Valor leído: "${subtotalTexto}"`
-            //         );
-            //         subtotal = 0;
-            //     }
-
-            //     // Restar subtotal del total acumulado
-            //     totalVenta -= subtotal;
-            //     $('#valor_compra').val(totalVenta);
-
-            //     let valorCompra = $('#valor_compra').val();
-            //     let btnRegistarCompra = $('#btn_registar_compra');
-            //     console.log(valorCompra);
-                
-
-            //     if (valorCompra == '' || valorCompra == '0' || valorCompra == 0 ) {
-            //         btnRegistarCompra.prop('disabled', true);
-            //     } else {
-            //         btnRegistarCompra.prop('disabled', false);
-            //     }
-
-            //     // Eliminar fila y sus inputs ocultos
-            //     $(`#row_${idFila}`).remove();
-            //     $(`#input_group_${idFila}`).remove();
-            // });
 
             // ===================================================================================
             // ===================================================================================
