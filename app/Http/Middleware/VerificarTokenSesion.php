@@ -32,27 +32,29 @@ class VerificarTokenSesion
                     | OPCIÓN A: CONSULTA DIRECTA (ACTIVA)
                     |--------------------------------------------------------------------------
                     */
-                    $userBd = DB::connection('mysql')
-                                ->table('usuarios')
-                                ->select('session_token')
-                                ->where('id_usuario', $idUsuario)
-                                ->first();
+                    // $userBd = DB::connection('mysql')
+                    //             ->table('usuarios')
+                    //             ->select('session_token')
+                    //             ->where('id_usuario', $idUsuario)
+                    //             ->first();
                     
-                    $tokenReal = $userBd->session_token ?? null;
+                    // $tokenReal = $userBd->session_token ?? null;
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | OPCIÓN B: CONSULTA VÍA API (COMENTADA PARA COMPARACIÓN)
-                    |--------------------------------------------------------------------------
-                    | $client = new Client(['base_uri' => env('BASE_URI')]);
-                    | $response = $client->get("administracion/usuario_edit/{$idUsuario}", [
-                    |     'query' => ['empresa_actual' => Session::get('id_empresa')],
-                    |     'timeout' => 3
-                    | ]);
-                    | $usuarioApi = json_decode($response->getBody()->getContents());
-                    | $tokenReal = $usuarioApi->session_token ?? null;
-                    */
+                    
+                    // |--------------------------------------------------------------------------
+                    // | OPCIÓN B: CONSULTA VÍA API (COMENTADA PARA COMPARACIÓN)
+                    // |--------------------------------------------------------------------------
+                    $client = new Client(['base_uri' => env('BASE_URI')]);
+                    
+                    // Añadimos ?t=timestamp para forzar a la API a darnos el dato fresco de la BD
+                    $response = $client->get("administracion/consultar_session_token/{$idUsuario}?t=" . time(), [
+                        'timeout' => 3
+                    ]);
+                    $datosApi = json_decode($response->getBody()->getContents());
 
+                    // Extraemos el token del objeto JSON correctamente
+                    $tokenReal = isset($datosApi->session_token) ? $datosApi->session_token : null;
+                    
                     // VALIDACIÓN
                     if (!$tokenReal || $tokenReal !== $tokenEnSesion) {
                         Log::warning("Sesión invalidada por token incorrecto. Usuario: {$idUsuario}");
