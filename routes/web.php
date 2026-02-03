@@ -49,7 +49,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
     });
 
     // RUTAS PROTEGIDAS
-    Route::middleware(['verificar.sesion', 'check.diasplan.alert'])->group(function () {
+    Route::middleware(['verificar.sesion', 'verificar.token', 'check.diasplan.alert'])->group(function () {
 
         // HOME
         Route::group(['namespace' => 'App\Http\Controllers\home'], function () {

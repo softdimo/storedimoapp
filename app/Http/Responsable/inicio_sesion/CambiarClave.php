@@ -54,11 +54,11 @@ class CambiarClave implements Responsable
                     if($claveCambiada) {
                         // Comparar si el usuario que cambia la clave es el mismo logueado
                         if ($idUsuario == session('id_usuario')) {
-                            // alert()->success('Bien', 'Clave cambiada. Por seguridad, debe volver a iniciar sesión.');
-                            // return redirect()->route('logout');
+                            return view('mensajes.clave_cambiada_propia');
 
-                            return view('mensajes.clave_cambiada'); // Vista con alert y redirección con JS
                         } else {
+                            // return view('mensajes.clave_cambiada_user');
+
                             alert()->success('Bien', 'Clave del usuario actualizada correctamente.');
                             return back();
                         }
