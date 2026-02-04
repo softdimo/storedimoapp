@@ -9,7 +9,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tipos_documento), old('id_tipo_documento', isset($empresa) ? $empresa->id_tipo_documento : null), [
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                     'id' => 'id_tipo_documento',
                     'required' => 'required',
                 ]) !!}
@@ -175,7 +175,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 {!! Form::select('id_tipo_bd', collect(['' => 'Seleccionar...'])->union($tipos_bd), old('id_tipo_bd', isset($empresa) ? $empresa->id_tipo_bd : 1), [
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                     'id' => 'id_tipo_bd',
                     'required' => 'required',
                 ]) !!}
@@ -270,7 +270,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 {!! Form::select('id_estado', collect(['' => 'Seleccionar...'])->union($estados), old('id_estado', isset($empresa) ? $empresa->id_estado : 1), [
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                     'id' => 'id_estado',
                     'required' => 'required',
                 ]) !!}

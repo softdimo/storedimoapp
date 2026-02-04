@@ -285,6 +285,17 @@
 
             // =========================================================================
 
+            $(document).on('select2:open', function(e) {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    setTimeout(function() {
+                        searchField.focus();
+                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
+                }
+            });
+
+            // =========================================================================
+
             // formAnularCompra para cargar gif en el submit
             $(document).on("submit", "form[id^='formAnularCompra_']", function(e) {
                 const form = $(this);

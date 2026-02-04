@@ -577,6 +577,18 @@
             // ==============================================
             // ==============================================
 
+            $(document).on('select2:open', function(e) {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    setTimeout(function() {
+                        searchField.focus();
+                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
+                }
+            });
+
+            // ==============================================
+            // ==============================================
+
             // INICIO DataTable Detalles Préstamo empleados
             var tableDetalles = $("#tbl_detalles_prestamo").DataTable({
                 dom: 'Blfrtip',

@@ -226,18 +226,6 @@
 
     <script>
         $(document).ready(function() {
-
-            $('.select2').select2({
-                // placeholder: "Seleccionar...",
-                allowClear: false,
-                width: '100%'
-            });
-
-            $('.select2').on('select2:open', function (e) {
-                // Buscamos el input de búsqueda dentro del contenedor de Select2 y le damos foco
-                document.querySelector('.select2-search__field').focus();
-            });
-
             // INICIO DataTable Lista Usuarios
             $("#tbl_usuarios").DataTable({
                 dom: 'Blfrtip',
@@ -262,6 +250,23 @@
             });
 
             // CIERRE DataTable Lista Usuarios
+
+            // ===========================================================================================
+
+            // $('.select2').select2({
+            //     allowClear: false,
+            //     width: '100%'
+            // });
+
+            // ESTE ES EL BLOQUE CLAVE
+            $(document).on('select2:open', function(e) {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    setTimeout(function() {
+                        searchField.focus();
+                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
+                }
+            });
 
             // ===========================================================================================
 
@@ -354,9 +359,7 @@
                 const cancelButton = $(`#btn_cancelar_user_${id}`);
 
                 // Lógica del botón
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>"
-                );
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Lógica del botón cancelar
                 cancelButton.prop("disabled", true);
@@ -397,8 +400,6 @@
                         // Inicializar función de validación de número de teléfono
                         initPhoneValidation("#numero_telefono", "#telefono-error");
 
-
-
                         // Buscar el select dentro del modal
                         let modal = $('#modalEditarUsuario');
                         let selectEstado = modal.find('[id^=id_estado_]');
@@ -408,10 +409,8 @@
                                 .val(); // Obtener el valor actual del select
 
                             // Buscar los elementos dentro de este modal
-                            let divFechaTerminacion = modal.find(
-                                '[id^=div_fecha_terminacion_contrato]');
-                            let inputFechaTerminacion = modal.find(
-                                '[id^=fecha_terminacion_contrato]');
+                            let divFechaTerminacion = modal.find('[id^=div_fecha_terminacion_contrato]');
+                            let inputFechaTerminacion = modal.find('[id^=fecha_terminacion_contrato]');
 
                             // Aplicar la lógica de ocultar o mostrar
                             if (idEstado == 1 || idEstado == '') {
@@ -425,18 +424,13 @@
 
                             // Al cambiar el tipo de persona
                             selectEstado.change(function() {
-                                let idEstado = selectEstado
-                                    .val(); // Obtener el valor actual del select al cambiar
+                                let idEstado = selectEstado.val(); // Obtener el valor actual del select al cambiar
 
-                                let modal = $(
-                                    '#modalEditarUsuario'
-                                ); // Asegurar que buscamos dentro del modal correcto
+                                let modal = $('#modalEditarUsuario'); // Asegurar que buscamos dentro del modal correcto
 
                                 // Buscar los elementos dentro de este modal
-                                let divFechaTerminacion = modal.find(
-                                    '[id^=div_fecha_terminacion_contrato]');
-                                let inputFechaTerminacion = modal.find(
-                                    '[id^=fecha_terminacion_contrato]');
+                                let divFechaTerminacion = modal.find('[id^=div_fecha_terminacion_contrato]');
+                                let inputFechaTerminacion = modal.find('[id^=fecha_terminacion_contrato]');
 
                                 if (idEstado == 1) { // Activo
                                     divFechaTerminacion.hide();
