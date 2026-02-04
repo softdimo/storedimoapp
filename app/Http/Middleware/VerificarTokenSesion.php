@@ -18,7 +18,25 @@ class VerificarTokenSesion
             $ahora = now();
             $ultimaValidacion = Session::get('ultima_validacion_token');
             // 600 segundos = 10 minutos de "paz" para el servidor
-            $intervaloSegundos = 0; 
+            $intervaloSegundos = 0;
+            // $intervaloSegundos = 600; // 10 minutos
+            // $intervaloSegundos = 1200; // 20 minutos
+            // $intervaloSegundos = 1800; // 30 minutos
+            // $intervaloSegundos = 2400; // 40 minutos
+            // $intervaloSegundos = 3000; // 50 minutos
+            // $intervaloSegundos = 3600; // 60 minutos
+            // $intervaloSegundos = 4200; // 70 minutos
+            // $intervaloSegundos = 4800; // 80 minutos
+            // $intervaloSegundos = 5400; // 90 minutos
+            // $intervaloSegundos = 6000; // 100 minutos
+            // $intervaloSegundos = 36000; // 10 horas
+            // $intervaloSegundos = 43200; // 12 horas
+            // $intervaloSegundos = 86400; // 24 horas
+            // $intervaloSegundos = 172800; // 48 horas
+            // $intervaloSegundos = 259200; // 72 horas
+            // $intervaloSegundos = 345600; // 96 horas
+            // $intervaloSegundos = 432000; // 120 horas
+            // $intervaloSegundos = 518400; // 144 horas
 
             // Solo entramos a consultar si es la primera vez o si ya pasaron 10 minutos
             if (!$ultimaValidacion || $ahora->diffInSeconds($ultimaValidacion) > $intervaloSegundos) {
@@ -65,7 +83,7 @@ class VerificarTokenSesion
                             return response()->json(['error' => 'Sesión no válida'], 401);
                         }
 
-                        return redirect()->route('login')->with('error_sesion', 'Su sesión ha caducado por seguridad.');
+                        return redirect()->route('login')->with('error_sesion', 'Por seguridad, su sesión ha caducado debido al cambio de clave.');
                     }
 
                     // Si todo está bien, renovamos el sello de tiempo para no volver a consultar en 10 min
