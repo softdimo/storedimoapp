@@ -382,8 +382,7 @@
                 const cancelButton = $(`#btn_cancelar_estado_categoria_${id}`);
 
                 // Deshabilitar btns
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
 
                 // Cargar spinner

@@ -113,6 +113,11 @@
                 width: '100%'
             });
 
+            $('.select2').on('select2:open', function (e) {
+                // Buscamos el input de búsqueda dentro del contenedor de Select2 y le damos foco
+                document.querySelector('.select2-search__field').focus();
+            });
+
             // Inicializar intlTelInput para el campo celular en el modal
             initIntlPhone("#celular");
 

@@ -131,6 +131,12 @@
                 allowClear: false,
                 width: '100%'
             });
+
+            $('.select2').on('select2:open', function (e) {
+                // Buscamos el input de búsqueda dentro del contenedor de Select2 y le damos foco
+                document.querySelector('.select2-search__field').focus();
+            });
+
             // Inicializamos el plugin para el campo celular de usuarios
             initIntlPhone("#celular");
 
