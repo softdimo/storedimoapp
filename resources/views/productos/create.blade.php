@@ -383,8 +383,8 @@
                 const loadingIndicator = form.find("div[id^='loadingIndicatorCrearProducto']"); // Busca el GIF
 
                 // Dessactivar Submit y Cancel
-                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 loadingIndicator.show(); // Mostrar Spinner
             });
 

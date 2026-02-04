@@ -422,8 +422,8 @@
             const loadingIndicator = form.find("div[id^='loadingIndicatorStore']"); // Busca el GIF del form actual
     
             // Dessactivar Botones
-            submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
             cancelButton.prop("disabled", true);
+            submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
             
             // Mostrar Spinner
             loadingIndicator.show();
@@ -454,8 +454,8 @@
             const loadingIndicator = form.find("div[id^='loadingIndicatorStore']"); // Busca el GIF del form actual
     
             // Dessactivar Botones
-            submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
             cancelButton.prop("disabled", true);
+            submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
             
             // Mostrar Spinner
             loadingIndicator.show();

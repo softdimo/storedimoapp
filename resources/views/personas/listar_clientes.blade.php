@@ -200,12 +200,13 @@
             // ===========================================================================================
 
             $(document).on('select2:open', function(e) {
-                const searchField = document.querySelector('.select2-search__field');
-                if (searchField) {
-                    setTimeout(function() {
+                // Buscamos el campo de texto dentro del contenedor de select2 que se acaba de abrir
+                setTimeout(function() {
+                    const searchField = document.querySelector('.select2-container--open .select2-search__field');
+                    if (searchField) {
                         searchField.focus();
-                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
-                }
+                    }
+                }, 50);
             });
 
             // ===========================================================================================
@@ -235,10 +236,13 @@
                     success: function(html) {
                         $('#modalEditarClienteContent').html(html);
 
-                        // Inicializar intlTelInput para el campo celular en el modal
-                        initIntlPhone("#celular");
+                        // INICIALIZAR SELECT2 AQUÍ
+                        $('#modalEditarClienteContent .select2').select2({
+                            dropdownParent: $('#modalEditarCliente'), // Crucial para el buscador
+                            width: '100%',
+                        });
 
-                        // Inicializar función de validación de número de teléfono
+                        initIntlPhone("#celular");
                         initPhoneValidation("#numero_telefono", "#telefono-error");
 
                     }, // FIN success
@@ -265,8 +269,7 @@
 
                 // Deshabilitar botones
                 cancelButton.prop("disabled", true);
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Cargar Spinner
                 loadingIndicator.show();

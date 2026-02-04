@@ -239,8 +239,7 @@
 
                 // Deshabilitar botones
                 cancelButton.prop("disabled", true);
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Cargar Spinner
                 loadingIndicator.show();
@@ -267,7 +266,7 @@
                         // Reinicializar select2 si lo usas en el modal
                         $('#modalEditarProveedor .select2').select2({
                             dropdownParent: $('#modalEditarProveedor'),
-                            placeholder: 'Seleccionar...',
+                            // placeholder: 'Seleccionar...',
                             width: '100%',
                             allowClear: false
                         });

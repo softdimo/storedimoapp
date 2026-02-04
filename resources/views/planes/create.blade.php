@@ -108,8 +108,7 @@
                 const loadingIndicator = form.find("div[id^='loadingIndicatorStore']");
 
                 // Dessactivar Botones
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Mostrar Spinner
                 loadingIndicator.show();

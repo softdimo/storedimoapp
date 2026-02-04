@@ -9,7 +9,7 @@
     @csrf
     <div class="rounded-top text-white text-center align-middle"
         style="background-color: #337AB7; border: solid 1px #337AB7;">
-        <h5>Editar Cliente</h5>
+        <h5 class="m-1">Editar Cliente</h5>
     </div>
 
     {{ Form::hidden('id_persona', isset($persona) ? $persona->id_persona : null, ['class' => '', 'id' => 'id_persona']) }}

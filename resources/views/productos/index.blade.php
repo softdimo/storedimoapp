@@ -319,6 +319,8 @@
                 }
             });
 
+            // ===========================================================
+
             $(document).on('click', '.btn-editar-producto', function() {
                 const idProducto = $(this).data('id');
 
@@ -341,7 +343,7 @@
                         // Reinicializar select2 si lo usas en el modal
                         $('#modalEditarProducto .select2').select2({
                             dropdownParent: $('#modalEditarProducto'),
-                            placeholder: 'Seleccionar...',
+                            // placeholder: 'Seleccionar...',
                             width: '100%',
                             allowClear: false
                         });
@@ -486,8 +488,7 @@
                 const cancelButton = $(`#btn_cancelar_estado_producto_${id}`);
 
                 // Deshabilitar btns
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
 
                 // Cargar spinner

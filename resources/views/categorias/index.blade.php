@@ -288,12 +288,10 @@
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 // const cancelButton = form.find('button[type="button"]');
-                const loadingIndicator = form.find(
-                    "div[id^='loadingIndicatorCrearCategoria']"); // Busca el GIF del form actual
+                const loadingIndicator = form.find("div[id^='loadingIndicatorCrearCategoria']"); // Busca el GIF del form actual
 
                 // Dessactivar Submit y Cancel
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 // cancelButton.prop("disabled", true);
 
                 // Mostrar Spinner
@@ -393,8 +391,8 @@
                 const cancelButton = $(`#btn_cancelar_estado_categoria_${id}`);
 
                 // Deshabilitar btns
-                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Cargar spinner
                 loadingIndicator.show();

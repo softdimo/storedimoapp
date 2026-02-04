@@ -11,7 +11,7 @@
     <div class="rounded-top" style="border: solid 1px #337AB7;">
         <div class="rounded-top text-white text-center"
             style="background-color: #337AB7; border: solid 1px #337AB7;">
-            <h5>Modificar Producto (Obligatorios *)</h5>
+            <h5 class="m-1">Modificar Producto (Obligatorios *)</h5>
         </div>
 
         {{-- ====================================================== --}}

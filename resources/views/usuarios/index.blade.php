@@ -325,8 +325,7 @@
                 // Lógica del botón
                 loadingIndicator.show();
                 cancelButton.prop("disabled", true);
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Enviar formulario manualmente
                 this.submit();

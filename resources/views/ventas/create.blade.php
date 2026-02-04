@@ -919,8 +919,7 @@
                 const loadingIndicator = form.find("div[id^='loadingIndicatorCrearProductoVenta']");
 
                 // Dessactivar Submit y Cancel
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
 
                 // Cargar Spinner

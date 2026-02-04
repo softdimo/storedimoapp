@@ -111,11 +111,11 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('.select2').select2({
-                // placeholder: "Seleccionar...",
-                allowClear: false,
-                width: '100%'
-            });
+            // $('.select2').select2({
+            //     // placeholder: "Seleccionar...",
+            //     allowClear: false,
+            //     width: '100%'
+            // });
 
             $('.select2').on('select2:open', function (e) {
                 // Buscamos el input de búsqueda dentro del contenedor de Select2 y le damos foco
@@ -206,13 +206,11 @@
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 const cancelButton = form.find('button[type="button"]');
-                const loadingIndicator = form.find(
-                "div[id^='loadingIndicatorPersonaStore']"); // Busca el GIF del form actual
+                const loadingIndicator = form.find("div[id^='loadingIndicatorPersonaStore']"); // Busca el GIF del form actual
 
                 // Dessactivar Botones
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Mostrar Spinner
                 loadingIndicator.show();
