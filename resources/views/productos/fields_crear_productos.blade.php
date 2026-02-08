@@ -71,12 +71,11 @@
             <div class="form-group d-flex flex-column">
                 <label for="precio_unitario" class="form-label">Precio Unitario <span
                         class="text-danger">*</span></label>
-                {!! Form::number('precio_unitario', null, [
+                {!! Form::text('precio_unitario', null, [
                     'class' => 'form-control',
                     'id' => 'precio_unitario',
                     'required' => 'required',
-                    'min' => 0,
-                    'oninput' => 'validity.valid||(value=\'\');',
+                    'min' => 0
                 ]) !!}
             </div>
         </div>
@@ -86,12 +85,11 @@
         <div class="col-12 col-md-3 mt-3">
             <div class="form-group d-flex flex-column">
                 <label for="precio_detal" class="form-label">Precio al Detal <span class="text-danger">*</span></label>
-                {!! Form::number('precio_detal', null, [
+                {!! Form::text('precio_detal', null, [
                     'class' => 'form-control',
                     'id' => 'precio_detal',
                     'required' => 'required',
-                    'min' => 0,
-                    'oninput' => 'validity.valid||(value=\'\');',
+                    'min' => 0
                 ]) !!}
             </div>
         </div>
@@ -102,12 +100,11 @@
             <div class="form-group d-flex flex-column">
                 <label for="precio_por_mayor" class="form-label">Precio al por Mayor <span
                         class="text-danger">*</span></label>
-                {!! Form::number('precio_por_mayor', null, [
+                {!! Form::text('precio_por_mayor', null, [
                     'class' => 'form-control',
                     'id' => 'precio_por_mayor',
                     'required' => 'required',
-                    'min' => 0,
-                    'oninput' => 'validity.valid||(value=\'\');',
+                    'min' => 0
                 ]) !!}
             </div>
         </div>

@@ -139,7 +139,6 @@ class ProductosController extends Controller
             }
         } catch (Exception $e)
         {
-            dd($e);
             alert()->error("Exception Store Productos!");
             return back();
         }

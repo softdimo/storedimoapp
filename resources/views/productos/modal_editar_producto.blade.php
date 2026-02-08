@@ -89,29 +89,32 @@
                 {{-- =================== --}}
                 <div class="col-12 col-md-4 mt-md-3">
                     <div class="form-group d-flex flex-column">
-                        <label for="precioUnitarioEdit" class=""
-                            style="font-size: 15px">Precio Unitario<span
-                                class="text-danger">*</span></label>
-                        {{ Form::number('precioUnitarioEdit', isset($productoEdit) ? $productoEdit->precio_unitario : null, ['class' => 'form-control', 'id' => 'precioUnitarioEdit', 'required' => 'required']) }}
-                    </div>
-                </div>
-                {{-- =================== --}}
-                <div class="col-12 col-md-4 mt-md-3">
-                    <div class="form-group d-flex flex-column">
-                        <label for="precioDetalEdit" class=""
-                            style="font-size: 15px">Precio Detal<span
-                                class="text-danger">*</span></label>
-                        {{ Form::number('precioDetalEdit', isset($productoEdit) ? $productoEdit->precio_detal : null, ['class' => 'form-control', 'id' => 'precioDetalEdit', 'required' => 'required']) }}
-                    </div>
-                </div>
-                {{-- =================== --}}
-                <div class="col-12 col-md-4 mt-md-3">
-                    <div class="form-group d-flex flex-column">
-                        <label for="precioPorMayorEdit" class=""
-                            style="font-size: 15px">Precio x Mayor
+                        <label for="precioUnitarioEdit" class="" style="font-size: 15px">Precio Unitario
                             <span class="text-danger">*</span>
                         </label>
-                        {{ Form::number('precioPorMayorEdit', isset($productoEdit) ? $productoEdit->precio_por_mayor : null, ['class' => 'form-control', 'id' => 'precioPorMayorEdit', 'required' => 'required']) }}
+                        {{ Form::text('precioUnitarioEdit', 
+                            isset($productoEdit) ? $productoEdit->precio_unitario : null,
+                            ['class' => 'form-control', 'id' => 'precioUnitarioEdit', 'required' => 'required']) }}
+                    </div>
+                </div>
+                {{-- =================== --}}
+                <div class="col-12 col-md-4 mt-md-3">
+                    <div class="form-group d-flex flex-column">
+                        <label for="precioDetalEdit" class="" style="font-size: 15px">Precio Detal
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ Form::text('precioDetalEdit', isset($productoEdit) ? $productoEdit->precio_detal : null,
+                            ['class' => 'form-control', 'id' => 'precioDetalEdit', 'required' => 'required']) }}
+                    </div>
+                </div>
+                {{-- =================== --}}
+                <div class="col-12 col-md-4 mt-md-3">
+                    <div class="form-group d-flex flex-column">
+                        <label for="precioPorMayorEdit" class="" style="font-size: 15px">Precio x Mayor
+                            <span class="text-danger">*</span>
+                        </label>
+                        {{ Form::text('precioPorMayorEdit', isset($productoEdit) ? $productoEdit->precio_por_mayor : null,
+                            ['class' => 'form-control', 'id' => 'precioPorMayorEdit', 'required' => 'required']) }}
                     </div>
                 </div>
                 {{-- =================== --}}
@@ -195,3 +198,48 @@
     </div>
 {!! Form::close() !!}
 {{-- FINAL Modal MODIFICAR PRODUCTO --}}
+<script>
+
+    function formatearMiles(valor)
+    {
+        // Quitar todo excepto dígitos y coma
+        valor = valor.replace(/[^\d,]/g, "");
+
+        // Separar por coma (decimal)
+        let partes = valor.split(",");
+        let entero = partes[0].replace(/\D/g, "");
+        let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+
+        // Formatear miles con punto
+        entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return decimal ? `${entero},${decimal}` : entero;
+    }
+
+        // Formatear mientras el usuario escribe
+    $("#precioUnitarioEdit").on("input", function () {
+        this.value = formatearMiles(this.value);
+    });
+
+    $("#precioDetalEdit").on("input", function () {
+        this.value = formatearMiles(this.value);
+    });
+
+    $("#precioPorMayorEdit").on("input", function () {
+        this.value = formatearMiles(this.value);
+    });
+
+    // Formatear si el input ya tiene un valor al cargar la página
+    $(document).ready(function ()
+    {
+        let valorUnitario = $("#precioUnitarioEdit").val();
+        let valorDetal = $("#precioDetalEdit").val();
+        let valorPorMayor = $("#precioPorMayorEdit").val();
+
+        if (valorUnitario && valorDetal && valorPorMayor)
+        {
+            $("#precioUnitarioEdit").val(formatearMiles(valorUnitario));
+            $("#precioDetalEdit").val(formatearMiles(valorDetal));
+            $("#precioPorMayorEdit").val(formatearMiles(valorPorMayor));
+        }
+    });
+</script>
