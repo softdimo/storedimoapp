@@ -13,7 +13,6 @@ class ProductoStore implements Responsable
     {
         $formEntradas = request('form_entradas', null); // Identifico el formulario origen entradas
         $formVentas = request('form_ventas', null); // Identifico el formulario origen ventas
-
         $idTipoPersona = request('id_tipo_persona', null);
         $nombreProducto = request('nombre_producto', null);
         $idCategoria = request('id_categoria', null);
@@ -27,7 +26,6 @@ class ProductoStore implements Responsable
         $fechaVencimiento = request('fecha_vencimiento', null);
         $idUnidadMedida = request('id_umd', null);
         $idProveedor = request('id_proveedor', null);
-
         $imagenProductoBase64 = null;
 
         if ($request->hasFile('imagen_producto'))
@@ -78,11 +76,11 @@ class ProductoStore implements Responsable
                     'imagen_producto' => $imagenProductoBase64,
                     'nombre_producto' => $nombreProducto,
                     'id_categoria' => $idCategoria,
-                    'precio_unitario' => $precioUnitario,
-                    'precio_detal' => $precioDetal,
-                    'precio_por_mayor' => $precioPorMayor,
+                    'precio_unitario' => doubleval(str_replace(".", "", $precioUnitario)),
+                    'precio_detal' => doubleval(str_replace(".","", $precioDetal)),
+                    'precio_por_mayor' => doubleval(str_replace(".", "", $precioPorMayor)),
                     'descripcion' => $descripcion,
-                    'stock_minimo' => $stockMinimo,
+                    'stock_minimo' => intval($stockMinimo),
                     'id_estado' => $idEstado,
                     'referencia' => $referencia,
                     'fecha_vencimiento' => $fechaVencimiento,

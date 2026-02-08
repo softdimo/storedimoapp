@@ -77,10 +77,10 @@ class ProductoUpdate implements Responsable
                     'nombre_producto' => $nombreProductoEdit ?? $productoActual->nombre_producto,
                     'id_categoria' => $categoriaEdit ?? $productoActual->id_categoria,
                     'descripcion' => $descripcionEdit ?? $productoActual->descripcion,
-                    'precio_unitario' => $precioUnitarioEdit ?? $productoActual->precio_unitario,
-                    'precio_detal' => $precioDetalEdit ?? $productoActual->precio_detal,
-                    'precio_por_mayor' => $precioPorMayorEdit ?? $productoActual->precio_por_mayor,
-                    'stock_minimo' => $stockMinimoEdit ?? $productoActual->stock_minimo,
+                    'precio_unitario' => doubleval(str_replace(".", "", $precioUnitarioEdit)) ?? $productoActual->precio_unitario,
+                    'precio_detal' => doubleval(str_replace(".","", $precioDetalEdit)) ?? $productoActual->precio_detal,
+                    'precio_por_mayor' => doubleval(str_replace(".", "", $precioPorMayorEdit)) ?? $productoActual->precio_por_mayor,
+                    'stock_minimo' => intval($stockMinimoEdit) ?? $productoActual->stock_minimo,
                     'referencia' => $referenciaEdit ?? $productoActual->referencia,
                     'fecha_vencimiento' => $fechaVencimientoEdit ?? ($productoActual ? $productoActual->fecha_vencimiento : null),
                     'id_umd' => $unidadMedida ?? $productoActual->id_umd,
@@ -101,8 +101,8 @@ class ProductoUpdate implements Responsable
                     return redirect()->to(route('productos.index'));
                 }
             }
-        } catch (Exception $e) {
-            dd($e);
+        } catch (Exception $e)
+        {
             alert()->error('Error', 'Excepción, intente de nuevo, si el problema persiste, contacte a Soporte.');
             return back();
         }

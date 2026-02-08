@@ -269,8 +269,8 @@
 @section('scripts')
     <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
     <script src="{{ asset('DataTables/Buttons-2.3.4/js/buttons.html5.min.js') }}"></script>
-
     <script>
+
         $(document).ready(function() {
             // @if (isset($productos) && count($productos) > 0)
             // INICIO DataTable Lista Productos
@@ -343,6 +343,10 @@
 
                         if (inputPrecioUnitario.length > 0) {
                             // Asignar validaciones en blur usando la función auxiliar
+                            inputPrecioUnitario.on("blur", function() {
+                                validarPrecios(modal);
+                            });
+                            
                             inputPrecioDetal.on("blur", function() {
                                 validarPrecios(modal);
                             });
@@ -351,47 +355,6 @@
                                 validarPrecios(modal);
                             });
                         }
-
-                        // if (inputPrecioUnitario.length > 0) { // Al cargar el modal
-                            // Valido que el precio unitario sea menor que el precio al detal
-                            // inputPrecioDetal.on("blur", function() {
-                            //     let precioUnitario = parseFloat(inputPrecioUnitario
-                            //         .val()) || 0;
-                            //     let precioDetal = parseFloat(inputPrecioDetal.val()) ||
-                            //         0;
-
-                            //     if (precioUnitario >= precioDetal) {
-                            //         Swal.fire(
-                            //             'Cuidado!',
-                            //             'El precio unitario debe ser menor que el precio al detal!',
-                            //             'warning'
-                            //         )
-                            //         inputPrecioDetal.val('');
-                            //     }
-                            // });
-
-                            // ===================================================
-
-                            // Valido que el precio por mayor sea mayor que el unitario y menor que el precio al detal
-                            // inputPrecioPorMayor.blur(function() {
-                            //     let precioUnitario = parseFloat(inputPrecioUnitario
-                            //         .val()) || 0;
-                            //     let precioDetal = parseFloat(inputPrecioDetal.val()) ||
-                            //         0;
-                            //     let precioPorMayor = parseFloat(inputPrecioPorMayor
-                            //         .val()) || 0;
-
-                            //     if (precioPorMayor <= precioUnitario ||
-                            //         precioPorMayor >= precioDetal) {
-                            //         Swal.fire(
-                            //             'Cuidado!',
-                            //             'El precio al por mayor debe ser superior al precio unitario y menor que el precio al detal!',
-                            //             'warning'
-                            //         )
-                            //         inputPrecioPorMayor.val('');
-                            //     }
-                            // });
-                        // } // FIN inputPrecioUnitario.length > 0
                     },
                     error: function() {
                         $('#modalEditarProductoContent').html(
@@ -400,9 +363,6 @@
                     }
                 });
             });
-
-            // ===========================================================
-            // ===========================================================
 
             // formEditarProducto para cargar gif en el submit
             $(document).on("submit", "form[id^='formEditarProducto_']", function(e) {
@@ -539,14 +499,6 @@
                 const cantidadBarcode = $(`#cantidad_barcode_${id}`).prop("readonly", true);
             });
 
-            // ===========================================================
-            // ===========================================================
-
-            // Abre automáticamente el archivo con los códigos QR del producto recién solicitado
-            // let pdfUrl = "{{ session('pdfUrl') }}";
-            // if (pdfUrl) {
-            //     window.open(pdfUrl, '_blank');
-            // }
         }); //FIN Document.ready
 
         // =============================================
@@ -580,7 +532,6 @@
                     return;
                 }
 
-                // Todo bien
                 displayElement.textContent = file.name;
                 displayElement.classList.remove('hidden');
             }
@@ -589,36 +540,45 @@
         // ============================================================
         // FUNCIÓN AUXILIAR DE VALIDACIÓN PARA EDITAR PRODUCTO
         // ============================================================
-        function validarPrecios(modal) {
-
+        function validarPrecios(modal)
+        {
             let inputPrecioUnitario = modal.find('[id^=precioUnitarioEdit]');
             let inputPrecioDetal = modal.find('[id^=precioDetalEdit]');
             let inputPrecioPorMayor = modal.find('[id^=precioPorMayorEdit]');
 
-            let precioUnitario = parseFloat(inputPrecioUnitario.val()) || 0;
-            let precioDetal = parseFloat(inputPrecioDetal.val()) || 0;
-            let precioPorMayor = parseFloat(inputPrecioPorMayor.val()) || 0;
+            let precioUnitario = inputPrecioUnitario.val() || 0;
+            let precioDetal = inputPrecioDetal.val() || 0;
+            let precioPorMayor = inputPrecioPorMayor.val() || 0;
+
+            precioUnitario = precioUnitario.replace(".", "").replace(".", "").replace(".", "");
+            precioDetal = precioDetal.replace(".", "").replace(".", "").replace(".", "");
+            precioPorMayor = precioPorMayor.replace(".", "").replace(".", "").replace(".", "");
 
             // Validación #1
-            if (precioUnitario >= precioDetal) {
+            if (parseFloat(precioUnitario) >= parseFloat(precioDetal)) {
                 Swal.fire(
                     'Cuidado!',
                     'El precio unitario debe ser menor que el precio al detal!',
                     'warning'
                 );
+
+                $("[id^='btn_editar_producto_']").prop("disabled", true);
                 return false;
             }
 
             // Validación #2
-            if (precioPorMayor <= precioUnitario || precioPorMayor >= precioDetal) {
+            if (parseFloat(precioPorMayor) <= parseFloat(precioUnitario) || parseFloat(precioPorMayor) >= parseFloat(precioDetal)) {
                 Swal.fire(
                     'Cuidado!',
                     'El precio al por mayor debe ser superior al precio unitario y menor que el precio al detal!',
                     'warning'
                 );
+
+                $("[id^='btn_editar_producto_']").prop("disabled", true);
                 return false;
             }
 
+            $("[id^='btn_editar_producto_']").prop("disabled", false);
             return true;
         }
     </script>
