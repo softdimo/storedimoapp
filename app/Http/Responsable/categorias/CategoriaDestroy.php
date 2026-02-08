@@ -15,7 +15,10 @@ class CategoriaDestroy implements Responsable
         try
         {
             $baseUri = env('BASE_URI');
-            $clientApi = new Client(['base_uri' => $baseUri]);
+            $clientApi = new Client([
+                'base_uri' => $baseUri,
+                'http_errors' => false
+            ]);
 
             // Realiza la solicitud a la API
             $response = $clientApi->post(
@@ -30,12 +33,16 @@ class CategoriaDestroy implements Responsable
 
             $respuesta = json_decode($response->getBody()->getContents());
 
-            if (isset($respuesta->success) && $respuesta->success === true)
-            {
-
+            if (isset($respuesta->success) && $respuesta->success === true) {
                 alert()->success('Proceso Exitoso', 'Estado cambiado satisfactoriamente');
                 return redirect()->to(route('categorias.index'));
+            } else {
+                // Si la API respondió success: false con un mensaje específico
+                $mensaje = $respuesta->message ?? 'No se pudo cambiar el estado.';
+                alert()->warning('Atención', $mensaje);
+                return back();
             }
+
         } catch (Exception $e)
         {
             alert()->error('Error', 'Cambiando el estado de la categoría, contacte a Soporte.');

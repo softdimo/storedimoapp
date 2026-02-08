@@ -32,6 +32,7 @@ class Usuario extends Model
         'fecha_contrato',
         'fecha_terminacion_contrato',
         'clave',
+        'session_token',
         'clave_fallas',
         'id_estado',
         'id_rol'

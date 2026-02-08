@@ -29,8 +29,8 @@ class UnidadMedidaStore implements Responsable
         try {
             $peticion = $this->clientApi->post($this->baseUri.'unidad_medida_store', [
                 'json' => [
-                    'descripcion' => ucwords(strtolower($umd)),
-                    'abreviatura' => ucwords(strtolower($abreviaturaUmd)),
+                    'descripcion' => strtolower($umd),
+                    'abreviatura' => strtolower($abreviaturaUmd),
                     'estado_id' => 1,
                     'id_audit' => session('id_usuario'),
                     'empresa_actual' => session('empresa_actual.id_empresa')

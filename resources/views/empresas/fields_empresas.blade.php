@@ -9,7 +9,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tipos_documento), old('id_tipo_documento', isset($empresa) ? $empresa->id_tipo_documento : null), [
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                     'id' => 'id_tipo_documento',
                     'required' => 'required',
                 ]) !!}
@@ -72,13 +72,10 @@
 
         <div class="col-12 col-md-3">
             <div class="form-group d-flex flex-column">
-                <label for="telefono_empresa" class="form-label">Teléfono Empresa
-                    <span class="text-danger">*</span>
-                </label>
+                <label for="telefono_empresa" class="form-label">Teléfono Empresa</label>
                 {!! Form::text('telefono_empresa', old('telefono_empresa', isset($empresa) ? $empresa->telefono_empresa : null), [
                     'class' => 'form-control',
                     'id' => 'telefono_empresa',
-                    'required' => 'required',
                     'title' => 'Debe tener entre 7 y 10 dígitos.',
                     'maxlength' => 10,
                     'minlength' => 7,
@@ -178,7 +175,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 {!! Form::select('id_tipo_bd', collect(['' => 'Seleccionar...'])->union($tipos_bd), old('id_tipo_bd', isset($empresa) ? $empresa->id_tipo_bd : 1), [
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                     'id' => 'id_tipo_bd',
                     'required' => 'required',
                 ]) !!}
@@ -273,7 +270,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 {!! Form::select('id_estado', collect(['' => 'Seleccionar...'])->union($estados), old('id_estado', isset($empresa) ? $empresa->id_estado : 1), [
-                    'class' => 'form-select',
+                    'class' => 'form-select select2',
                     'id' => 'id_estado',
                     'required' => 'required',
                 ]) !!}

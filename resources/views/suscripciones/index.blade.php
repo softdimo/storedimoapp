@@ -104,6 +104,15 @@
                 width: '100%'
             });
 
+            $(document).on('select2:open', function(e) {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    setTimeout(function() {
+                        searchField.focus();
+                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
+                }
+            });
+
             // INICIO DataTable Lista Usuarios
             $("#tbl_suscripciones").DataTable({
                 dom: 'Blfrtip',

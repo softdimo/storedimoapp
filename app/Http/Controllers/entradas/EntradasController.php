@@ -385,15 +385,18 @@ class EntradasController extends Controller
 
     public function productosPorProveedor(Request $request)
     {
+        $idProveedor = $request->id_proveedor;
+
         try
         {
-            $response = $this->clientApi->get('productos_por_proveedor', [
+            $response = $this->clientApi->get('productos_por_proveedor/' . $idProveedor, [
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
             ]);
 
             return json_decode($response->getBody()->getContents());
+            // dd(json_decode($response->getBody()->getContents()));
 
         } catch (Exception $e)
         {

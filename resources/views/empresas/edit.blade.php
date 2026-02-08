@@ -138,6 +138,11 @@
                 width: '100%'
             });
 
+            $('.select2').on('select2:open', function (e) {
+                // Buscamos el input de búsqueda dentro del contenedor de Select2 y le damos foco
+                document.querySelector('.select2-search__field').focus();
+            });
+
             // ===========================================================================================
             // ===========================================================================================
 
@@ -296,9 +301,7 @@
                 const loadingIndicator = $(`#loadingIndicatorEditarEmpresa_${id}`);
 
                 // Lógica del botón
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>"
-                );
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Cargar Spinner
                 loadingIndicator.show();

@@ -113,11 +113,16 @@
                 width: '100%'
             });
 
+            $('.select2').on('select2:open', function (e) {
+                // Buscamos el input de búsqueda dentro del contenedor de Select2 y le damos foco
+                document.querySelector('.select2-search__field').focus();
+            });
+
             // Inicializar intlTelInput para el campo celular en el modal
             initIntlPhone("#celular");
 
             // Inicializar función de validación de número de teléfono fijo natural
-            initPhoneValidation("#numero_telefono", "#telefono-error");
+            initPhoneValidation("#telefono_proveedor", "#tel_fijo_error");
 
             // Inicializar función de validación de número de teléfono fijo jurídico
             initPhoneValidation("#telefono_empresa", "#telefono-error");
@@ -184,8 +189,8 @@
 
                 if (idTipoPersona == 4) { // Proveedor-jurídico
                     // OCULTAR campos de persona natural
-                    $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_numero_telefono, #div_id_genero').hide('slow');
-                    $('#identificacion, #nombres_persona, #apellidos_persona, #numero_telefono').removeAttr('required').val('');
+                    $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_telefono_proveedor, #div_id_genero').hide('slow');
+                    $('#identificacion, #nombres_persona, #apellidos_persona, #telefono_proveedor').removeAttr('required').val('');
                     $('#id_genero').removeAttr('required').val('').trigger('change'); // Limpia select2
 
                     // MOSTRAR campos de empresa
@@ -201,9 +206,9 @@
 
                 } else { // Natural u otros
                     // MOSTRAR campos de persona natural
-                    $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_numero_telefono, #div_id_genero').show('slow');
+                    $('#div_identificacion, #div_nombres_persona, #div_apellidos_persona, #div_telefono_proveedor, #div_id_genero').show('slow');
                     $('#identificacion, #nombres_persona, #apellidos_persona, #id_genero').attr('required', 'required');
-                    $('#numero_telefono').removeAttr('required');
+                    $('#telefono_proveedor').removeAttr('required');
 
                     // OCULTAR campos de empresa
                     $('#div_nit_proveedor, #div_proveedor_juridico, #div_telefono_empresa').hide('slow');

@@ -206,6 +206,18 @@
             // ===========================================================================================
             // ===========================================================================================
 
+            $(document).on('select2:open', function(e) {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    setTimeout(function() {
+                        searchField.focus();
+                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
+                }
+            });
+
+            // ===========================================================================================
+            // ===========================================================================================
+
             // Evita permitir que el enter active el submit
             $(document).on('keypress', 'form[id^="formEditarProveedor_"]', function (e) {
                 if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
@@ -227,8 +239,7 @@
 
                 // Deshabilitar botones
                 cancelButton.prop("disabled", true);
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
 
                 // Cargar Spinner
                 loadingIndicator.show();
@@ -255,7 +266,7 @@
                         // Reinicializar select2 si lo usas en el modal
                         $('#modalEditarProveedor .select2').select2({
                             dropdownParent: $('#modalEditarProveedor'),
-                            placeholder: 'Seleccionar...',
+                            // placeholder: 'Seleccionar...',
                             width: '100%',
                             allowClear: false
                         });

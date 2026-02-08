@@ -11,6 +11,7 @@ use App\Helpers\DatabaseConnectionHelper;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use App\Traits\MetodosTrait;
+use Illuminate\Support\Str;
 
 class LoginStore implements Responsable
 {
@@ -129,21 +130,55 @@ class LoginStore implements Responsable
         }
     }
 
+    // private function crearVariablesSesion(array $user)
+    // {
+    //     Session::flush();
+        
+    //     $permisos = $this->obtenerPermisos($user['id_usuario']);
+
+    //     Session::put([
+    //         'id_usuario' => $user['id_usuario'],
+    //         'usuario' => $user['usuario'],
+    //         'id_empresa' => $user['id_empresa'], // Nuevo
+    //         'id_rol' => $user['id_rol'],
+    //         'empresa_actual' => $user['empresa'],
+    //         'permisos' => $permisos, // Nuevo
+    //         'sesion_iniciada' => true,
+    //         'tenant_connection' => true // Mantener si lo usas
+    //     ]);
+    // }
+
     private function crearVariablesSesion(array $user)
     {
+        // Limpiamos cualquier rastro de sesiones anteriores
         Session::flush();
         
+        // 1. Generamos un token único e irrepetible para esta sesión específica
+        $nuevoToken = Str::random(40);
+
+        // 2. Notificamos a la API para que lo guarde en la BD principal
+        // Si la API falla, es mejor capturarlo para no bloquear el login, 
+        // pero idealmente debe ser exitoso.
+        try {
+            $this->actualizarTokenSesionBd($user['id_usuario'], $nuevoToken);
+        } catch (Exception $e) {
+            Log::error("No se pudo actualizar el session_token en la API: " . $e->getMessage());
+            // Opcional: podrías decidir si dejas pasar el login o no
+        }
+
         $permisos = $this->obtenerPermisos($user['id_usuario']);
 
+        // 3. Guardamos todo en la sesión local del navegador
         Session::put([
-            'id_usuario' => $user['id_usuario'],
-            'usuario' => $user['usuario'],
-            'id_empresa' => $user['id_empresa'], // Nuevo
-            'id_rol' => $user['id_rol'],
-            'empresa_actual' => $user['empresa'],
-            'permisos' => $permisos, // Nuevo
-            'sesion_iniciada' => true,
-            'tenant_connection' => true // Mantener si lo usas
+            'id_usuario'        => $user['id_usuario'],
+            'usuario'           => $user['usuario'],
+            'id_empresa'        => $user['id_empresa'],
+            'id_rol'            => $user['id_rol'],
+            'empresa_actual'    => $user['empresa'],
+            'permisos'          => $permisos,
+            'sesion_iniciada'   => true,
+            'tenant_connection' => true,
+            'session_token'     => $nuevoToken // <--- El "sello" de seguridad
         ]);
     }
 
@@ -263,4 +298,23 @@ class LoginStore implements Responsable
             // No alertamos para no interrumpir el login por un error menor
         }
     }
-}
+
+    private function actualizarTokenSesionBd($idUsuario, $token) {
+        try {
+            $client = new Client(['base_uri' => env('BASE_URI')]);
+            $client->post('administracion/actualizar_token_sesion/'.$idUsuario, [
+                'json' => [
+                    'session_token' => $token,
+                    'id_audit'      => $idUsuario
+                ],
+                'timeout' => 5
+            ]);
+
+            return true;
+
+        } catch (Exception $e) {
+            Log::error("Error al sincronizar el token con la API: ".$e->getMessage());
+            throw new Exception("Error al sincronizar el token con la API.");
+        }
+    }
+} // FIN class LoginStore implements Responsable

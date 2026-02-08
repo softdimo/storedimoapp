@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'verificar.sesion' => \App\Http\Middleware\VerificarSesionIniciada::class,
         'check.diasplan.alert' => \App\Http\Middleware\CheckDiasPlanAlert::class,
+        'verificar.token' => \App\Http\Middleware\VerificarTokenSesion::class,
     ];
 }

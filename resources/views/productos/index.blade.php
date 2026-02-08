@@ -300,6 +300,17 @@
 
             // ===========================================================
 
+            $(document).on('select2:open', function(e) {
+                const searchField = document.querySelector('.select2-search__field');
+                if (searchField) {
+                    setTimeout(function() {
+                        searchField.focus();
+                    }, 10); // Un pequeño delay ayuda a que el buscador se renderice
+                }
+            });
+
+            // ===========================================================
+
             // Evita permitir que el enter active el submit
             $(document).on('keypress', 'form[id^="formEditarProducto_"]', function (e) {
                 if (e.key === 'Enter' && !$(e.target).is('button[type="submit"]')) {
@@ -307,6 +318,8 @@
                     return false;
                 }
             });
+
+            // ===========================================================
 
             $(document).on('click', '.btn-editar-producto', function() {
                 const idProducto = $(this).data('id');
@@ -330,7 +343,7 @@
                         // Reinicializar select2 si lo usas en el modal
                         $('#modalEditarProducto .select2').select2({
                             dropdownParent: $('#modalEditarProducto'),
-                            placeholder: 'Seleccionar...',
+                            // placeholder: 'Seleccionar...',
                             width: '100%',
                             allowClear: false
                         });
@@ -435,8 +448,7 @@
                 const cancelButton = $(`#btn_cancelar_estado_producto_${id}`);
 
                 // Deshabilitar btns
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
 
                 // Cargar spinner
@@ -486,17 +498,31 @@
                 const submitButton = $(`#btn_codebar_producto_${id}`);
                 const cancelButton = $(`#btn_cancelar_codebar_${id}`);
                 const loadingIndicator = $(`#loadingIndicatorCodeBarProducto_${id}`);
+                const inputCantidad = $(`#cantidad_barcode_${id}`); // Selector del input
 
-                // Deshabilitar btns
-                submitButton.prop("disabled", true).html(
-                    "Procesando... <i class='fa fa-spinner fa-spin'></i>");
+                // Capturar valores
+                const cantidadSolicitada = parseInt(inputCantidad.val());
+                const cantidadDisponible = parseInt($(`#cantidad_consultada_qr_${id}`).val());
+
+                // Validar si es superior
+                if (cantidadSolicitada > cantidadDisponible) {
+                    e.preventDefault(); // Evita que el formulario se envíe
+
+                    Swal.fire(
+                        '¡Cuidado!',
+                        `La cantidad solicitada (${cantidadSolicitada}) es superior a la disponible (${cantidadDisponible})`,
+                        'warning'
+                    );
+
+                    inputCantidad.val('');
+                    return false;
+                }
+
+                // Si la validación pasa:
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
                 cancelButton.prop("disabled", true);
-
-                // Cargar spinner
                 loadingIndicator.show();
-
-                // ReadOnly para input de cantidad de barcodes a generar
-                const cantidadBarcode = $(`#cantidad_barcode_${id}`).prop("readonly", true);
+                inputCantidad.prop("readonly", true);
             });
 
         }); //FIN Document.ready
