@@ -18,7 +18,7 @@ class VerificarTokenSesion
             $ahora = now();
             $ultimaValidacion = Session::get('ultima_validacion_token');
             // 600 segundos = 10 minutos de "paz" para el servidor
-            // $intervaloSegundos = 0;
+            $intervaloSegundos = 0;
             // $intervaloSegundos = 600; // 10 minutos
             // $intervaloSegundos = 1200; // 20 minutos
             // $intervaloSegundos = 1800; // 30 minutos
@@ -31,7 +31,7 @@ class VerificarTokenSesion
             // $intervaloSegundos = 6000; // 100 minutos
             // $intervaloSegundos = 36000; // 10 horas
             // $intervaloSegundos = 43200; // 12 horas
-            $intervaloSegundos = 86400; // 24 horas
+            // $intervaloSegundos = 86400; // 24 horas
             // $intervaloSegundos = 172800; // 48 horas
             // $intervaloSegundos = 259200; // 72 horas
             // $intervaloSegundos = 345600; // 96 horas
