@@ -246,6 +246,14 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         Route::group(['namespace' => 'App\Http\Controllers\planes'], function () {
             Route::resource('planes', 'PlanesController');
         });
+        
+        // ========================================================================
+        // ========================================================================
+
+        // MÉTRICAS
+        Route::group(['namespace' => 'App\Http\Controllers\metricas'], function () {
+            Route::resource('metricas', 'MetricasController');
+        });
     }); // F..IN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])
 

@@ -25,7 +25,7 @@ class TrafficLogger
             /**
              * 2. Obtener el nombre de la base de datos actual.
              * Como tu Helper hace Config::set('database.connections.tenant.database', ...),
-             * el valor que obtenemos aquí ya es el valor que el Helper desencriptó 
+             * el valor que obtenemos aquí ya es el valor que el Helper desencriptó
              * y puso en la configuración en tiempo de ejecución.
              */
             $currentDb = Config::get('database.connections.tenant.database');
