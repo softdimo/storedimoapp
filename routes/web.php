@@ -253,6 +253,15 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         // MÉTRICAS
         Route::group(['namespace' => 'App\Http\Controllers\metricas'], function () {
             Route::resource('metricas', 'MetricasController');
+            Route::post('query_total_absoluto', 'MetricasController@queryTotalAbsoluto')->name('query_total_absoluto');
+            Route::post('query_subtotal_actividad', 'MetricasController@querySubtotalActividad')->name('query_subtotal_actividad');
+            Route::post('query_movimiento_bd', 'MetricasController@queryMovimientoBd')->name('query_movimiento_bd');
+            Route::post('query_por_fuente', 'MetricasController@queryPorFuente')->name('query_por_fuente');
+            Route::post('query_ranking_tenants', 'MetricasController@queryRankingTenants')->name('query_ranking_tenants');
+            Route::post('query_monitoreo_errores', 'MetricasController@queryMonitoreoErrores')->name('query_monitoreo_errores');
+            Route::post('query_rutas_utilizadas', 'MetricasController@queryRutasUtilizadas')->name('query_rutas_utilizadas');
+            Route::post('query_actividad_horas', 'MetricasController@queryActividadHoras')->name('query_actividad_horas');
+            Route::post('borrar_registros', 'MetricasController@borrarRegistros')->name('borrar_registros');
         });
     }); // F..IN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])

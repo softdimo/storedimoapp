@@ -15,11 +15,7 @@ class MetricaIndex implements Responsable
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $response = $clientApi->get($baseUri . 'metricas_index', [
-                'query' => [
-                    // 'empresa_actual' => session('empresa_actual.id_empresa')
-                ]
-            ]);
+            $response = $clientApi->get($baseUri . 'administracion/metricas_index', []);
             // 1. Obtenemos el cuerpo de la respuesta
             // $contents = $response->getBody()->getContents();
             $contents = trim($response->getBody()->getContents()); // Trim para limpiar espacios
@@ -32,8 +28,6 @@ class MetricaIndex implements Responsable
             if (json_last_error() !== JSON_ERROR_NONE || (!is_array($metricasIndex) && !is_object($metricasIndex))) {
                 $metricasIndex = [];
             }
-
-            // $metricasIndex = json_decode($response->getBody()->getContents());
 
             return view('metricas.index', compact('metricasIndex'));
             

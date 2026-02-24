@@ -150,6 +150,8 @@ trait MetodosTrait
 
         // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
         view()->share('planesData', $this->planesData());
+
+        view()->share('tiposMetrica', $this->tiposMetrica());
     } // FIN shareBasicData()
 
     // =======================================================================================
@@ -285,6 +287,12 @@ trait MetodosTrait
         $data = $this->cargarConfiguracionInicial();
         // No usamos pluck aquí porque queremos el objeto completo indexado por ID
         return collect($data['planesData'] ?? []);
+    }
+
+    public function tiposMetrica()
+    {
+        $data = $this->cargarConfiguracionInicial();
+        return collect($data['tiposMetrica'] ?? [])->pluck('tipo_metrica', 'id_tipo_metrica');
     }
 
     // =======================================================================================
