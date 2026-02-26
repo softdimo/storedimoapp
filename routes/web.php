@@ -265,5 +265,3 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         });
     }); // F..IN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])
-
-// comentario de hernan
