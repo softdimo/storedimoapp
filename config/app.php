@@ -179,7 +179,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\TenantMigrationProvider::class,
-
     ],
 
     /*
