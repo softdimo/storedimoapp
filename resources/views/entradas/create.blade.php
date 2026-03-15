@@ -626,6 +626,21 @@
     <script>
         $(document).ready(function()
         {
+            function formatearMiles(valor)
+            {
+                // Quitar todo excepto dígitos y coma
+                valor = valor.replace(/[^\d,]/g, "");
+
+                // Separar por coma (decimal)
+                let partes = valor.split(",");
+                let entero = partes[0].replace(/\D/g, "");
+                let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+
+                // Formatear miles con punto
+                entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return decimal ? `${entero},${decimal}` : entero;
+            }
+
             $('.select2').select2({
                 // placeholder: "Seleccionar...",
                 allowClear: false,
@@ -675,24 +690,25 @@
                             spinner.show();
                             btn.prop("disabled", true).html(`<i class="fa fa-spinner fa-spin"></i> Procesando...`);
                         },
-                        success: function(respuesta) {
-
-                            if (idProducto == '') {
+                        success: function(respuesta)
+                        {
+                            if (idProducto == '')
+                            {
                                 $('#p_unitario').html(0);
                                 $('#p_detal').html(0);
                                 $('#p_x_mayor').html(0);
-                            } else {
-                                setTimeout(() => {
-                                    $('#p_unitario').html(respuesta.precio_unitario);
-                                    $('#p_detal').html(respuesta.precio_detal);
-                                    $('#p_x_mayor').html(respuesta.precio_por_mayor);
+                            } else
+                            {
+                                setTimeout(() =>
+                                {
+                                    $('#p_unitario').html(formatearMiles(respuesta.precio_unitario.toString()));
+                                    $('#p_detal').html(formatearMiles(respuesta.precio_detal.toString()));
+                                    $('#p_x_mayor').html(formatearMiles(respuesta.precio_por_mayor.toString()));
 
                                     $('#idProductoEdit').val(respuesta.id_producto);
-                                    $('#precioUnitarioEdit').val(respuesta
-                                        .precio_unitario);
+                                    $('#precioUnitarioEdit').val(respuesta.precio_unitario);
                                     $('#precioDetalEdit').val(respuesta.precio_detal);
-                                    $('#precioPorMayorEdit').val(respuesta
-                                        .precio_por_mayor);
+                                    $('#precioPorMayorEdit').val(respuesta.precio_por_mayor);
 
                                     $('#id_producto_compra').val(respuesta.id_producto);
 
@@ -701,7 +717,8 @@
                                 }, 1000);
                             }
                         },
-                        error: function(xhr, status, error) {
+                        error: function(xhr, status, error)
+                        {
                             spinner.hide();
                             btn.prop("disabled", false).html(`<i class="fa fa-plus plus"></i> Agregar`);
                         }
@@ -711,10 +728,8 @@
                     $('#p_detal').html(0);
                     $('#p_x_mayor').html(0);
                     $('#btn_add_entrada').prop("disabled", true);
-                } // FIN if (idProducto != '')
-            }); // FIN - Validación Formulario Creación de Bajas de productos $('#id_producto').change(function()
-
-            // ===================================================================================
+                }
+            });
 
             $('#id_tipo_proveedor').change(function ()
             {
@@ -722,7 +737,6 @@
                 let spinner = $("#loadingIndicatorAgregarCompra");
 
                 let idProveedor = $('#id_tipo_proveedor').val();
-                console.log(idProveedor);
 
                 $.ajax({
                     async: true,
@@ -750,8 +764,6 @@
                     },
                     success: function(response)
                     {
-                        console.log(response);
-
                         // 1. Referencia al select de productos
                         const $selectProducto = $('#id_producto');
 
@@ -841,11 +853,8 @@
                             inputPrecioPorMayor.val('');
                         }
                     });
-                } // FIN inputPrecioUnitario.length > 0
-            }); // FIN '[id^="modal_registroProducto"]').on('shown.bs.modal'
-
-            // ===================================================================================
-            // ===================================================================================
+                }
+            });
 
             // Modal modalModificarPrecios (Update)
             $(document).on('shown.bs.modal', '[id^="modalModificarPrecios"]', function() {
@@ -874,7 +883,8 @@
                     // ===================================================
 
                     // Valido que el precio por mayor sea mayor que el unitario y menor que el precio al detal
-                    inputPrecioPorMayorEdit.blur(function() {
+                    inputPrecioPorMayorEdit.blur(function()
+                    {
                         let precioUnitario = parseFloat(inputPrecioUnitarioEdit.val()) || 0;
                         let precioDetal = parseFloat(inputPrecioDetalEdit.val()) || 0;
                         let precioPorMayor = parseFloat(inputPrecioPorMayorEdit.val()) || 0;
@@ -955,16 +965,15 @@
             $("#btn_add_entrada").click(function() {
 
                 let spinner = $("#loadingIndicatorAgregarCompra");
-
                 let facturaCompra = $('#factura_compra').val();
-
                 let idTipoProveedor = $('#id_tipo_proveedor').val();
                 let tipoProveedor = $('#id_tipo_proveedor option:selected').text();
-
                 let idProducto = $('#id_producto').val();
                 let productoCompra = $('#id_producto option:selected').text();
 
-                let pUnitario = parseFloat($('#p_unitario').text());
+                let precioUnitario = $('#p_unitario').text().replace(".", "").replace(".", "").replace(".", "");
+
+                let pUnitario = parseFloat(precioUnitario);
                 let cantidad = parseInt($('#cantidad').val());
 
                 if (!idTipoProveedor || !idProducto || !cantidad || !facturaCompra) {
@@ -986,7 +995,7 @@
                     <tr class="" id="row_${indiceSiguienteFila}">
                         <td class="text-center">${productoCompra}</td>
                         <td class="text-center">${cantidad}</td>
-                        <td class="text-center">${valorSubTotal}</td>
+                        <td class="text-center">$ ${formatearMiles(valorSubTotal.toString())}</td>
                         <td class="text-center">
                             <button type="button" data-id="${indiceSiguienteFila}" class="btn btn-danger btn-sm btn-eliminar-fila" style="background-color:red;">
                                 <i class="fa fa-trash text-white"></i>
@@ -1010,14 +1019,17 @@
                 $("#formRegistrarCompra").append(hiddenInputs);
 
                 // Actualizar total
-                $('#valor_compra').val(totalVenta);
+                $('#valor_compra').val(formatearMiles(totalVenta.toString()));
 
                 let valorCompra = $('#valor_compra').val();
                 let btnRegistarCompra = $('#btn_registar_compra');
 
-                if (valorCompra == '' || valorCompra == '0' || valorCompra == 0 ) {
+                valorCompra = valorCompra.replace(".", "").replace(".", "").replace(".", "");
+
+                if (parseFloat(valorCompra) == '' || parseFloat(valorCompra) == '0' || parseFloat(valorCompra == 0) ) {
                     btnRegistarCompra.prop('disabled', true);
-                } else {
+                } else
+                {
                     btnRegistarCompra.prop('disabled', false);
                 }
 
@@ -1030,9 +1042,7 @@
                 $('#cantidad').val(''); // Limpiar cantidad
 
                 spinner.hide();
-
                 actualizarEstadoEncabezado();
-
                 indiceSiguienteFila++;
             });
             // FIN - Función para agregar fila x fila cada producto para comprar
@@ -1108,20 +1118,19 @@
 
             let valorCompra = $('#valor_compra').val();
             let btnRegistarCompra = $('#btn_registar_compra');
-            console.log(valorCompra);
-            
 
-            if (valorCompra == '' || valorCompra == '0' || valorCompra == 0 ) {
+            valorCompra = valorCompra.replace(".", "").replace(".", "").replace(".", "");
+
+            if (parseFloat(valorCompra) == '' || parseFloat(valorCompra) == '0' || parseFloat(valorCompra) == 0 )
+            {
                 btnRegistarCompra.prop('disabled', true);
             } else {
                 btnRegistarCompra.prop('disabled', false);
             }
 
-            // ===================================================================================
-            // ===================================================================================
-
             // formRegistrarCompra para cargar gif en el submit
-            $(document).on("submit", "form[id^='formRegistrarCompra']", function(e) {
+            $(document).on("submit", "form[id^='formRegistrarCompra']", function(e)
+            {
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 const loadingIndicator = form.find("div[id^='loadingIndicatorCrearEntrada']");
@@ -1143,6 +1152,6 @@
                 // Mostrar Spinner
                 loadingIndicator.show();
             });
-        }); // FIN document.ready
+        });
     </script>
 @stop

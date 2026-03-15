@@ -236,7 +236,7 @@
                                 </div>
 
                                 <div class="p-2" style="background-color: #F5F5F5; border-top: 1px solid #ddd;">
-                                    <div class="d-flex rounded-end" style="border: 1px solid #ddd;">
+                                    <!-- <div class="d-flex rounded-end" style="border: 1px solid #ddd;">
                                         <p class="p-1 m-0 fw-bold w-25">Subtotal: $</p>
                                         {!! Form::text('sub_total_venta', null, [
                                             'class' => 'form-control w-75 bg-success-subtle',
@@ -244,7 +244,7 @@
                                             'required',
                                             'readonly',
                                         ]) !!}
-                                    </div>
+                                    </div> -->
 
                                     {{-- <div class="d-flex mt-2 mb-2 rounded-end" style="border: 1px solid #ddd;">
                                             <p class="p-1 m-0 fw-bold w-25">Descuento: $</p>
@@ -329,12 +329,6 @@
         </div> {{-- FIN div_contenido 80% --}}
     </div> {{-- FIN div_ppal (sidemarmenu y contenido derecho del 80%) --}}
 
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-    {{-- ==================================================================================== --}}
-
     {{-- INICIO MODAL REGISTRAR PRODUCTO --}}
     <div class="modal fade" id="modal_registroProducto" data-bs-backdrop="static" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="staticBackdropLabel">
@@ -348,9 +342,6 @@
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                {{-- ====================================================== --}}
-                {{-- ====================================================== --}}
 
                 {!! Form::open([
                     'method' => 'POST',
@@ -564,7 +555,23 @@
     <script src="{{ asset('DataTables/Buttons-2.3.4/js/buttons.html5.min.js') }}"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function() 
+        {
+            function formatearMiles(valor)
+            {
+                // Quitar todo excepto dígitos y coma
+                valor = valor.replace(/[^\d,]/g, "");
+
+                // Separar por coma (decimal)
+                let partes = valor.split(",");
+                let entero = partes[0].replace(/\D/g, "");
+                let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+
+                // Formatear miles con punto
+                entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return decimal ? `${entero},${decimal}` : entero;
+            }
+            
             $('.select2').select2({
                 // placeholder: "Seleccionar...",
                 allowClear: false,
@@ -595,14 +602,16 @@
             }
 
             // INICIO - Consulta de los precios del productos
-            $('#producto_venta').change(function() {
+            $('#producto_venta').change(function() 
+            {
                 let idProducto = $('#producto_venta').val();
 
                 let btn = $('#btnAgregarVenta');
                 let spinner = $("#loadingIndicatorAgregarVenta");
                 let btnRegistarVenta = $('#btn_registar_venta');
 
-                if (idProducto != '') {
+                if (idProducto != '')
+                {
                     $.ajax({
                         async: true,
                         url: "{{ route('query_valores_producto') }}",
@@ -612,7 +621,8 @@
                             '_token': "{{ csrf_token() }}",
                             'id_producto': idProducto
                         },
-                        beforeSend: function() {
+                        beforeSend: function()
+                        {
                             $('#p_unitario_venta').html(0);
                             $('#p_detal_venta').html(0);
                             $('#p_x_mayor_venta').html(0);
@@ -625,18 +635,26 @@
                             btnRegistarVenta.prop('disabled', true);
                             
                         },
-                        success: function(respuesta) {
-                            setTimeout(() => {
-                                $('#p_unitario_venta').html(respuesta.precio_unitario);
-                                $('#p_detal_venta').html(respuesta.precio_detal);
-                                $('#p_x_mayor_venta').html(respuesta.precio_por_mayor);
+                        success: function(respuesta)
+                        {
+                            setTimeout(() =>
+                            {
+                                $('#p_unitario_venta').html(formatearMiles(respuesta.precio_unitario.toString()));
+                                $('#p_detal_venta').html(formatearMiles(respuesta.precio_detal.toString()));
+                                $('#p_x_mayor_venta').html(formatearMiles(respuesta.precio_por_mayor.toString()));
+
+                                // $('#p_unitario_venta').html(respuesta.precio_unitario);
+                                // $('#p_detal_venta').html(respuesta.precio_detal);
+                                // $('#p_x_mayor_venta').html(respuesta.precio_por_mayor);
                                 $('#cantidad_producto').html(respuesta.cantidad);
 
                                 let idProducto = respuesta.id_producto;
 
                                 // NUEVO: restar del stock disponible lo ya agregado del mismo producto
                                 let cantidadAgregada = 0;
-                                if (Array.isArray(productosAgregados) && productosAgregados.length) {
+
+                                if (Array.isArray(productosAgregados) && productosAgregados.length)
+                                {
                                     productosAgregados.forEach(p => {
                                         if (String(p.idProductoVenta) === String(idProducto)) {
                                             cantidadAgregada += (parseInt(p.cantidad) || 0);
@@ -679,9 +697,6 @@
                 }
             });
             // FIN - Validar la cantidad ingresada vs la cantidad disponible para vender el producto
-
-            // ===================================================================================
-            // ===================================================================================
 
             $('#td_aplicar_x_mayor_venta').hide();
             $('input[name="aplicar_x_mayor_venta"]').removeAttr('required');
@@ -741,13 +756,11 @@
             });
             // CIERRE DataTable
 
-            // ===================================================================================
-            // ===================================================================================
-
             // INICIO - Función agregar datos de las ventas
             let productosAgregados = [];
 
-            $("#btnAgregarVenta").click(function() {
+            $("#btnAgregarVenta").click(function()
+            {
                 const btn = $(this);
                 let spinner = $("#loadingIndicatorAgregarVenta");
 
@@ -757,13 +770,18 @@
                 let idProductoVenta = $('#producto_venta').val();
                 let productoVenta = $('#producto_venta option:selected').text();
 
-                let pUnitarioVenta = parseFloat($('#p_unitario_venta').text());
-                let pDetalVenta = parseFloat($('#p_detal_venta').text());
-                let pxMayorVenta = parseFloat($('#p_x_mayor_venta').text());
+                 let precioUnitario = $('#p_unitario_venta').text().replace(".", "").replace(".", "").replace(".", "");
+                 let precioDetal = $('#p_detal_venta').text().replace(".", "").replace(".", "").replace(".", "");
+                 let precioPorMayor = $('#p_x_mayor_venta').text().replace(".", "").replace(".", "").replace(".", "");
+
+                let pUnitarioVenta = parseFloat(precioUnitario);
+                let pDetalVenta = parseFloat(precioDetal);
+                let pxMayorVenta = parseFloat(precioPorMayor);
                 let cantidadVenta = parseInt($('#cantidad_venta').val());
                 let aplicarMayor = $('input[name="aplicar_x_mayor_venta"]').is(':checked')
 
-                if (!idTipoClienteVenta || !idProductoVenta || !cantidadVenta || cantidadVenta <= 0) {
+                if (!idTipoClienteVenta || !idProductoVenta || !cantidadVenta || cantidadVenta <= 0)
+                {
                     Swal.fire('Cuidado!',
                         'Todos los campos son obligatorios y la cantidad debe ser mayor a 0!', 'error');
                     return;
@@ -787,22 +805,24 @@
                     idProductoVenta: idProductoVenta,
                     nombre: productoVenta,
                     cantidad: cantidadVenta,
-                    pUnitarioVenta: pUnitarioVenta,
-                    pDetalVenta: pDetalVenta,
-                    pxMayorVenta: pxMayorVenta,
-                    subtotal: valorSubTotal,
-                    ganancia: ganancia,
+                    pUnitarioVenta: formatearMiles(pUnitarioVenta.toString()),
+                    pDetalVenta: formatearMiles(pDetalVenta.toString()),
+                    pxMayorVenta: formatearMiles(pxMayorVenta.toString()),
+                    subtotal: formatearMiles(valorSubTotal.toString()),
+                    ganancia: formatearMiles(ganancia.toString()),
                 };
-                productosAgregados.push(producto);
 
+                productosAgregados.push(producto);
                 actualizarDetalleVenta();
 
                 let valorVenta = $('#total_venta').val();
                 let btnRegistarVenta = $('#btn_registar_venta');
 
-                if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
+                if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 )
+                {
                     btnRegistarVenta.prop('disabled', true);
-                } else {
+                } else
+                {
                     btnRegistarVenta.prop('disabled', false);
                 }
 
@@ -823,19 +843,21 @@
             // ===================================================================================
             // ===================================================================================
 
-            function actualizarDetalleVenta() {
+            function actualizarDetalleVenta()
+            {
                 tablaDetalleVenta.clear().draw();
 
                 let detalleHTML = "";
                 let totalVenta = 0;
+                let subtotal = 0;
 
                 productosAgregados.forEach((producto, index) => {
                     detalleHTML += `
                         <tr id="row_${index}">
                             <td class="text-center align-middle">${producto.nombre}</td>
                             <td class="text-center align-middle">${producto.cantidad}</td>
-                            <td class="text-center align-middle">$${producto.subtotal}</td>
-                            <td class="text-center align-middle">$${producto.ganancia}</td>
+                            <td class="text-center align-middle">$${formatearMiles(producto.subtotal.toString())}</td>
+                            <td class="text-center align-middle">$${formatearMiles(producto.ganancia.toString())}</td>
                             <td class="text-center align-middle">
                                 <button type="button" onclick="eliminarProducto(${index})" class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash text-white"></i>
@@ -852,12 +874,13 @@
                         </tr>
                     `;
 
-                    totalVenta += producto.subtotal;
+                    subtotal = producto.subtotal.replace(".", "").replace(".", "").replace(".", "");
+                    totalVenta += parseFloat(subtotal);
                 });
 
                 $('#tabla_detalle_venta tbody').html(detalleHTML);
-                $('#sub_total_venta').val(totalVenta);
-                $('#total_venta').val(totalVenta);
+                $('#sub_total_venta').val(formatearMiles(totalVenta.toString()));
+                $('#total_venta').val(formatearMiles(totalVenta.toString()));
             }
 
             window.eliminarProducto = function(index) {
@@ -880,9 +903,6 @@
                 }
             };
 
-            // ===================================================================================
-            // ===================================================================================
-
             $('#tipo_pago').on('change', function() {
 
                 let tipoPago = $('#tipo_pago').val();
@@ -896,23 +916,21 @@
                 }
             });
 
-            // ===================================================================================
-            // ===================================================================================
-
             let valorVenta = $('#total_venta').val();
+
+            valorVenta = valorVenta.replace(".", "").replace(".", "").replace(".", "");
+
             let btnRegistarVenta = $('#btn_registar_venta');
 
-            if (valorVenta == '' || valorVenta == '0' || valorVenta == 0 ) {
+            if (parseFloat(valorVenta) == '' || parseFloat(valorVenta) == '0' || parseFloat(valorVenta) == 0 ) {
                 btnRegistarVenta.prop('disabled', true);
             } else {
                 btnRegistarVenta.prop('disabled', false);
             }
 
-            // ===================================================================================
-            // ===================================================================================
-
             // loadingIndicatorCrearProductoVenta para cargar gif en el submit
-            $(document).on("submit", "form[id^='formCrearProductoVenta']", function(e) {
+            $(document).on("submit", "form[id^='formCrearProductoVenta']", function(e)
+            {
                 const form = $(this);
                 const submitButton = form.find('button[type="submit"]');
                 const cancelButton = form.find('button[type="button"]');
@@ -925,9 +943,6 @@
                 // Cargar Spinner
                 loadingIndicator.show();
             });
-
-            // ===================================================================================
-            // ===================================================================================
 
             // loadingIndicatorRegistrarVenta para cargar gif en el submit
             $(document).on("submit", "form[id^='formRegistrarVenta']", function(e) {
@@ -952,9 +967,6 @@
                 // Cargar Spinner
                 loadingIndicator.show();
             });
-
-            // ===================================================================================
-            // ===================================================================================
         }); // FIN document.ready
     </script>
 @stop

@@ -24,7 +24,6 @@ class EntradaStore implements Responsable
     {
         $idEmpresa = request('id_empresa', null);
         $facturaCompra = request('factura_compra', null);
-        // $facturaOriginal = request('factura_compra', '');
         $facturaCompra = strtoupper(str_replace(' ', '', request('factura_compra', '')));
         $facturaCompra = strtoupper(preg_replace('/\s+/', '', request('factura_compra', '')));
         $fechaCompra = now()->format('Y-m-d H:i:s'); // Formato compatible con DATETIME en MySQL
@@ -44,7 +43,7 @@ class EntradaStore implements Responsable
                     'id_empresa' => $idEmpresa,
                     'factura_compra' => $facturaCompra,
                     'fecha_compra' => $fechaCompra,
-                    'valor_compra' => $valorCompra,
+                    'valor_compra' => doubleval(str_replace(".", "", $valorCompra)),
                     'id_proveedor' => $idProveedor,
                     'productos' => array_map(function ($id, $precio, $cantidad, $subtotal) {
                         return [
@@ -53,7 +52,7 @@ class EntradaStore implements Responsable
                             'cantidad' => $cantidad,
                             'subtotal' => $subtotal
                         ];
-                    }, $idProductos, $pUnitarios, $cantidades, $subtotales), // Construcción del array
+                    }, $idProductos, $pUnitario, $cantidades, $subtotales), // Construcción del array
                     'id_usuario' => $usuLogueado,
                     'id_estado' => $idEstado,
                     'id_audit' => session('id_usuario'),
@@ -66,7 +65,9 @@ class EntradaStore implements Responsable
                 alert()->success('Proceso Exitoso', 'Compra creada satisfactoriamente');
                 return redirect()->to(route('entradas.index'));
             }
-        } catch (Exception $e) {
+        } catch (Exception $e)
+        {
+            dd($e);
             alert()->error('Error', 'Creando la compra, contacte a Soporte.');
             return back();
         }
