@@ -15,7 +15,13 @@ return new class extends Migration
     {
         if (Schema::hasTable('personas') && Schema::hasColumn('personas', 'id_estado')) {
             Schema::table('personas', function (Blueprint $table) {
-                $table->dropForeign(['id_estado']);
+                try
+                {
+                    $table->dropForeign(['id_estado']);
+                    
+                } catch (\Exception $e) {
+                    //throw $th;
+                }
             });
         }
     }

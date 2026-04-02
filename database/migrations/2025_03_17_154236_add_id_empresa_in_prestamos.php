@@ -15,7 +15,8 @@ return new class extends Migration
     {
         if (Schema::hasTable('prestamos'))
         {
-            Schema::table('prestamos', function (Blueprint $table) {
+            Schema::table('prestamos', function (Blueprint $table)
+            {
                 $table->unsignedInteger('id_empresa')->nullable()->after('id_prestamo');
 
                 if (Schema::hasTable('prestamos'))
