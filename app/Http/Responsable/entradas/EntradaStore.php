@@ -17,9 +17,6 @@ class EntradaStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
-    // ===================================================================
-    // ===================================================================
-
     public function toResponse($request)
     {
         $idEmpresa = request('id_empresa', null);
@@ -33,11 +30,12 @@ class EntradaStore implements Responsable
         $idEstado = 1;
 
         $idProductos = request('id_producto_compra', []); // Array de productos
-        $pUnitarios = request('p_unitario_compra', []);   // Array de precios unitarios
+        $pUnitario = request('p_unitario_compra', []);   // Array de precios unitarios
         $cantidades = request('cantidad_compra', []);    // Array de cantidades
         $subtotales = request('subtotal_compra', []);    // Array de subtotales
 
-        try {
+        try
+        {
             $reqEntradaStore = $this->clientApi->post($this->baseUri.'entrada_store', [
                 'json' => [
                     'id_empresa' => $idEmpresa,
@@ -67,7 +65,6 @@ class EntradaStore implements Responsable
             }
         } catch (Exception $e)
         {
-            dd($e);
             alert()->error('Error', 'Creando la compra, contacte a Soporte.');
             return back();
         }

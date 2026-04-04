@@ -801,18 +801,52 @@
                     pxMayorVenta = '';
                 }
 
-                let producto = {
-                    idProductoVenta: idProductoVenta,
-                    nombre: productoVenta,
-                    cantidad: cantidadVenta,
-                    pUnitarioVenta: formatearMiles(pUnitarioVenta.toString()),
-                    pDetalVenta: formatearMiles(pDetalVenta.toString()),
-                    pxMayorVenta: formatearMiles(pxMayorVenta.toString()),
-                    subtotal: formatearMiles(valorSubTotal.toString()),
-                    ganancia: formatearMiles(ganancia.toString()),
-                };
+                let idxExistente = productosAgregados.findIndex(function(p) {
+                    return String(p.idProductoVenta) === String(idProductoVenta);
+                });
 
-                productosAgregados.push(producto);
+                if (idxExistente >= 0)
+                {
+                    let ex = productosAgregados[idxExistente];
+                    let subExNum = parseFloat(ex.subtotal.replace(".", "").replace(".", "").replace(".", "")) || 0;
+                    let pUnitExNum = parseFloat(ex.pUnitarioVenta.replace(".", "").replace(".", "").replace(".", "")) || 0;
+                    let nuevaCantidad = ex.cantidad + cantidadVenta;
+                    let nuevoSubtotalNum = subExNum + valorSubTotal;
+                    let costoTotalLinea = pUnitExNum * ex.cantidad + pUnitarioVenta * cantidadVenta;
+                    let nuevoPUnitProm = costoTotalLinea / nuevaCantidad;
+                    let nuevaGananciaNum = nuevoSubtotalNum - costoTotalLinea;
+                    let precioVentaUnit = nuevoSubtotalNum / nuevaCantidad;
+                    let pDetalNuevo = '';
+                    let pxMayorNuevo = '';
+                    if (aplicarMayor)
+                    {
+                        pxMayorNuevo = formatearMiles(precioVentaUnit.toString());
+                    } else
+                    {
+                        pDetalNuevo = formatearMiles(precioVentaUnit.toString());
+                    }
+                    ex.cantidad = nuevaCantidad;
+                    ex.pUnitarioVenta = formatearMiles(nuevoPUnitProm.toString());
+                    ex.pDetalVenta = pDetalNuevo;
+                    ex.pxMayorVenta = pxMayorNuevo;
+                    ex.subtotal = formatearMiles(nuevoSubtotalNum.toString());
+                    ex.ganancia = formatearMiles(nuevaGananciaNum.toString());
+                } else
+                {
+                    let producto = {
+                        idProductoVenta: idProductoVenta,
+                        nombre: productoVenta,
+                        cantidad: cantidadVenta,
+                        pUnitarioVenta: formatearMiles(pUnitarioVenta.toString()),
+                        pDetalVenta: formatearMiles(pDetalVenta.toString()),
+                        pxMayorVenta: formatearMiles(pxMayorVenta.toString()),
+                        subtotal: formatearMiles(valorSubTotal.toString()),
+                        ganancia: formatearMiles(ganancia.toString()),
+                    };
+
+                    productosAgregados.push(producto);
+                }
+
                 actualizarDetalleVenta();
 
                 let valorVenta = $('#total_venta').val();

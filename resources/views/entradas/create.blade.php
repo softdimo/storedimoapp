@@ -962,8 +962,8 @@
             let totalVenta = 0;
             let indiceSiguienteFila = 0;
 
-            $("#btn_add_entrada").click(function() {
-
+            $("#btn_add_entrada").click(function()
+            {
                 let spinner = $("#loadingIndicatorAgregarCompra");
                 let facturaCompra = $('#factura_compra').val();
                 let idTipoProveedor = $('#id_tipo_proveedor').val();
@@ -988,11 +988,35 @@
                 $('#proveedorCompra').html(tipoProveedor);
 
                 let valorSubTotal = pUnitario * cantidad;
-                totalVenta += valorSubTotal; // Acumular total
+                let $filaExistente = $('#tbl_compras tbody tr[data-id-producto="' + idProducto + '"]').first();
 
-                // Crear una fila para la tabla
-                let fila = `
-                    <tr class="" id="row_${indiceSiguienteFila}">
+                if ($filaExistente.length > 0)
+                {
+                    let idFilaExistente = $filaExistente.find('.btn-eliminar-fila').first().data('id');
+                    let cantidadActual = parseInt($filaExistente.find('td:nth-child(2)').first().text().trim(), 10) || 0;
+                    let subtotalTexto = $filaExistente.find('td:nth-child(3)').first().text().trim();
+                    let subtotalActual = parseFloat(subtotalTexto.replace(/\$/g, '').trim().replace(/\./g, '').replace(',', '.')) || 0;
+                    let nuevaCantidad = cantidadActual + cantidad;
+                    let nuevoSubtotal = subtotalActual + valorSubTotal;
+                    let nuevoPUnitario = nuevoSubtotal / nuevaCantidad;
+
+                    totalVenta = totalVenta - subtotalActual + nuevoSubtotal;
+
+                    $filaExistente.find('td:nth-child(2)').first().text(nuevaCantidad);
+                    $filaExistente.find('td:nth-child(3)').first().text('$ ' + formatearMiles(nuevoSubtotal.toString()));
+
+                    $(`#input_group_${idFilaExistente} input[name="p_unitario_compra[]"]`).val(nuevoPUnitario);
+                    $(`#input_group_${idFilaExistente} input[name="cantidad_compra[]"]`).val(nuevaCantidad);
+                    $(`#input_group_${idFilaExistente} input[name="subtotal_compra[]"]`).val(nuevoSubtotal);
+
+                    tablaCompras.row($filaExistente).invalidate().draw(false);
+                } else
+                {
+                    totalVenta += valorSubTotal; // Acumular total
+
+                    // Crear una fila para la tabla
+                    let fila = `
+                    <tr class="" id="row_${indiceSiguienteFila}" data-id-producto="${idProducto}">
                         <td class="text-center">${productoCompra}</td>
                         <td class="text-center">${cantidad}</td>
                         <td class="text-center">$ ${formatearMiles(valorSubTotal.toString())}</td>
@@ -1004,10 +1028,10 @@
                     </tr>
                 `;
 
-                tablaCompras.row.add($(fila)).draw();
+                    tablaCompras.row.add($(fila)).draw();
 
-                // Agregar inputs hidden dentro del formulario
-                let hiddenInputs = `
+                    // Agregar inputs hidden dentro del formulario
+                    let hiddenInputs = `
                     <div id="input_group_${indiceSiguienteFila}">
                         <input type="hidden" name="id_producto_compra[]" value="${idProducto}">
                         <input type="hidden" name="p_unitario_compra[]" value="${pUnitario}">
@@ -1016,7 +1040,10 @@
                     </div>
                 `;
 
-                $("#formRegistrarCompra").append(hiddenInputs);
+                    $("#formRegistrarCompra").append(hiddenInputs);
+
+                    indiceSiguienteFila++;
+                }
 
                 // Actualizar total
                 $('#valor_compra').val(formatearMiles(totalVenta.toString()));
@@ -1043,7 +1070,6 @@
 
                 spinner.hide();
                 actualizarEstadoEncabezado();
-                indiceSiguienteFila++;
             });
             // FIN - Función para agregar fila x fila cada producto para comprar
 
