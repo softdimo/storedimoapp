@@ -28,9 +28,6 @@ class EmpresasController extends Controller
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
-    // ======================================================================
-    // ======================================================================
-
     /**
      * Display a listing of the resource.
      *

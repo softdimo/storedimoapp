@@ -167,8 +167,10 @@ class ProveedoresController extends Controller
                     empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
                 {
                     return redirect()->to(route('login'));
-                } else {
-                    return new ProveedorEdit($idProveedor);
+                } else
+                {
+                    $vista = new ProveedorEdit($idProveedor);
+                    return $this->validarAccesos($sesion[0], 15, $vista);
                 }
             }
         } catch (Exception $e) {

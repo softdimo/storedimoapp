@@ -41,7 +41,6 @@ class HomeController extends Controller
                 }
 
                 $ventaDiaMes = $this->ventaDiaMes();
-
                 $entradaDiaMes = $this->entradaDiaMes();
 
                 return view('home.index', compact('ventaDiaMes','entradaDiaMes'));

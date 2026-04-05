@@ -145,7 +145,8 @@ class UnidadesMedidaController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    return new UnidadMedidaEdit($idUmd);
+                    $vista = new UnidadMedidaEdit($idUmd);
+                    return $this->validarAccesos($sesion[0], 66, $vista);
                 }
             }
         } catch (Exception $e)

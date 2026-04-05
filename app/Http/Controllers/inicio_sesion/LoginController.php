@@ -218,9 +218,6 @@ class LoginController extends Controller
         }
     }
 
-    // ======================================================================
-    // ======================================================================
-
     public function recuperarClaveEmail(Request $request)
     {
         if (!$this->checkDatabaseConnection()) {
@@ -229,9 +226,6 @@ class LoginController extends Controller
             return new RecuperarClave();
         }
     }
-
-    // ======================================================================
-    // ======================================================================
 
     public function recuperarClaveLink($usuIdRecuperarClave)
     {
@@ -243,9 +237,6 @@ class LoginController extends Controller
             return view('inicio_sesion.recuperar_clave_link', compact('usuIdRecuperarClave'));
         }
     }
-
-    // ======================================================================
-    // ======================================================================
 
     public function recuperarClaveUpdate(Request $request)
     {

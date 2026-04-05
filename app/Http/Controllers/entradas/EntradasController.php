@@ -142,8 +142,6 @@ class EntradasController extends Controller
         }
     }
 
-    // ======================================================================
-
     /**
      * Display the specified resource.
      *
@@ -195,46 +193,59 @@ class EntradasController extends Controller
         //
     }
 
-    // ======================================================================
-
     public function anularCompra(Request $request)
     {
-        $idCompra = request('id_compra', null);
-        $motivoAnulacion = request('motivo', null);
-
         try
         {
-            if(is_null($motivoAnulacion) || $motivoAnulacion == "")
+            if (!$this->checkDatabaseConnection())
             {
-                alert()->error('Error', 'El motivo de anulación es obligatorio');
-                return redirect()->to(route('entradas.index'));
-            }
-
-            $reqAnularCompra = $this->clientApi->post($this->baseUri.'anular_compra/'.$idCompra, [
-                'json' => [
-                    'id_audit' => session('id_usuario'),
-                    'empresa_actual' => session('empresa_actual.id_empresa'),
-                    'motivo' => $motivoAnulacion,
-                    'fechaAnulacion' => Carbon::now()->timestamp,
-                    'usuarioAnulacion' => session('id_usuario')
-                ]
-            ]);
-
-            $resAnularCompra = json_decode($reqAnularCompra->getBody()->getContents());
-
-            if(isset($resAnularCompra) && !empty($resAnularCompra) && !is_null($resAnularCompra))
+                return view('db_conexion');
+            } else
             {
-                alert()->success('Proceso Exitoso', 'La compra ha sido anulada satisfactoriamente');
-                return redirect()->to(route('entradas.index'));
+                $sesion = $this->validarVariablesSesion();
+    
+                if (empty($sesion[0]) || is_null($sesion[0]) &&
+                    empty($sesion[1]) || is_null($sesion[1]) &&
+                    empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
+                {
+                    return redirect()->to(route('login'));
+                } else
+                {
+                    $idCompra = request('id_compra', null);
+                    $motivoAnulacion = request('motivo', null);
+
+                    if(is_null($motivoAnulacion) || $motivoAnulacion == "")
+                    {
+                        alert()->error('Error', 'El motivo de anulación es obligatorio');
+                        return redirect()->to(route('entradas.index'));
+                    }
+    
+                    $reqAnularCompra = $this->clientApi->post($this->baseUri.'anular_compra/'.$idCompra, [
+                        'json' => [
+                            'id_audit' => session('id_usuario'),
+                            'empresa_actual' => session('empresa_actual.id_empresa'),
+                            'motivo' => $motivoAnulacion,
+                            'fechaAnulacion' => Carbon::now()->timestamp,
+                            'usuarioAnulacion' => session('id_usuario')
+                        ]
+                    ]);
+    
+                    $resAnularCompra = json_decode($reqAnularCompra->getBody()->getContents());
+    
+                    if(isset($resAnularCompra) && !empty($resAnularCompra) && !is_null($resAnularCompra))
+                    {
+                        alert()->success('Proceso Exitoso', 'La compra ha sido anulada satisfactoriamente');
+                        return redirect()->to(route('entradas.index'));
+                    }
+                }
             }
+            
         } catch (Exception $e)
         {
             alert()->error('Error', 'Exception, contacte a Soporte.' . $e->getMessage());
             return back();
         }
     }
-        
-    // ======================================================================
 
     public function reporteComprasPdf()
     {
@@ -264,8 +275,6 @@ class EntradasController extends Controller
             return redirect()->to(route('login'));
         }
     }
-
-    // ======================================================================
 
     public function detalleComprasPdf($idCompra)
     {
@@ -323,9 +332,6 @@ class EntradasController extends Controller
             return redirect()->to(route('login'));
         }
     }
-        
-    // ======================================================================
-    // ======================================================================
 
     public function categoriasTrait()
     {
@@ -396,7 +402,6 @@ class EntradasController extends Controller
             ]);
 
             return json_decode($response->getBody()->getContents());
-            // dd(json_decode($response->getBody()->getContents()));
 
         } catch (Exception $e)
         {

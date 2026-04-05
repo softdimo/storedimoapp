@@ -15,9 +15,6 @@ class UsuarioEdit implements Responsable
         $this->idUsuario = $idUsuario;
     }
 
-    // =============================================================
-    // =============================================================
-
     public function toResponse($request)
     {
         try {

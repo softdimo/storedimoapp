@@ -67,13 +67,8 @@ class ExistenciasController extends Controller
                 } else
                 {
                     $productosData  = $this->productosTrait();
-                    // dd($productos);
-
-                    // Convertimos a formato para el Form::select
                     $productos = collect($productosData)->pluck('nombre_producto', 'id_producto');
 
-                    // Compartimos ambos (el pluck y la lista completa)
-                    // view()->share('productos', $productos);
                     view()->share(compact('productos', 'productosData'));
 
                     $vista = 'existencias.create';

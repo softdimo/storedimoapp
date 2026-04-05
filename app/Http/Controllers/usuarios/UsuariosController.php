@@ -115,7 +115,7 @@ class UsuariosController extends Controller
 
     public function show($id)
     {
-        //
+        //comment
     }
 
     public function edit(Request $request, $idUsuario)
@@ -134,7 +134,8 @@ class UsuariosController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    return new UsuarioEdit($idUsuario);
+                    $vista = new UsuarioEdit($idUsuario);
+                    return $this->validarAccesos($sesion[0], 10, $vista);
                 }
             }
         } catch (Exception $e)
@@ -176,7 +177,7 @@ class UsuariosController extends Controller
 
     public function destroy($id)
     {
-        //
+        //comment
     }
 
     public function listarClientes()

@@ -441,7 +441,7 @@ trait MetodosTrait
                 }
             }
 
-            // Si la vista es una respuesta diferente (por ejemplo, un redirect)
+            // Si la vista es una respuesta diferente
             return $vista;
 
         } catch (Exception $e)
