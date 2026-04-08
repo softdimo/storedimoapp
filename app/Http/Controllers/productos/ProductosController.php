@@ -132,7 +132,6 @@ class ProductosController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-
                     $vista = new ProductoStore();
                     return $this->validarAccesos($sesion[0], 27, $vista);
                 }
@@ -209,7 +208,9 @@ class ProductosController extends Controller
                     $categorias = $this->categoriasTrait();
                     $umd = $this->UmdTrait();
                     $proveedores = $this->proveedoresTrait();
-                    return new ProductoEdit($idProducto, $categorias, $umd, $proveedores);
+
+                    $vista = new ProductoEdit($idProducto, $categorias, $umd, $proveedores);
+                    return $this->validarAccesos($sesion[0], 28, $vista);
                 }
             }
         } catch (Exception $e)

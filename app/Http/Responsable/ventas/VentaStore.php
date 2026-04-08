@@ -17,9 +17,6 @@ class VentaStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
-    // ===================================================================
-    // ===================================================================
-
     public function toResponse($request)
     {
         $idEmpresa = request('id_empresa', null);
@@ -49,17 +46,17 @@ class VentaStore implements Responsable
                     'id_tipo_cliente' => $idTipoCliente,
                     'fecha_venta' => $fechaVenta,
                     'descuento' => $descuento,
-                    'total_venta' => $totalVenta,
+                    'total_venta' => doubleval(str_replace(".", "", $totalVenta)),
                     'id_tipo_pago' => $idTipoPago,
                     'productos' => array_map(function ($id, $cantidad, $pUnitario, $precioDetal, $precioMayor, $subtotal, $ganancia) {
                         return [
                             'id_producto' => $id,
                             'cantidad' => $cantidad,
-                            'p_unitario' => $pUnitario,
-                            'p_detal' => $precioDetal,
-                            'p_mayor' => $precioMayor,
-                            'subtotal' => $subtotal,
-                            'ganancia' => $ganancia
+                            'p_unitario' => doubleval(str_replace(".", "", $pUnitario)),
+                            'p_detal' => doubleval(str_replace(".", "", $precioDetal)),
+                            'p_mayor' => doubleval(str_replace(".", "", $precioMayor)),
+                            'subtotal' => doubleval(str_replace(".", "", $subtotal)),
+                            'ganancia' => doubleval(str_replace(".", "", $ganancia))
                         ];
                     }, $idProductos, $cantidades, $pUnitarioVenta, $pDetalVenta, $pMayorVenta, $subtotales, $gananciaVenta), // Construcción del array
                     'id_cliente' => $idCliente,
@@ -73,11 +70,13 @@ class VentaStore implements Responsable
             ]);
             $resVentaStore = json_decode($reqVentaStore->getBody()->getContents());
 
-            if(isset($resVentaStore) && !empty($resVentaStore) && !is_null($resVentaStore)) {
+            if(isset($resVentaStore) && !empty($resVentaStore) && !is_null($resVentaStore))
+            {
                 alert()->success('Proceso Exitoso', 'Venta creada satisfactoriamente');
                 return redirect()->to(route('ventas.index'));
             }
-        } catch (Exception $e) {
+        } catch (Exception $e)
+        {
             alert()->error('Error', 'Creando la venta, contacte a Soporte.');
             return back();
         }

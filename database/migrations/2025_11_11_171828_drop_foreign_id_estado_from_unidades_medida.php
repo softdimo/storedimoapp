@@ -15,7 +15,13 @@ return new class extends Migration
     {
         if (Schema::hasTable('unidades_medida') && Schema::hasColumn('unidades_medida', 'estado_id')) {
             Schema::table('unidades_medida', function (Blueprint $table) {
-                $table->dropForeign(['estado_id']);
+                try
+                {
+                    $table->dropForeign(['estado_id']);
+                    
+                } catch (\Exception $e) {
+                    //throw $th;
+                }
             });
         }
     }

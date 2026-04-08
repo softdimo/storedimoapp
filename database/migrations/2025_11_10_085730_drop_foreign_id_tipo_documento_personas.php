@@ -15,7 +15,13 @@ return new class extends Migration
     {
         if (Schema::hasTable('personas') && Schema::hasColumn('personas', 'id_tipo_documento')) {
             Schema::table('personas', function (Blueprint $table) {
-                $table->dropForeign(['id_tipo_documento']);
+                try
+                {
+                    $table->dropForeign(['id_tipo_documento']);
+
+                } catch (\Exception $e) {
+                    // La FK puede no existir en algunas BD, la ignoramos
+                }
             });
         }
     }

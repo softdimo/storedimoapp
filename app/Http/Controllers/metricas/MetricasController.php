@@ -40,20 +40,21 @@ class MetricasController extends Controller
                     empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
                 {
                     return redirect()->to(route('login'));
-                } else {
+                } else
+                {   
                     $metricasIndex = (new MetricaIndex())->toResponse($request);
-        
-                    return view('metricas.index', compact('metricasIndex'));
+                    $vista = 'metricas.index';
+                    view()->share('metricas', $metricasIndex);
+
+                    return $this->validarAccesos($sesion[0], 81, $vista);
                 }
             }
-        } catch (Exception $e) {
+        } catch (Exception $e)
+        {
             alert()->error("Exception Index Métricas!");
             return redirect()->to(route('login'));
         }
     }
-
-    // ======================================================================
-    // ======================================================================
 
     /**
      * Show the form for creating a new resource.

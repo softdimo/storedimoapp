@@ -17,14 +17,10 @@ class EntradaStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
-    // ===================================================================
-    // ===================================================================
-
     public function toResponse($request)
     {
         $idEmpresa = request('id_empresa', null);
         $facturaCompra = request('factura_compra', null);
-        // $facturaOriginal = request('factura_compra', '');
         $facturaCompra = strtoupper(str_replace(' ', '', request('factura_compra', '')));
         $facturaCompra = strtoupper(preg_replace('/\s+/', '', request('factura_compra', '')));
         $fechaCompra = now()->format('Y-m-d H:i:s'); // Formato compatible con DATETIME en MySQL
@@ -34,17 +30,18 @@ class EntradaStore implements Responsable
         $idEstado = 1;
 
         $idProductos = request('id_producto_compra', []); // Array de productos
-        $pUnitarios = request('p_unitario_compra', []);   // Array de precios unitarios
+        $pUnitario = request('p_unitario_compra', []);   // Array de precios unitarios
         $cantidades = request('cantidad_compra', []);    // Array de cantidades
         $subtotales = request('subtotal_compra', []);    // Array de subtotales
 
-        try {
+        try
+        {
             $reqEntradaStore = $this->clientApi->post($this->baseUri.'entrada_store', [
                 'json' => [
                     'id_empresa' => $idEmpresa,
                     'factura_compra' => $facturaCompra,
                     'fecha_compra' => $fechaCompra,
-                    'valor_compra' => $valorCompra,
+                    'valor_compra' => doubleval(str_replace(".", "", $valorCompra)),
                     'id_proveedor' => $idProveedor,
                     'productos' => array_map(function ($id, $precio, $cantidad, $subtotal) {
                         return [
@@ -53,7 +50,7 @@ class EntradaStore implements Responsable
                             'cantidad' => $cantidad,
                             'subtotal' => $subtotal
                         ];
-                    }, $idProductos, $pUnitarios, $cantidades, $subtotales), // Construcción del array
+                    }, $idProductos, $pUnitario, $cantidades, $subtotales), // Construcción del array
                     'id_usuario' => $usuLogueado,
                     'id_estado' => $idEstado,
                     'id_audit' => session('id_usuario'),
@@ -66,7 +63,8 @@ class EntradaStore implements Responsable
                 alert()->success('Proceso Exitoso', 'Compra creada satisfactoriamente');
                 return redirect()->to(route('entradas.index'));
             }
-        } catch (Exception $e) {
+        } catch (Exception $e)
+        {
             alert()->error('Error', 'Creando la compra, contacte a Soporte.');
             return back();
         }

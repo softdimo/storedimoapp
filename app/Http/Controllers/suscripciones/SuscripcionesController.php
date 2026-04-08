@@ -74,7 +74,6 @@ class SuscripcionesController extends Controller
                 {
                     // Llama al método del trait para cargar empresas disponibles
                     $this->shareEmpresasSuscripciones(null);
-                    // ==============================
 
                     $vista = 'suscripciones.create';
                     return $this->validarAccesos($sesion[0], 69, $vista);

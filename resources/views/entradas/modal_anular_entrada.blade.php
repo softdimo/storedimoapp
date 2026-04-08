@@ -29,8 +29,11 @@
 
         <div class="form-group mt-3 mb-3 mb-0 ps-3 text-right mr-20">
             <label for="motivoAnulacion"> <strong>Motivo de anulación:</strong></label>
-            <textarea id="motivoAnulacion" class="form-control" rows="3" placeholder="Escriba un motivo de anulación" required></textarea>
+            <textarea id="motivoAnulacion" class="form-control" rows="3"
+            placeholder="Escriba un motivo de anulación" required></textarea>
         </div>
+
+        <input type="hidden" name="accion" value="anular" id="accion">
 
     </div>
 </div>
@@ -40,8 +43,7 @@
 </div>
 
 <div class="d-flex justify-content-around mt-3">
-    <button type="submit" class="btn btn-success" id="btn_anular_compra_{{ $entrada->id_compra }}"
-        style="background-color: #337AB7">
+    <button type="submit" class="btn btn-danger" id="btn_anular_compra_{{ $entrada->id_compra }}">
         <i class="fa fa-trash"> Anular</i>
     </button>
 

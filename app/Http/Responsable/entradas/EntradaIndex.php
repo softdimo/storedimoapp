@@ -5,16 +5,17 @@ namespace App\Http\Responsable\entradas;
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
+use App\Traits\MetodosTrait;
 
 class EntradaIndex implements Responsable
 {
+    use MetodosTrait;
+
     public function toResponse($request)
     {
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
-
-            // ==============================================================
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'entrada_index', [
@@ -23,18 +24,13 @@ class EntradaIndex implements Responsable
                 ]
             ]);
             $entradas = json_decode($peticion->getBody()->getContents());
+            view()->share('entradas', $entradas);
 
-            // Obtener detalles de cada compra
-            // foreach ($entradas as $entrada) {
-            //     $detallePeticion = $clientApi->post($baseUri . 'detalle_compra/' . $entrada->id_compra, [
-            //         'json' => [
-            //             'empresa_actual' => session('empresa_actual.id_empresa')
-            //         ]
-            //     ]);
-            //     $entrada->detalles = json_decode($detallePeticion->getBody()->getContents());
-            // }
+            $sesion = $this->validarVariablesSesion();
+            $permisos = $this->permisosPorUsuario($sesion[0]);
+            view()->share('permisos', $permisos);
 
-            return view('entradas.index', compact('entradas'));
+            return view('entradas.index');
         } catch (Exception $e) {
             alert()->error('Error', 'Exception Index Entradas, contacte a Soporte.');
             return back();

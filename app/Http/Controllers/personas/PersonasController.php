@@ -43,10 +43,13 @@ class PersonasController extends Controller
                     empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
                 {
                     return redirect()->to(route('login'));
-                } else {
+                } else
+                {
                     $personaIndex = (new PersonaIndex())->toResponse($request);
-        
-                    return view('personas.index', compact('personaIndex'));
+                    view()->share('personaIndex', $personaIndex);
+                    
+                    $vista = 'personas.index';
+                    return $this->validarAccesos($sesion[0], 1, $vista);
                 }
             }
         } catch (Exception $e) {
@@ -54,9 +57,6 @@ class PersonasController extends Controller
             return redirect()->to(route('login'));
         }
     }
-
-    // ======================================================================
-    // ======================================================================
 
     /**
      * Show the form for creating a new resource.

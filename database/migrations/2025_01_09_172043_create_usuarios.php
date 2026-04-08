@@ -22,15 +22,17 @@ return new class extends Migration
                 $table->string('identificacion')->nullable();
                 $table->string('clave')->nullable();
                 $table->unsignedInteger('id_estado')->nullable();
-                $table->unsignedInteger('id_rol')->nullable();
+                $table->unsignedBigInteger('id_rol')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
 
-                $table->foreign('id_estado')->references('id_estado')->on('estados');
-                $table->foreign('id_rol')->references('id')->on('roles');
+                if (Schema::hasTable('usuarios'))
+                {
+                    $table->foreign('id_estado')->references('id_estado')->on('estados');
+                    $table->foreign('id_rol')->references('id')->on('roles');
+                }
             });
         }
-        
     }
 
     /**

@@ -130,7 +130,8 @@ class CategoriasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    return new CategoriaEdit($idCategoria);
+                    $vista = new CategoriaEdit($idCategoria);
+                    return $this->validarAccesos($sesion[0], 17, $vista);
                 }
             }
         } catch (Exception $e)

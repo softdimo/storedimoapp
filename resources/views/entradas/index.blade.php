@@ -106,13 +106,12 @@
 
                                                 {{-- Lógica para el botón Anular --}}
                                                 @php
-                                                    // Creamos un objeto Carbon con la fecha de la compra
-                                                    $fechaCompra = \Carbon\Carbon::parse($entrada->fecha_compra);
-                                                    // Verificamos si la diferencia en minutos respecto a "ahora" es menor o igual a 60
-                                                    $esEditable = $fechaCompra->diffInMinutes(now(), false) <= 60;
+                                                    $fechaCompra = Carbon\Carbon::parse($entrada->fecha_compra);
+                                                    $minutos = $fechaCompra->diffInMinutes(now());
+                                                    $esEditable = $minutos > 60;
                                                 @endphp
 
-                                                @if ($esEditable)
+                                                @if($esEditable && in_array(42, $permisos))
                                                     <button title="Anular"
                                                         class="btn rounded-circle btn-circle text-white btn-danger btn-anular-entrada"
                                                         data-id="{{ $entrada->id_compra }}">
@@ -135,101 +134,10 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- <div class="mt-5 mb-2 d-flex justify-content-center">
-                        <button type="submit" class="btn rounded-2 me-3 text-white" style="background-color: #286090"
-                            data-bs-toggle="modal" data-bs-target="#modalReporteCompras">
-                            <i class="fa fa-file-pdf-o"></i>
-                            Reporte Compras
-                        </button>
-                    </div> -->
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- =============================================================== --}}
-    {{-- =============================================================== --}}
-
-    <!-- {{-- INICIO Modal REPORTE COMPRAS --}}
-    <div class="modal fade" id="modalReporteCompras" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
-            <div class="modal-content p-3">
-                <div class="rounded-top" style="border: solid 1px #337AB7;">
-                    {!! Form::open([
-                        'method' => 'POST',
-                        'route' => ['reporte_compras_pdf'],
-                        'class' => '',
-                        'autocomplete' => 'off',
-                        'id' => 'formReporteComprasPdf',
-                        'target' => '_blank', // 👉 Abrir en nueva pestaña
-                    ]) !!}
-                    @csrf
-
-                    <div class="rounded-top text-white text-center"
-                        style="background-color: #337AB7; border: solid 1px #337AB7;">
-                        <h5>Reporte Compras</h5>
-                    </div>
-
-                    <div class="modal-body m-0">
-                        <div class="row m-0">
-                            <div class="col-12 col-md-6">
-                                <label for="fecha_inicial" class="fw-bold" style="font-size: 12px">
-                                    Fecha Inicial <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group" id="calendar_addon_inicial" style="cursor: pointer;">
-                                    {!! Form::date('fecha_inicial', null, ['class' => 'form-control', 'id' => 'fecha_inicial', 'required']) !!}
-                                    <span class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-6">
-                                <label for="fecha_final" class="fw-bold" style="font-size: 12px">
-                                    Fecha Final <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group" id="calendar_addon_final" style="cursor: pointer;">
-                                    {!! Form::date('fecha_final', null, ['class' => 'form-control', 'id' => 'fecha_final', 'required']) !!}
-                                    <span class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <!-- FIN modal-body -->
-
-                    {{-- ====================================================== --}}
-                    {{-- ====================================================== --}}
-
-                    <!-- <div class="modal-footer border-0 d-flex justify-content-center mt-3">
-                        <button type="submit" id="btn_reporte_compras" class="btn btn-success"
-                            title="Guardar Configuración">
-                            <i class="fa fa-file-pdf-o"> Generar Pdf Compras</i>
-                        </button>
-                    </div> -->
-                    {!! Form::close() !!}
-                <!-- </div> {{-- FIN Div rounded-top --}}
-
-                {{-- ====================================================== --}}
-                {{-- ====================================================== --}}
-
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <button type="button" class="btn btn-primary btn-md active pull-right"
-                            style="background-color: #337AB7;" data-bs-dismiss="modal" id="btnReportePrestamos">
-                            <i class="fa fa-check-circle"> Aceptar</i>
-                        </button>
-                    </div>
-                </div>
-            </div> {{-- FIN modal-content --}}
-        </div> {{-- FIN modal-dialog --}}
-    </div> {{-- FIN modal --}}
-    {{-- FINAL Modal REPORTE COMPRAS --}} -->
-
-    {{-- =============================================================== --}}
-    {{-- =============================================================== --}}
-
 
     {{-- INICIO Modal DETALLE ENTRADA --}}
     <div class="modal fade" id="modalDetalleEntrada" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static">
@@ -297,7 +205,8 @@
             // =========================================================================
 
             // formAnularCompra para cargar gif en el submit
-            $(document).on("submit", "form[id^='formAnularCompra_']", function(e) {
+            $(document).on("submit", "form[id^='formAnularCompra_']", function(e)
+            {
                 const form = $(this);
                 const formId = form.attr('id'); // Obtenemos el ID del formulario
                 const id = formId.split('_')[1]; // Obtener el ID del formulario desde el ID del formulario
@@ -314,10 +223,6 @@
                 // Cargar Spinner
                 loadingIndicator.show();
             });
-
-            // =========================================================================
-            // =========================================================================
-            // =========================================================================
 
             $(document).on('shown.bs.modal', '#modalReporteCompras', function() {
                 let modal = $(this); // Referencia del modal
@@ -404,10 +309,6 @@
                     }
                 });
             });
-
-            // =========================================================================
-            // =========================================================================
-            // =========================================================================
 
             $(document).on('click', '.btn-anular-entrada', function()
             {

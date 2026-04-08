@@ -15,13 +15,26 @@ return new class extends Migration
     {
         if (Schema::hasTable('proveedores') && Schema::hasColumn('proveedores', 'id_tipo_documento')) {
             Schema::table('proveedores', function (Blueprint $table) {
-                $table->dropForeign(['id_tipo_documento']);
+                try
+                {
+                    $table->dropForeign(['id_tipo_documento']);
+                    
+                } catch (\Exception $e) {
+                    //throw $th;
+                }
             });
         }
 
         if (Schema::hasTable('proveedores') && Schema::hasColumn('proveedores', 'id_estado')) {
             Schema::table('proveedores', function (Blueprint $table) {
-                $table->dropForeign(['id_estado']);
+                
+                try
+                {
+                    $table->dropForeign(['id_estado']);
+                
+                } catch (\Exception $e) {
+                    //throw $th;
+                }
             });
         }
     }
