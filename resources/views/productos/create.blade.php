@@ -60,6 +60,9 @@
                                                 detal y precio al por mayor.</li>
                                             <li class="text-justify">El precio al detal no puede ser menor al precio al por
                                                 mayor.</li>
+                                            <li class="text-justify">El precio unitario corresponde al precio al cual le compraste el producto al proveedor.</li>
+                                            <li class="text-justify">El precio al detal es el precio al cual vas a vender cada unidad del producto.</li>
+                                            <li class="text-justify">El precio al por mayor corresponde al precio al cual vas a vender el producto a partir de X cantidad.</li>
                                         </ol>
                                     </div> {{-- FINpanel-body --}}
                                 </div> {{-- FIN col-12 --}}
