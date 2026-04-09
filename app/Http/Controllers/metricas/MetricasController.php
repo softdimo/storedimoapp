@@ -19,7 +19,13 @@ class MetricasController extends Controller
     {
         $this->shareData();
         $this->baseUri = env('BASE_URI');
-        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+        // $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+
+        $this->clientApi = new Client([
+            'base_uri' => $this->baseUri,
+            'timeout'  => 120, // Aumentamos a 120 segundos
+            'connect_timeout' => 10
+        ]);
     }
     
     /**
