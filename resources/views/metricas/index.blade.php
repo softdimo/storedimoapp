@@ -425,29 +425,6 @@
                 htmlHead += "</tr>";
                 thead.append(htmlHead);
                 tbody.append(htmlBody);
-
-                // 2. Volver a inicializar DESPUÉS de haber insertado el nuevo HTML
-                // $("#tbl_metricas_query").DataTable({
-                //     dom: 'Blfrtip',
-                //     "infoEmpty": "No hay registros",
-                //     stripe: true,
-                //     language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
-                //     bSort: true,
-                //     buttons: [
-                //         {
-                //             extend: 'excelHtml5',
-                //             text: 'Excel',
-                //             className: 'btn btn-sm btn-success mr-3',
-                //             customize: function(xlsx) {
-                //                 var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                //                 $('row:first c', sheet).attr('s', '42');
-                //             }
-                //         }
-                //     ],
-                //     "pageLength": 10,
-                //     "scrollX": true,
-                //     "destroy": true // Permite reinicializar sin errores
-                // });
             }
 
             // ==============================================

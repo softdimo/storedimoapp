@@ -19,13 +19,7 @@ class MetricasController extends Controller
     {
         $this->shareData();
         $this->baseUri = env('BASE_URI');
-        // $this->clientApi = new Client(['base_uri' => $this->baseUri]);
-
-        $this->clientApi = new Client([
-            'base_uri' => $this->baseUri,
-            'timeout'  => 120, // Aumentamos a 120 segundos
-            'connect_timeout' => 10
-        ]);
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
     
     /**
@@ -47,10 +41,10 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $metricasIndex = (new MetricaIndex())->toResponse($request);
                     $vista = 'metricas.index';
-                    view()->share('metricas', $metricasIndex);
+                    view()->share('metricasIndex', $metricasIndex);
 
                     return $this->validarAccesos($sesion[0], 81, $vista);
                 }
@@ -161,7 +155,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_total_absoluto', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -177,21 +171,6 @@ class MetricasController extends Controller
             alert()->error('Consultando el valor absoluto de peticiones al servidor, contacte a Soporte.');
             return back();
         }
-
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_total_absoluto', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-
-        //     return json_decode($response->getBody()->getContents());
-
-        // } catch (Exception $e) {
-        //     alert()->error('Consultando el valor absoluto de peticiones al servidor, contacte a Soporte.');
-        //     return back();
-        // }
     }
 
     // ======================================================================
@@ -200,19 +179,6 @@ class MetricasController extends Controller
     // 2. Subtotal por Actividad
     public function querySubtotalActividad(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_subtotal_actividad', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando subtotal por actividad.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -225,7 +191,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_subtotal_actividad', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -248,19 +214,6 @@ class MetricasController extends Controller
     // 3. Movimiento de base de datos
     public function queryMovimientoBd(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_movimiento_bd', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando movimiento de base de datos.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -273,7 +226,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_movimiento_bd', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -296,19 +249,6 @@ class MetricasController extends Controller
     // 4. Tráfico por Fuente
     public function queryPorFuente(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_por_fuente', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando tráfico por fuente.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -321,7 +261,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_por_fuente', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -344,19 +284,6 @@ class MetricasController extends Controller
     // 5. Ranking de Tenants
     public function queryRankingTenants(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_ranking_tenants', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando ranking de clientes.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -369,7 +296,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_ranking_tenants', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -392,19 +319,6 @@ class MetricasController extends Controller
     // 6. Monitoreo de Errores
     public function queryMonitoreoErrores(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_monitoreo_errores', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando monitoreo de errores.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -417,7 +331,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_monitoreo_errores', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -440,19 +354,6 @@ class MetricasController extends Controller
     // 7. Rutas más utilizadas
     public function queryRutasUtilizadas(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_rutas_utilizadas', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando rutas utilizadas.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -465,7 +366,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_rutas_utilizadas', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -488,19 +389,6 @@ class MetricasController extends Controller
     // 8. Actividad por Horas
     public function queryActividadHoras(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/query_actividad_horas', [
-        //         'json' => [
-        //             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
-        //             'fecha_final_metrica' => $request->input('fecha_final_metrica')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error consultando actividad horaria.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -513,7 +401,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/query_actividad_horas', [
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
@@ -536,19 +424,6 @@ class MetricasController extends Controller
     // 9. Borrar registros antiguos (Mantenimiento)
     public function borrarRegistros(Request $request)
     {
-        // try {
-        //     $response = $this->clientApi->post($this->baseUri . 'administracion/borrar_registros', [
-        //         'json' => [
-        //             // Este no requiere fechas, la API lo calcula solo
-        //             '_token' => $request->input('_token')
-        //         ]
-        //     ]);
-        //     return json_decode($response->getBody()->getContents());
-        // } catch (Exception $e) {
-        //     alert()->error('Error durante el proceso de mantenimiento de registros.');
-        //     return back();
-        // }
-
         try {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
@@ -561,7 +436,7 @@ class MetricasController extends Controller
                 {
                     return redirect()->to(route('login'));
                 } else
-                {   
+                {
                     $response = $this->clientApi->post($this->baseUri . 'administracion/borrar_registros', [
                         'json' => [
                             // Este no requiere fechas, la API lo calcula solo
