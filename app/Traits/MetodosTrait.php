@@ -95,7 +95,7 @@ trait MetodosTrait
             $this->initHttpClient();
 
             // 3. Realizamos la petición (usando la ruta relativa, ya que base_uri ya está configurada)
-            $response = $this->clientApi->get('config_inicial_trait');
+            $response = $this->clientApi->get('administracion/config_inicial_trait');
 
             // 4. Asignamos el resultado a la propiedad
             $this->configData = json_decode($response->getBody()->getContents(), true);
