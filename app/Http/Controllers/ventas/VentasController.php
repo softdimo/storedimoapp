@@ -12,6 +12,7 @@ use App\Http\Responsable\ventas\DetalleVenta;
 use App\Http\Responsable\ventas\VentaStore;
 use App\Http\Responsable\ventas\ReporteVentasPdf;
 use App\Http\Responsable\ventas\ReciboCajaVenta;
+use Carbon\Carbon;
 
 class VentasController extends Controller
 {
@@ -375,6 +376,88 @@ class VentasController extends Controller
 
         } catch (Exception $e) {
             alert()->error('Error', 'Error obteniendo productos en ventas');
+            return back();
+        }
+    }
+
+     public function venta($idVenta)
+    {
+        try
+        {
+            if (!$this->checkDatabaseConnection()) {
+                return view('db_conexion');
+            } else
+            {
+                $sesion = $this->validarVariablesSesion();
+
+                if (empty($sesion[0]) || is_null($sesion[0]) &&
+                    empty($sesion[1]) || is_null($sesion[1]) &&
+                    empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
+                {
+                    return redirect()->to(route('login'));
+                } else
+                {
+                    $vista = new DetalleVenta($idVenta);
+                    return $this->validarAccesos($sesion[0], 43, $vista);
+                }
+            }
+        } catch (Exception $e)
+        {
+            alert()->error("Exception Index Ventas!");
+            return redirect()->to(route('login'));
+        }
+    }
+
+    public function anularVenta(Request $request)
+    {
+        try
+        {
+            if (!$this->checkDatabaseConnection())
+            {
+                return view('db_conexion');
+            } else
+            {
+                $sesion = $this->validarVariablesSesion();
+    
+                if (empty($sesion[0]) || is_null($sesion[0]) &&
+                    empty($sesion[1]) || is_null($sesion[1]) &&
+                    empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
+                {
+                    return redirect()->to(route('login'));
+                } else
+                {
+                    $idVenta = request('id_venta', null);
+                    $motivoAnulacion = request('motivo', null);
+
+                    if(is_null($motivoAnulacion) || $motivoAnulacion == "")
+                    {
+                        alert()->error('Error', 'El motivo de anulación es obligatorio');
+                        return redirect()->to(route('ventas.index'));
+                    }
+    
+                    $reqAnularVenta = $this->clientApi->post($this->baseUri.'anular_venta/'.$idVenta, [
+                        'json' => [
+                            'id_audit' => session('id_usuario'),
+                            'empresa_actual' => session('empresa_actual.id_empresa'),
+                            'motivo' => $motivoAnulacion,
+                            'fechaAnulacion' => Carbon::now()->timestamp,
+                            'usuarioAnulacion' => session('id_usuario')
+                        ]
+                    ]);
+    
+                    $resAnularVenta = json_decode($reqAnularVenta->getBody()->getContents());
+    
+                    if(isset($resAnularVenta) && !empty($resAnularVenta) && !is_null($resAnularVenta))
+                    {
+                        alert()->success('Proceso Exitoso', 'La Venta ha sido anulada satisfactoriamente');
+                        return redirect()->to(route('ventas.index'));
+                    }
+                }
+            }
+            
+        } catch (Exception $e)
+        {
+            alert()->error('Error', 'Ha ocurrido un error, contacte a Soporte.' . $e->getMessage());
             return back();
         }
     }

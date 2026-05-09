@@ -20,8 +20,6 @@ class DetalleVenta implements Responsable
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
-
-            // ==============================================================
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'venta/'. $this->idVenta, [
@@ -29,6 +27,7 @@ class DetalleVenta implements Responsable
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
             ]);
+
             $venta = json_decode($peticion->getBody()->getContents());
 
             // Obtener detalles de cada compra
@@ -39,7 +38,13 @@ class DetalleVenta implements Responsable
             ]);
             $ventaDetalles = json_decode($detallePeticion->getBody()->getContents());
 
-            return view('ventas.modal_detalle_venta', compact('venta', 'ventaDetalles'));
+             // Recibe el tipo de modal desde la request
+            $tipoModal = $request->get('tipo_modal', 'detalle_venta'); // valor por defecto
+
+            return match ($tipoModal) {
+                'anular_venta' => view('ventas.modal_anular_venta', compact('venta')),
+                default  => view('ventas.modal_detalle_venta', compact('venta', 'ventaDetalles')),
+            };
 
         } catch (Exception $e) {
             alert()->error('Error', 'Exception Index Ventas, contacte a Soporte.');

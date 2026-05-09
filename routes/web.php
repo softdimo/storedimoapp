@@ -179,6 +179,9 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
             Route::get('detalle_venta/{idVenta}', 'VentasController@detalleVentas')->name('detalle_venta');
             Route::post('recibo_caja_venta', 'VentasController@reciboCajaVenta')->name('recibo_caja_venta');
 
+            Route::get('detalleVenta/{idVenta}', 'VentasController@venta')->name('detalleVenta');
+            Route::post('anular_venta', 'VentasController@anularVenta')->name('anular_venta');
+
             Route::get('credito_ventas', 'VentasController@listarCreditoVentas')->name('credito_ventas');
         });
 

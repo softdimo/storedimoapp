@@ -60,6 +60,7 @@
                                     <th>Nombre Cliente</th>
                                     <th>Tipo Pago</th>
                                     <th>Vendedor</th>
+                                    <th>Estado</th>
                                     <th>Opciones</th>
                                 </tr>
                             </thead>
@@ -76,13 +77,46 @@
                                         <td>{{ $venta->tipo_pago }}</td>
                                         <td>{{ $venta->nombres_usuario }}</td>
                                         <td>
-                                            <button title="Ver Detalles"
-                                                class="btn rounded-circle btn-circle text-white btn-detalle-venta"
-                                                title="Detalles Ventas" style="background-color: #286090"
-                                                data-id="{{ $venta->id_venta }}">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </button>
+                                            @if ($venta->id_estado_venta == 1)
+                                                <span class="badge text-bg-success">Exitosa</span>
+                                            @else
+                                                <span class="badge text-bg-danger">Anulada</span>
+                                            @endif
                                         </td>
+                                            @if($venta->id_estado_venta == 1)
+                                                <td>
+                                                    <button title="Ver Detalles"
+                                                        class="btn rounded-circle btn-circle text-white btn-detalle-venta"
+                                                        title="Detalles Ventas" style="background-color: #286090"
+                                                        data-id="{{ $venta->id_venta }}">
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>
+
+                                                    {{-- Lógica para el botón Anular --}}
+                                                    @php
+                                                        $fechaVenta = Carbon\Carbon::parse($venta->fecha_venta);
+                                                        $minutos = $fechaVenta->diffInMinutes(now());
+                                                        $esEditable = $minutos > 60;
+                                                    @endphp
+
+                                                    @if($esEditable && in_array(85, $permisos))
+                                                        <button title="Anular"
+                                                            class="btn rounded-circle btn-circle text-white btn-danger btn-anular-venta"
+                                                            data-id="{{ $venta->id_venta }}">
+                                                            <i class="fa fa-remove"></i>
+                                                        </button>
+                                                    @endif
+                                                </td>
+                                            @else
+                                                <td>
+                                                    <button title="Ver Detalles"
+                                                        class="btn rounded-circle btn-circle text-white btn-detalle-venta"
+                                                        title="Detalles Ventas" style="background-color: #286090"
+                                                        data-id="{{ $venta->id_venta }}">
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>
+                                                </td>
+                                            @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -102,6 +136,26 @@
         </div>
     </div>
     {{-- FINAL Modal DETALLE BAJA --}}
+
+    {{-- INICIO Modal DETALLE ENTRADA --}}
+    <div class="modal fade" id="modalDetalleVenta" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog" style="min-width: 50%">
+            <div class="modal-content p-3" id="modalDetalleVentaContent">
+                {{-- El contenido AJAX se cargará aquí --}}
+            </div>
+        </div>
+    </div>
+    {{-- FINAL Modal DETALLE ENTRADA --}}
+
+    {{-- INICIO Modal ANULAR ENTRADA --}}
+    <div class="modal fade" id="modalAnularVenta" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog" style="min-width: 50%">
+            <div class="modal-content p-3" id="modalAnularVentaContent">
+                {{-- El contenido AJAX se cargará aquí --}}
+            </div>
+        </div>
+    </div>
+    {{-- FINAL Modal ANULAR ENTRADA --}}
 @stop
 
 @section('scripts')
@@ -168,10 +222,6 @@
                 }
             });
 
-            // =========================================================================
-            // =========================================================================
-            // =========================================================================
-
             $(document).on('shown.bs.modal', '#modalReporteVentas', function() {
                 let modal = $(this); // Referencia del modal
 
@@ -205,9 +255,6 @@
                 configurarCalendario("fecha_inicial", "calendar_addon_inicial");
                 configurarCalendario("fecha_final", "calendar_addon_final");
             });
-            // =========================================================================
-            // =========================================================================
-            // =========================================================================
 
             $(document).on('click', '.btn-detalle-venta', function() {
                 const idVenta = $(this).data('id');
@@ -309,6 +356,55 @@
                         $('#modalDetalleVentaContent').html(
                             '<div class="alert alert-danger">Error al cargar el formulario.</div>'
                             );
+                    }
+                });
+            });
+
+             // formAnularCompra para cargar gif en el submit
+            $(document).on("submit", "form[id^='formAnularVenta_']", function(e)
+            {
+                const form = $(this);
+                const formId = form.attr('id'); // Obtenemos el ID del formulario
+                const id = formId.split('_')[1]; // Obtener el ID del formulario desde el ID del formulario
+
+                // Capturar spinner y btns
+                const loadingIndicator = $(`#loadingIndicatorAnularVenta_${id}`);
+                const submitButton = $(`#btn_anular_venta_${id}`);
+                const cancelButton = $(`#btn_cancelar_venta_${id}`);
+
+                // Desactivar btns
+                cancelButton.prop("disabled", true);
+                submitButton.prop("disabled", true).html("Procesando... <i class='fa fa-spinner fa-spin'></i>");
+
+                // Cargar Spinner
+                loadingIndicator.show();
+            });
+
+            $(document).on('click', '.btn-anular-venta', function()
+            {
+                const idVenta = $(this).data('id');
+
+                $.ajax({
+                    url: `detalleVenta/${idVenta}`,
+                    type: 'GET',
+                    data: {
+                        '_token': "{{ csrf_token() }}",
+                        tipo_modal: 'anular_venta'
+                    },
+                    beforeSend: function()
+                    {
+                        $('#modalAnularVentaContent').html(
+                            '<div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-2x"></i> Cargando...</div>'
+                        );
+                        $('#modalAnularVenta').modal('show');
+                    },
+                    success: function(html) {
+                        $('#modalAnularVentaContent').html(html);
+                    },
+                    error: function() {
+                        $('#modalAnularVentaContent').html(
+                            '<div class="alert alert-danger">Error al cargar el formulario.</div>'
+                        );
                     }
                 });
             });

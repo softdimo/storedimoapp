@@ -5,16 +5,16 @@ namespace App\Http\Responsable\ventas;
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
-
+use App\Traits\MetodosTrait;
 class VentaIndex implements Responsable
 {
+    use MetodosTrait;
+
     public function toResponse($request)
     {
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
-
-            // ==============================================================
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'venta_index', [
@@ -22,19 +22,16 @@ class VentaIndex implements Responsable
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
             ]);
+
             $ventas = json_decode($peticion->getBody()->getContents());
+            view()->share('ventas', $ventas);
 
-            // Obtener detalles de cada compra
-            // foreach ($ventas as $venta) {
-            //     $detallePeticion = $clientApi->post($baseUri . 'detalle_venta/' . $venta->id_venta, [
-            //         'json' => [
-            //             'empresa_actual' => session('empresa_actual.id_empresa')
-            //         ]
-            //     ]);
-            //     $venta->detalles = json_decode($detallePeticion->getBody()->getContents());
-            // }
+            $sesion = $this->validarVariablesSesion();
+            $permisos = $this->permisosPorUsuario($sesion[0]);
 
-            return view('ventas.index', compact('ventas'));
+            view()->share('permisos', $permisos);
+
+            return view('ventas.index');
 
         } catch (Exception $e) {
             alert()->error('Error', 'Exception Index Ventas, contacte a Soporte.');
