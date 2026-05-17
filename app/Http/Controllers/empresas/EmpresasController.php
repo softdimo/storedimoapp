@@ -270,7 +270,7 @@ class EmpresasController extends Controller
                 json_decode($response->getBody()->getContents(), true)
             );
         } catch (Exception $e) {
-            dd($e);
+            // dd($e);
             return response()->json([
                 'error' => 'No se pudo validar el NIT en el servicio externo.',
                 'valido' => false
