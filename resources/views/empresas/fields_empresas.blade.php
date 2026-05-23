@@ -205,7 +205,8 @@
                 <label for="db_database" class="form-label">DbDatabase pre(u524250720_)
                     <span class="text-danger">*</span>
                 </label>
-                {!! Form::text('db_database', old('db_database', isset($empresa) ? Crypt::decrypt($empresa->db_database) : null), [
+                {{-- {!! Form::text('db_database', old('db_database', isset($empresa) ? Crypt::decrypt($empresa->db_database) : null), [ --}}
+                {!! Form::text('db_database', old('db_database', (!empty($empresa) && $empresa->db_database) ? Crypt::decrypt($empresa->db_database) : null), [
                     'class' => 'form-control',
                     'id' => 'db_database',
                     'required' => 'required',
@@ -220,7 +221,8 @@
                 <label for="db_username" class="form-label">DbUser pre(u524250720_)
                     <span class="text-danger">*</span>
                 </label>
-                {!! Form::text('db_username', old('db_username', isset($empresa) ? Crypt::decrypt($empresa->db_username) : null), [
+                {{-- {!! Form::text('db_username', old('db_username', isset($empresa) ? Crypt::decrypt($empresa->db_username) : null), [ --}}
+                {!! Form::text('db_username', old('db_username', (!empty($empresa) && $empresa->db_username) ? Crypt::decrypt($empresa->db_username) : null), [
                     'class' => 'form-control',
                     'id' => 'db_username',
                     'required' => 'required',
@@ -235,7 +237,8 @@
                 <label for="db_password" class="form-label">Db Password
                     <span class="text-danger">*</span>
                 </label>
-                {!! Form::text('db_password', old('db_password', isset($empresa) ? Crypt::decrypt($empresa->db_password) : null), [
+                {{-- {!! Form::text('db_password', old('db_password', isset($empresa) ? Crypt::decrypt($empresa->db_password) : null), [ --}}
+                {!! Form::text('db_password', old('db_password', (!empty($empresa) && $empresa->db_password) ? Crypt::decrypt($empresa->db_password) : null), [
                     'class' => 'form-control',
                     'id' => 'db_password',
                     'required' => 'required',
