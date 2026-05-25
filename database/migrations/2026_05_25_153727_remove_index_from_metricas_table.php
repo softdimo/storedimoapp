@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-class AddIndexToMetricasTable extends Migration
+class RemoveIndexFromMetricasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,17 +14,17 @@ class AddIndexToMetricasTable extends Migration
      */
     public function up()
     {
-        // 1. Validamos que la tabla exista en la conexión principal
+        // Validamos la conexión principal 'mysql' y la tabla
         if (Schema::connection('mysql')->hasTable('traffic_logs')) {
             
-            // 2. Obtenemos los índices existentes de esa tabla usando el SchemaManager
+            // Obtenemos los índices actuales para verificar si existe
             $schemaManager = DB::connection('mysql')->getDoctrineSchemaManager();
             $indexes = $schemaManager->listTableIndexes('traffic_logs');
 
-            // 3. Si NO existe el índice con nuestro nombre, procedemos a crearlo
-            if (!array_key_exists('idx_metrica_created_at', $indexes)) {
+            // Si el índice SÍ existe en el 'up', lo eliminamos de una vez
+            if (array_key_exists('idx_metrica_created_at', $indexes)) {
                 Schema::connection('mysql')->table('traffic_logs', function (Blueprint $table) {
-                    $table->index('created_at', 'idx_metrica_created_at');
+                    $table->dropIndex('idx_metrica_created_at');
                 });
             }
         }
@@ -42,10 +42,10 @@ class AddIndexToMetricasTable extends Migration
             $schemaManager = DB::connection('mysql')->getDoctrineSchemaManager();
             $indexes = $schemaManager->listTableIndexes('traffic_logs');
 
-            // Si el índice SÍ existe, lo borramos de forma segura
-            if (array_key_exists('idx_metrica_created_at', $indexes)) {
+            // El 'down' (revertir) volvería a crear el índice si no existía
+            if (!array_key_exists('idx_metrica_created_at', $indexes)) {
                 Schema::connection('mysql')->table('traffic_logs', function (Blueprint $table) {
-                    $table->dropIndex('idx_metrica_created_at');
+                    $table->index('created_at', 'idx_metrica_created_at');
                 });
             }
         }
