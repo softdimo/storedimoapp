@@ -139,7 +139,8 @@ class EmpresaSuscripcionLandingController extends Controller
         }
     
         try {
-            $response = $this->getHttpClient()->post('administracion/validar_nit', [
+            // $response = $this->getHttpClient()->post('administracion/validar_nit', [
+            $response = $this->clientApi->post($this->baseUri.'administracion/validar_nit', [
                 'json' => ['nit_empresa' => $request->input('nit_empresa')]
             ]);
         
@@ -159,13 +160,15 @@ class EmpresaSuscripcionLandingController extends Controller
     public function documentoValidatorLanding(Request $request)
     {
         try {
-            $response = $this->getHttpClient()->post('administracion/validar_documento', [
+            // $response = $this->getHttpClient()->post('administracion/validar_documento', [
+            $response = $this->clientApi->post($this->baseUri.'administracion/validar_documento', [
                 'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
             ]);
         
             return response()->json(json_decode($response->getBody()->getContents(), true));
         
         } catch (Exception $e) {
+            dd($e);
             return response()->json([
                 'error' => 'No se pudo validar el número del documento en la BD.',
                 'valido' => false
@@ -179,7 +182,8 @@ class EmpresaSuscripcionLandingController extends Controller
     public function validarCorreoEmpresaLanding(Request $request)
     {
         try {
-            $response = $this->getHttpClient()->post('administracion/validar_correo_empresa', [
+            // $response = $this->getHttpClient()->post('administracion/validar_correo_empresa', [
+            $response = $this->clientApi->post($this->baseUri.'administracion/validar_correo_empresa', [
                 'json' => [
                     'email_empresa' => $request->input('email_empresa')
                 ]
@@ -216,10 +220,12 @@ class EmpresaSuscripcionLandingController extends Controller
                 $idSuscripcion = $partes[1] ?? null;
 
                 if ($idSuscripcion) {
-                    $reqSuscripcion = $this->getHttpClient()->get('administracion/suscripcion_edit/' . $idSuscripcion);
+                    // $reqSuscripcion = $this->getHttpClient()->get('administracion/suscripcion_edit/' . $idSuscripcion);
+                    $reqSuscripcion = $this->clientApi->get($this->baseUri.'administracion/suscripcion_edit/' . $idSuscripcion);
                     $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
-                    $reqEmpresa = $this->getHttpClient()->get('administracion/empresa_edit/' . $suscripcion->id_empresa_suscrita);
+                    // $reqEmpresa = $this->getHttpClient()->get('administracion/empresa_edit/' . $suscripcion->id_empresa_suscrita);
+                    $reqEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/' . $suscripcion->id_empresa_suscrita);
                     $empresa = json_decode($reqEmpresa->getBody()->getContents());
                 }
             }
@@ -288,11 +294,13 @@ class EmpresaSuscripcionLandingController extends Controller
     {
         try {
             // Consultar empresa
-            $reqEmpresa = $this->getHttpClient()->get('administracion/empresa_edit/' . $idEmpresa);
+            // $reqEmpresa = $this->getHttpClient()->get('administracion/empresa_edit/' . $idEmpresa);
+            $reqEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/' . $idEmpresa);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             // Consultar suscripción más reciente de esa empresa
-            $reqSuscripcion = $this->getHttpClient()->get('administracion/suscripcion_empresa_estado_login/' . $idEmpresa);
+            // $reqSuscripcion = $this->getHttpClient()->get('administracion/suscripcion_empresa_estado_login/' . $idEmpresa);
+            $reqSuscripcion = $this->clientApi->get($this->baseUri.'administracion/suscripcion_empresa_estado_login/' . $idEmpresa);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
             $valorSuscripcion = $suscripcion->valor_suscripcion;
