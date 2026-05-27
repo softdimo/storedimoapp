@@ -31,6 +31,7 @@
                         </div>
 
                         {{-- Formulario nativo que Wompi intercepta --}}
+                        {{-- <form> --}}
                         @php
                             $wompiUrl = "https://checkout.wompi.co/p/?" . http_build_query([
                                 'public-key'              => $publicKey,
@@ -43,6 +44,7 @@
                                 'redirect-url'            => request()->getSchemeAndHttpHost() . '/pago_resultado',
                             ]);
                         @endphp
+                        {{-- </form> --}}
 
                         <a href="{{ $wompiUrl }}" class="btn btn-primary btn-lg px-5">
                         <i class="fas fa-lock me-2"></i> Pagar con Wompi
