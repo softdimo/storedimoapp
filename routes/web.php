@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\inicio_sesion\LoginController;
+use App\Http\Controllers\empresa_suscripcion\EmpresaSuscripcionLandingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,21 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
     // Rutas públicas
     Route::redirect('/', '/login');
     Route::get('/login', [LoginController::class, 'index'])->name('login');
+
+    // ========================================================================
+    // ========================================================================
+
+    // CREAR Empresa y suscripción, más el pago por WOMPI
+    Route::resource('empresa_landing', EmpresaSuscripcionLandingController::class);
+    Route::post('nit_validator_landing', [EmpresaSuscripcionLandingController::class, 'nitValidatorLanding'])->name('nit_validator_landing');
+    Route::post('documento_validator_landing', [EmpresaSuscripcionLandingController::class, 'documentoValidatorLanding'])->name('documento_validator_landing');
+    Route::post('validar_correo_empresa_landing', [EmpresaSuscripcionLandingController::class, 'validarCorreoEmpresaLanding'])->name('validar_correo_empresa_landing');
+
+    // Transacciones WOMPI
+    // creación Empresa y suscripción nueva
+    Route::get('pago_resultado', [EmpresaSuscripcionLandingController::class, 'pagoResultado'])->name('pago_resultado');
+    // Reintentar Pago cuando id_estado es 14
+    Route::get('empresa_pago_fallido/{idEmpresa}/reintentar_pago', [EmpresaSuscripcionLandingController::class, 'reintentarPago'])->name('reintentar_pago');
 
     // ========================================================================
     // ========================================================================

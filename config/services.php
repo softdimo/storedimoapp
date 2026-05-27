@@ -30,4 +30,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'wompi' => [
+        'public_key'       => env('WOMPI_PUBLIC_KEY'),
+        'integrity_secret' => env('WOMPI_INTEGRITY_SECRET'),
+        'events_secret'    => env('WOMPI_EVENTS_SECRET'),
+        'api_url'          => env('WOMPI_API_URL', 'https://sandbox.wompi.co/v1'),
+    ],
+
 ];

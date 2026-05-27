@@ -188,7 +188,86 @@ function initNitValidation(inputSelector, errorSelector, serverValidationCallbac
 
 // ==========================================================================================
 
-// validation.js
+/**
+ * Validación Dinámica de Identificación según Tipo de Documento de la lading
+ */
+function initDynamicIdValidationLanding(config) {
+    const {
+        selectSelector,
+        inputSelector,
+        errorSelector,
+        map, // Mapa de reglas
+        serverValidationCallback = null
+    } = config;
+
+    const $select = $(selectSelector);
+    const $input = $(inputSelector);
+    const $errorMsg = $(errorSelector);
+
+    function getActiveRule() {
+        const typeId = $select.val();
+        // Si el tipo no está en el mapa, usamos una regla por defecto (alfanumérico flexible)
+        return map[typeId] || { onlyNumbers: false, min: 5, max: 15, label: "documento" };
+    }
+
+    // 1. Bloqueo de entrada según la regla activa
+    $(document).on("input", inputSelector, function() {
+        const rule = getActiveRule();
+        
+        if (rule.onlyNumbers) {
+            // Solo números
+            this.value = this.value.replace(/\D/g, "");
+        } else {
+            // Alfanumérico estricto: Solo letras (A-Z, a-z) y números (0-9)
+            // Eliminamos cualquier cosa que NO sea letra o número
+            this.value = this.value.replace(/[^a-zA-Z0-9]/g, "");
+        }
+
+        if (this.value.length > rule.max) {
+            this.value = this.value.substring(0, rule.max);
+        }
+    });
+
+    // 2. Validación al salir
+    $(document).on("blur", inputSelector, async function() {
+        const value = $input.val().trim();
+        const rule = getActiveRule();
+
+        $errorMsg.addClass("d-none").text("");
+        $input.removeClass("is-invalid is-valid");
+
+        if (!value) return;
+
+        if (value.length < rule.min) {
+            $errorMsg.text(`El ${rule.label} debe tener al menos ${rule.min} caracteres.`).removeClass("d-none");
+            $input.addClass("is-invalid");
+            
+            setTimeout(() => {
+                $errorMsg.addClass("d-none");
+                $input.val("").removeClass("is-invalid");
+            }, 4000);
+            return;
+        } // else {
+        //     $input.addClass("is-valid");
+        // }
+
+        // --- VALIDACIÓN DE SERVIDOR ---
+        // <-- AGREGADO: Si pasa el formato local, ejecuta la consulta estructurada abajo
+        if (serverValidationCallback && typeof serverValidationCallback === "function") {
+            serverValidationCallback(value, $input, $errorMsg);
+        } else {
+            $input.addClass("is-valid");
+        }
+    });
+
+    // 3. Limpiar el input si cambian el tipo de documento para evitar conflictos
+    $select.on("change", function() {
+        $input.val("").removeClass("is-invalid is-valid");
+        $errorMsg.addClass("d-none");
+    });
+} // FIN function initDynamicIdValidation(config) Tipos de documentos a parte del NIT
+
+// ==========================================================================================
 
 /**
  * Validación Dinámica de Identificación según Tipo de Documento
