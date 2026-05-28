@@ -327,7 +327,7 @@
 
         <!-- Contenedor para el GIF -->
         <div id="loadingIndicatorEmpresaSuscripcionStore" class="loadingIndicator">
-            <img src="{{ asset('img/loading.gif') }}" alt="Procesando...">
+            <img src="{{ asset('imgagenes/loading.gif') }}" alt="Procesando...">
         </div>
 
         {{-- ========================================================= --}}
