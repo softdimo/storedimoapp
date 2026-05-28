@@ -8,7 +8,7 @@
                     <div class="card-body">
                         {{-- Icono visual de seguridad --}}
                         <div class="mb-4">
-                            <i class="fas fa-shield-alt text-success fa-3x"></i>
+                            <i class="fa fa-shield text-success fa-3x"></i>
                         </div>
 
                         <h3 class="card-title mb-3 fw-bold text-dark">Estás a un paso de activar Storedimo</h3>
@@ -47,11 +47,11 @@
                         {{-- </form> --}}
 
                         <a href="{{ $wompiUrl }}" class="btn btn-primary btn-lg px-5">
-                            <i class="fas fa-lock me-2"></i> Pagar con Wompi
+                            <i class="fa fa-lock me-2"></i> Pagar con Wompi
                         </a>
 
                         <div class="mt-4 pt-3 border-top text-muted small">
-                            <i class="fas fa-lock me-1"></i> Pagos procesados de forma segura por Wompi (Bancolombia)
+                            <i class="fa fa-lock me-1"></i> Pagos procesados de forma segura por Wompi (Bancolombia)
                         </div>
                     </div>
                 </div>
