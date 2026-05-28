@@ -100,7 +100,8 @@
 
 @section('scripts')
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        $( document ).ready(function() {
+        // document.addEventListener("DOMContentLoaded", function () {
 
             $("#email").focus();
 
@@ -590,7 +591,8 @@
 
             // ===================================================================================
 
-            }); // FIN DOMContentLoaded
+        // }); // FIN DOMContentLoaded
+        });
     </script>
 @stop
 

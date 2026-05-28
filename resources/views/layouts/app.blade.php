@@ -46,6 +46,9 @@
         <script src="{{ asset('js/intlTelInput.min.js') }}"></script>
         <script src="{{ asset('js/utils.min.js') }}"></script>
 
+        {{-- JS GENERAL --}}
+        <script src="{{ asset('js/js.js') }}"></script>
+
         <!-- Datatable -->
         <!-- <script src="{{ asset('js/datatables.min.js') }}"></script> -->
 
