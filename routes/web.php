@@ -35,7 +35,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
     // ========================================================================
 
     // CREAR Empresa y suscripción, más el pago por WOMPI
-    Route::resource('empresa_landing', EmpresaSuscripcionLandingController::class);
+    Route::resource('suscripcion_empresa', EmpresaSuscripcionLandingController::class);
     Route::post('nit_validator_landing', [EmpresaSuscripcionLandingController::class, 'nitValidatorLanding'])->name('nit_validator_landing');
     Route::post('documento_validator_landing', [EmpresaSuscripcionLandingController::class, 'documentoValidatorLanding'])->name('documento_validator_landing');
     Route::post('validar_correo_empresa_landing', [EmpresaSuscripcionLandingController::class, 'validarCorreoEmpresaLanding'])->name('validar_correo_empresa_landing');

@@ -47,7 +47,7 @@
                         {{-- </form> --}}
 
                         <a href="{{ $wompiUrl }}" class="btn btn-primary btn-lg px-5">
-                        <i class="fas fa-lock me-2"></i> Pagar con Wompi
+                            <i class="fas fa-lock me-2"></i> Pagar con Wompi
                         </a>
 
                         <div class="mt-4 pt-3 border-top text-muted small">

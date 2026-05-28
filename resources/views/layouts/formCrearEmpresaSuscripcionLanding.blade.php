@@ -5,7 +5,7 @@
 
     {!! Form::open([
         'method' => 'POST',
-        'route' => ['empresa_landing.store'],
+        'route' => ['suscripcion_empresa.store'],
         'class' => 'mt-2',
         'autocomplete' => 'off',
         'id' => 'formCrearSuscripcionEmpresaLanding',
@@ -327,7 +327,7 @@
 
         <!-- Contenedor para el GIF -->
         <div id="loadingIndicatorEmpresaSuscripcionStore" class="loadingIndicator">
-            <img src="{{ asset('imgagenes/loading.gif') }}" alt="Procesando...">
+            <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
         </div>
 
         {{-- ========================================================= --}}
