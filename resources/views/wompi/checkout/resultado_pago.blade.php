@@ -9,7 +9,7 @@
 
                         @if($estado === 'APPROVED')
                             <div class="mb-4">
-                                <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                                <i class="fa fa-check-circle text-success" style="font-size: 4rem;"></i>
                             </div>
                             <h3 class="fw-bold mb-3">¡Pago aprobado!</h3>
                             <p class="text-muted mb-4">
@@ -20,20 +20,21 @@
 
                         @elseif($estado === 'DECLINED' || $estado === 'ERROR' || $estado === 'VOIDED')
                             <div class="mb-4">
-                                <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>
+                                <i class="fa fa-times-circle-o text-danger" style="font-size: 4rem;"></i>
                             </div>
                             <h3 class="fw-bold mb-3 text-danger">Pago no aprobado</h3>
                             <p class="text-muted mb-4">
                                 Tu pago no pudo ser procesado. Por favor intenta nuevamente
                                 o usa otro método de pago.
                             </p>
-                            <a href="{{ url('/home') }}" class="btn btn-warning px-5 mb-3">
-                                <i class="fas fa-redo me-2"></i> Intentar nuevamente
+                            <a href="{{ url('/login') }}" class="btn btn-warning px-5 mb-3">
+                            {{-- <a href="{{ route('reintentar_pago', $idEmpresa) }}" class="btn btn-warning px-5 mb-3"> --}}
+                                <i class="fa fa-refresh me-2"></i> Intentar nuevamente
                             </a>
 
                         @else
                             <div class="mb-4">
-                                <i class="fas fa-clock text-warning" style="font-size: 4rem;"></i>
+                                <i class="fa fa-clock-o text-warning" style="font-size: 4rem;"></i>
                             </div>
                             <h3 class="fw-bold mb-3">Pago en proceso</h3>
                             <p class="text-muted mb-4">
