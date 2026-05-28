@@ -106,7 +106,7 @@ trait MetodosTrait
             // Log del error para debugging, evita el dd() en producción
             logger()->error("Error en cargarConfiguracionInicial: " . $e->getMessage());
             
-            alert()->error('Error', 'No se pudo cargar la configuración inicial Traits.');
+            // alert()->error('Error', 'No se pudo cargar la configuración inicial Traits.');
             return null;
         }
     }
