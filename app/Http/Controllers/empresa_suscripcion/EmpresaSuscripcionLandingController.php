@@ -273,6 +273,28 @@ class EmpresaSuscripcionLandingController extends Controller
                             ->subject('Pago fallido ciente - ' . now()->format('d/m/Y H:i'));
                         }
                     );
+
+                } elseif ($estadoPago === 'PENDING') {
+
+                    // Correo al cliente - Pendiente
+                    \Illuminate\Support\Facades\Mail::send(
+                        'emails.wompi.pago_pendiente_cliente',
+                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
+                        function ($m) use ($empresa) {
+                            $m->to($empresa->email_empresa, $empresa->nombre_empresa)
+                            ->subject('Tu pago está en proceso de verificación - Storedimo');
+                        }
+                    );
+
+                    // Correo al administrador - Pendiente
+                    \Illuminate\Support\Facades\Mail::send(
+                        'emails.wompi.pago_pendiente_admin',
+                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
+                        function ($m) {
+                            $m->to(config('mail.from.address'), 'Administrador Storedimo')
+                            ->subject('Pago PENDIENTE, en proceso de validación) - ' . now()->format('d/m/Y H:i'));
+                        }
+                    );
                 }
             }
 
