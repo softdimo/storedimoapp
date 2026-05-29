@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/wompi-notificar-correo', [App\Http\Controllers\empresa_suscripcion\EmpresaSuscripcionLandingController::class, 'notificarCorreoAsincrono']);

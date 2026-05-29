@@ -351,5 +351,76 @@ class EmpresaSuscripcionLandingController extends Controller
     // ======================================================================
     // ======================================================================
 
+    public function notificarCorreoAsincrono(Request $request)
+    {
+        // Validar token de seguridad interno para asegurar que solo tu API Lumen use este endpoint
+        if ($request->header('X-Storedimo-Token') !== config('services.app_web.internal_token')) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
 
+        $idSuscripcion = $request->input('id_suscripcion');
+        $idTransaccion = $request->input('id_transaccion');
+        $estadoWompi   = $request->input('estado_wompi');
+
+        try {
+            // Consultamos a la API de Lumen los datos frescos de la suscripción y empresa mediante tu cliente regular
+            $reqSuscripcion = $this->clientApi->get($this->baseUri . 'administracion/suscripcion_edit/' . $idSuscripcion);
+            $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
+
+            if (!$suscripcion) {
+                return response()->json(['error' => 'Suscripción no válida'], 404);
+            }
+
+            $reqEmpresa = $this->clientApi->get($this->baseUri . 'administracion/empresa_edit/' . $suscripcion->id_empresa_suscrita);
+            $empresa = json_decode($reqEmpresa->getBody()->getContents());
+
+            if ($empresa) {
+                if ($estadoWompi === 'APPROVED') {
+                    // Enviar correos de Aprobado (Cliente y Admin)
+                    \Illuminate\Support\Facades\Mail::send(
+                        'emails.wompi.pago_aprobado_cliente',
+                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                        function ($m) use ($empresa) {
+                            $m->to($empresa->email_empresa, $empresa->nombre_empresa)
+                            ->subject('¡Pago aprobado! Bienvenido a Storedimo');
+                        }
+                    );
+
+                    \Illuminate\Support\Facades\Mail::send(
+                        'emails.wompi.pago_aprobado_admin',
+                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                        function ($m) {
+                            $m->to(config('mail.from.address'), 'Administrador Storedimo')
+                            ->subject('Suscripción aprobada (Asíncrona vía API) - ' . now()->format('d/m/Y H:i'));
+                        }
+                    );
+                } elseif (in_array($estadoWompi, ['DECLINED', 'VOIDED', 'ERROR'])) {
+                    // Enviar correos de Fallido (Cliente y Admin)
+                    \Illuminate\Support\Facades\Mail::send(
+                        'emails.wompi.pago_fallido_cliente',
+                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                        function ($m) use ($empresa) {
+                            $m->to($empresa->email_empresa, $empresa->nombre_empresa)
+                            ->subject('Tu pago no pudo ser procesado - Storedimo');
+                        }
+                    );
+
+                    \Illuminate\Support\Facades\Mail::send(
+                        'emails.wompi.pago_fallido_admin',
+                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                        function ($m) {
+                            $m->to(config('mail.from.address'), 'Administrador Storedimo')
+                            ->subject('Pago fallido cliente (Asíncrónica vía API) - ' . now()->format('d/m/Y H:i'));
+                        }
+                    );
+                }
+            }
+
+            return response()->json(['success' => true, 'message' => 'Correos despachados'], 200);
+
+        } catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error enviando correos asíncronos en App Web: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al procesar correos'], 500);
+        }
+    }
 } // FIN class EmpresasController

@@ -37,4 +37,8 @@ return [
         'api_url'          => env('WOMPI_API_URL', 'https://sandbox.wompi.co/v1'),
     ],
 
+    'app_web' => [
+        'internal_token' => env('INTERNAL_TOKEN_SECRET'),
+    ],
+
 ];
