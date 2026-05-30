@@ -37,7 +37,6 @@ class DetalleVenta implements Responsable
                 ]
             ]);
             $ventaDetalles = json_decode($detallePeticion->getBody()->getContents());
-
              // Recibe el tipo de modal desde la request
             $tipoModal = $request->get('tipo_modal', 'detalle_venta'); // valor por defecto
 
