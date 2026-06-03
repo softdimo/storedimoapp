@@ -10,7 +10,6 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Responsable\empresa_suscripcion\EmpresaSuscripcionStore;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Http;
 
 class EmpresaSuscripcionLandingController extends Controller
 {
@@ -170,7 +169,6 @@ class EmpresaSuscripcionLandingController extends Controller
             return response()->json(json_decode($response->getBody()->getContents(), true));
         
         } catch (Exception $e) {
-            dd($e);
             return response()->json([
                 'error' => 'No se pudo validar el número del documento en la BD.',
                 'valido' => false
@@ -200,114 +198,6 @@ class EmpresaSuscripcionLandingController extends Controller
 
     // ======================================================================
     // ======================================================================
-
-    // public function pagoResultado(Request $request)
-    // {
-    //     $idTransaccionWompi = $request->query('id');
-    //     $estadoPago = 'PENDING';
-    //     $empresa = null;
-    //     $suscripcion = null;
-
-    //     try {
-    //         $response = \Illuminate\Support\Facades\Http::get(
-    //             config('services.wompi.api_url') . '/transactions/' . $idTransaccionWompi
-    //         );
-    //         $data = $response->json();
-    //         $estadoPago = $data['data']['status'] ?? 'PENDING';
-
-    //         // Extraer id_suscripcion de la referencia STOR-{id}-{timestamp}
-    //         $referencia = $data['data']['reference'] ?? null;
-    //         if ($referencia) {
-    //             $partes = explode('-', $referencia);
-    //             $idSuscripcion = $partes[1] ?? null;
-
-    //             if ($idSuscripcion) {
-    //                 $reqSuscripcion = $this->clientApi->get($this->baseUri.'administracion/suscripcion_edit/' . $idSuscripcion);
-    //                 $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
-
-    //                 $reqEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/' . $suscripcion->id_empresa_suscrita);
-    //                 $empresa = json_decode($reqEmpresa->getBody()->getContents());
-    //             }
-    //         }
-
-    //         // Enviar correos según estado
-    //         if ($empresa && $suscripcion) {
-    //             if ($estadoPago === 'APPROVED') {
-    //                 // Correo al cliente
-    //                 \Illuminate\Support\Facades\Mail::send(
-    //                     'emails.wompi.pago_aprobado_cliente',
-    //                     ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
-    //                     function ($m) use ($empresa) {
-    //                         $m->to($empresa->email_empresa, $empresa->nombre_empresa)
-    //                         ->subject('¡Pago aprobado! Bienvenido a Storedimo, en breve que habilitamos su acceso');
-    //                     }
-    //                 );
-
-    //                 // Correo al administrador Pago exitoso
-    //                 \Illuminate\Support\Facades\Mail::send(
-    //                     'emails.wompi.pago_aprobado_admin',
-    //                     ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
-    //                     function ($m) {
-    //                         $m->to(config('mail.from.address'), 'Administrador Storedimo')
-    //                         ->subject('Nueva suscripción aprobada - ' . now()->format('d/m/Y H:i'));
-    //                     }
-    //                 );
-
-    //             } elseif (in_array($estadoPago, ['DECLINED', 'ERROR', 'VOIDED'])) {
-    //                 // Correo al cliente avisando fallo
-    //                 \Illuminate\Support\Facades\Mail::send(
-    //                     'emails.wompi.pago_fallido_cliente',
-    //                     ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
-    //                     function ($m) use ($empresa) {
-    //                         $m->to($empresa->email_empresa, $empresa->nombre_empresa)
-    //                         ->subject('Tu pago no fue procesado - Storedimo');
-    //                     }
-    //                 );
-
-    //                 // Correo al administrador Pago FALLIDO
-    //                 \Illuminate\Support\Facades\Mail::send(
-    //                     'emails.wompi.pago_fallido_admin',
-    //                     ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
-    //                     function ($m) {
-    //                         $m->to(config('mail.from.address'), 'Administrador Storedimo')
-    //                         ->subject('Pago fallido ciente - ' . now()->format('d/m/Y H:i'));
-    //                     }
-    //                 );
-
-    //             } elseif ($estadoPago === 'PENDING') {
-
-    //                 // Correo al cliente - Pendiente
-    //                 \Illuminate\Support\Facades\Mail::send(
-    //                     'emails.wompi.pago_pendiente_cliente',
-    //                     ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
-    //                     function ($m) use ($empresa) {
-    //                         $m->to($empresa->email_empresa, $empresa->nombre_empresa)
-    //                         ->subject('Tu pago está en proceso de verificación - Storedimo');
-    //                     }
-    //                 );
-
-    //                 // Correo al administrador - Pendiente
-    //                 \Illuminate\Support\Facades\Mail::send(
-    //                     'emails.wompi.pago_pendiente_admin',
-    //                     ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccionWompi],
-    //                     function ($m) {
-    //                         $m->to(config('mail.from.address'), 'Administrador Storedimo')
-    //                         ->subject('Pago PENDIENTE, en proceso de validación) - ' . now()->format('d/m/Y H:i'));
-    //                     }
-    //                 );
-    //             }
-    //         }
-
-    //     } catch (\Exception $e) {
-    //         \Illuminate\Support\Facades\Log::error('Error en pagoResultado: ' . $e->getMessage());
-    //         $estadoPago = 'PENDING';
-    //     }
-
-    //     return view('wompi.checkout.resultado_pago', [
-    //         'id_transaccion' => $idTransaccionWompi,
-    //         'estado'         => $estadoPago,
-    //     ]);
-    // } // FIN pagoResultado()
 
     public function pagoResultado(Request $request)
     {
@@ -415,12 +305,10 @@ class EmpresaSuscripcionLandingController extends Controller
     {
         try {
             // Consultar empresa
-            // $reqEmpresa = $this->getHttpClient()->get('administracion/empresa_edit/' . $idEmpresa);
             $reqEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/' . $idEmpresa);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             // Consultar suscripción más reciente de esa empresa
-            // $reqSuscripcion = $this->getHttpClient()->get('administracion/suscripcion_empresa_estado_login/' . $idEmpresa);
             $reqSuscripcion = $this->clientApi->get($this->baseUri.'administracion/suscripcion_empresa_estado_login/' . $idEmpresa);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
@@ -449,4 +337,5 @@ class EmpresaSuscripcionLandingController extends Controller
 
     // ======================================================================
     // ======================================================================
+
 } // FIN class EmpresasController

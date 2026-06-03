@@ -133,9 +133,7 @@
 
                 <div class="col-12 col-md-3 mt-3" id="div_direccion">
                     <div class="form-group d-flex flex-column">
-                        <label for="direccion_empresa" class="form-label">Dirección
-                            <span class="text-danger">*</span>
-                        </label>
+                        <label for="direccion_empresa" class="form-label">Dirección</label>
                         {!! Form::text('direccion_empresa', old('direccion_empresa', null), [
                             'class' => 'form-control',
                             'id' => 'direccion_empresa',
