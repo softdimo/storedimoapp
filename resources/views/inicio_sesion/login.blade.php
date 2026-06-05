@@ -210,7 +210,7 @@
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json',
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             body: JSON.stringify({
                                 ident_empresa_natural: documento
