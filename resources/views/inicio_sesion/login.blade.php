@@ -430,7 +430,11 @@
                     $('#descripcion_plan').val(plan.descripcion_plan ?? '');
 
                     $('#div_id_tipo_pago').show();
-                    $('#id_tipo_pago').attr('required');
+                    // $('#id_tipo_pago').attr('required');
+                    
+                    $('#formCrearSuscripcionEmpresaLanding').find('#id_tipo_pago').attr('required');
+                    $('#formCrearSuscripcionEmpresaLanding').find('#id_tipo_pago').val('').trigger('change');
+
                     $('#valor_suscripcion').val('');
 
                     $('#formCrearSuscripcionEmpresaLanding').find('#fecha_inicial').val('').trigger('change');
@@ -439,8 +443,6 @@
                     // AGREGAR: Permitir escritura nuevamente
                     $('#formCrearSuscripcionEmpresaLanding').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
                     $('#formCrearSuscripcionEmpresaLanding').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
-
-                    $('#formCrearSuscripcionEmpresaLanding').find('#id_estado_suscripcion').val('').trigger('change');
 
                 } else {
 
