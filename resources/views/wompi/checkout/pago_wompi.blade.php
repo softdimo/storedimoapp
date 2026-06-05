@@ -41,6 +41,7 @@
                                 'signature:integrity'     => $firma,
                                 'customer-data:email'     => $email,
                                 'customer-data:full-name' => $nombre,
+                                'customer-data:phone-number' => $celular,
                                 'redirect-url'            => request()->getSchemeAndHttpHost() . '/pago_resultado',
                             ]);
                         @endphp

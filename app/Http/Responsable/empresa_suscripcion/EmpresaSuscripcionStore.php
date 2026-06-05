@@ -219,6 +219,7 @@ class EmpresaSuscripcionStore implements Responsable
                             'firma' => $firmaHash,
                             'email' => $emailEmpresa,
                             'nombre' => $nombreEmpresa,
+                            'celular'    => $celularEmpresa,
                             'publicKey' => config('services.wompi.public_key')
                         ]);
                     }
