@@ -326,6 +326,7 @@ class EmpresaSuscripcionLandingController extends Controller
                 'firma'         => $firmaHash,
                 'email'         => $empresa->email_empresa,
                 'nombre'        => $empresa->nombre_empresa,
+                'celular'       => $empresa->celular_empresa,
                 'publicKey'     => config('services.wompi.public_key')
             ]);
 
