@@ -249,6 +249,11 @@ class EmpresaSuscripcionLandingController extends Controller
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             if ($empresa) {
+                $destinatarios = [
+                    config('mail.from.address'),
+                    'softidmo@gmail.com'
+                ];
+
                 if ($estadoWompi === 'APPROVED') {
                     // Enviar correos de Aprobado (Cliente y Admin)
                     Mail::send(
@@ -260,11 +265,11 @@ class EmpresaSuscripcionLandingController extends Controller
                         }
                     );
 
-                    \Illuminate\Support\Facades\Mail::send(
+                    Mail::send(
                         'emails.wompi.pago_aprobado_admin',
                         ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
-                        function ($m) {
-                            $m->to(config('mail.from.address'), 'Administrador Storedimo')
+                        function ($m) use ($destinatarios) {
+                            $m->to($destinatarios, 'Administrador Storedimo')
                             ->subject('Suscripción aprobada (Asíncrona vía API) - ' . now()->format('d/m/Y H:i'));
                         }
                     );
@@ -282,8 +287,8 @@ class EmpresaSuscripcionLandingController extends Controller
                     Mail::send(
                         'emails.wompi.pago_fallido_admin',
                         ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
-                        function ($m) {
-                            $m->to(config('mail.from.address'), 'Administrador Storedimo')
+                        function ($m) use ($destinatarios) {
+                            $m->to($destinatarios, 'Administrador Storedimo')
                             ->subject('Pago fallido cliente (Asíncrónica vía API) - ' . now()->format('d/m/Y H:i'));
                         }
                     );

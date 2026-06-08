@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Crypt;
 use App\Traits\MetodosTrait;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class EmpresaSuscripcionStore implements Responsable
 {
@@ -157,7 +158,7 @@ class EmpresaSuscripcionStore implements Responsable
                             
                             try {
                                 // Correo al cliente - Plan de prueba
-                                \Illuminate\Support\Facades\Mail::send(
+                                Mail::send(
                                     'emails.wompi.pago_aprobado_cliente', // Puede usar una plantilla específica o adaptar esta
                                     ['empresa' => $empresaData, 'suscripcion' => $suscripcionData, 'idTransaccion' => 'TRIAL-15-DIAS'],
                                     function ($m) use ($emailEmpresa, $nombreEmpresa) {
@@ -167,11 +168,12 @@ class EmpresaSuscripcionStore implements Responsable
                                 );
 
                                 // Correo al administrador - Plan de prueba nuevo
-                                \Illuminate\Support\Facades\Mail::send(
+                                Mail::send(
                                     'emails.wompi.pago_aprobado_admin',
                                     ['empresa' => $empresaData, 'suscripcion' => $suscripcionData, 'idTransaccion' => 'TRIAL-15-DIAS'],
                                     function ($m) {
                                         $m->to(config('mail.from.address'), 'Administrador Storedimo')
+                                        ->cc('softidmo@gmail.com')
                                         ->subject('Nueva suscripción de PRUEBA (Trial) - ' . now()->format('d/m/Y H:i'));
                                     }
                                 );
