@@ -77,16 +77,20 @@
                 {{-- ========================================================= --}}
                 {{-- ========================================================= --}}
 
-                <div class="col-12 col-md-1 ps-0 pe-0 mt-0 mb-0 d-flex justify-content-center" id="div_btn_metrica">
-                    <button type="button" class="btn btn-info" id="btn_metrica_ajax">
-                        <i class="fa fa-floppy-o text-warning"></i> Consultar
-                    </button>
-                </div>
+                <div class="col-12 col-md-3 mt-4 mt-md-0">
+                    <div class="row flex-row justify-content-between h-100">
+                        <div class="col-6 ps-0 pe-0 mt-0 mb-0 d-flex justify-content-center h-100 align-items-center" id="div_btn_metrica">
+                            <button type="button" class="btn btn-info" id="btn_metrica_ajax">
+                                <i class="fa fa-floppy-o text-warning"></i> Consultar
+                            </button>
+                        </div>
 
-                <div class="col-12 col-md-1 ps-0 pe-0 mt-0 mb-0 d-flex justify-content-center" id="div_btn_metrica_limpiar">
-                    <button type="button" class="btn btn-warning" id="btn_limpiar_metrica">
-                        <i class="fa fa-eraser"></i> Limpiar
-                    </button>
+                        <div class="col-6 ps-0 pe-0 mt-0 mb-0 d-flex justify-content-center h-100 align-items-center" id="div_btn_metrica_limpiar">
+                            <button type="button" class="btn btn-warning" id="btn_limpiar_metrica">
+                                <i class="fa fa-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div> {{-- FIN consulta métricas --}}
 
