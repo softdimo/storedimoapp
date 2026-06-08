@@ -31,8 +31,8 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="mt-3 mb-4 col-12 d-flex justify-content-around pe-0 mt-0">
-                <div class="col-12 col-md-3 me-2">
+            <div class="mt-3 mb-4 row justify-content-between ps-2 pe-2 mt-0">
+                <div class="col-12 col-md-3 ps-0 pe-2">
                     <div class="form-group d-flex flex-column">
                         <label for="id_tipo_metrica" class="form-label">Tipo Métrica <span class="text-danger">*</span></label>
                         {!! Form::select('id_tipo_metrica', collect(['' => 'Seleccionar...'])->union($tiposMetrica), null,
@@ -42,32 +42,34 @@
 
                 {{-- ======================================================================= --}}
 
-                <div class="col-12 col-md-6 d-flex justify-content-between" id="div_fechas_metrica">
-                    <div class="col-12 col-md-6 me-2">
-                        <div class="form-group d-flex flex-column">
-                            <label for="fecha_inicial_metrica" class="form-label">
-                                Fecha y Hora Inicial<span class="text-danger">*</span>
-                            </label>
-                            {!! Form::input('datetime-local', 'fecha_inicial_metrica', null, [
-                                'class' => 'form-control',
-                                'id' => 'fecha_inicial_metrica',
-                                'required' => 'required',
-                                'onkeydown' => 'return false'
-                            ]) !!}
+                <div class="col-12 col-md-6 ps-0 pe-0" id="div_fechas_metrica">
+                    <div class="row flex-row justify-content-between">
+                        <div class="col-12 col-md-6 me-0">
+                            <div class="form-group d-flex flex-column">
+                                <label for="fecha_inicial_metrica" class="form-label">
+                                    Fecha y Hora Inicial<span class="text-danger">*</span>
+                                </label>
+                                {!! Form::input('datetime-local', 'fecha_inicial_metrica', null, [
+                                    'class' => 'form-control',
+                                    'id' => 'fecha_inicial_metrica',
+                                    'required' => 'required',
+                                    'onkeydown' => 'return false'
+                                ]) !!}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-12 col-md-6">
-                        <div class="form-group d-flex flex-column">
-                            <label for="fecha_final_metrica" class="form-label">
-                                Fecha y Hora Final<span class="text-danger">*</span>
-                            </label>
-                            {!! Form::input('datetime-local', 'fecha_final_metrica', null, [
-                                'class' => 'form-control',
-                                'id' => 'fecha_final_metrica',
-                                'required' => 'required',
-                                'onkeydown' => 'return false'
-                            ]) !!}
+                        <div class="col-12 col-md-6">
+                            <div class="form-group d-flex flex-column">
+                                <label for="fecha_final_metrica" class="form-label">
+                                    Fecha y Hora Final<span class="text-danger">*</span>
+                                </label>
+                                {!! Form::input('datetime-local', 'fecha_final_metrica', null, [
+                                    'class' => 'form-control',
+                                    'id' => 'fecha_final_metrica',
+                                    'required' => 'required',
+                                    'onkeydown' => 'return false'
+                                ]) !!}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -75,15 +77,17 @@
                 {{-- ========================================================= --}}
                 {{-- ========================================================= --}}
 
-                {{-- <div class="mt-4 mb-0 d-flex justify-content-center" id="div_btn_metrica"> --}}
+                <div class="col-12 col-md-1 ps-0 pe-0 mt-0 mb-0 d-flex justify-content-center" id="div_btn_metrica">
                     <button type="button" class="btn btn-info" id="btn_metrica_ajax">
                         <i class="fa fa-floppy-o text-warning"></i> Consultar
                     </button>
-                {{-- </div> --}}
+                </div>
 
-                <button type="button" class="btn btn-warning" id="btn_limpiar_metrica">
-                    <i class="fa fa-eraser"></i> Limpiar
-                </button>
+                <div class="col-12 col-md-1 ps-0 pe-0 mt-0 mb-0 d-flex justify-content-center" id="div_btn_metrica_limpiar">
+                    <button type="button" class="btn btn-warning" id="btn_limpiar_metrica">
+                        <i class="fa fa-eraser"></i> Limpiar
+                    </button>
+                </div>
             </div> {{-- FIN consulta métricas --}}
 
             {{-- =============================================================== --}}

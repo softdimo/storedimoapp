@@ -14,12 +14,7 @@
 
 @section('content')
     <div class="bg-light p-4">
-        <div class="d-flex flex-row justify-content-between">
-            <div class="col-12 col-md-8 pe-4" id="descripcion_landing">
-                <h1 class="mb-4 fw-bold text-primary text-center">Que es Storedimo</h1>
-                @include('layouts.descripcionLanding')
-            </div>
-
+        <div class="row">
             <div class="col-12 col-md-4 border border-dark-subtle p-4 shadow-lg rounded-4 bg-white text-center" style="overflow-y: auto;">
                 <div class="d-flex justify-content-center p-3">
                     <img src="{{asset('imagenes/logo_storedimo_fondo.png')}}" alt="logo" class="text-center" width="200" height="100">
@@ -47,6 +42,11 @@
                         <a href="{{route('recuperar_clave')}}" class="text-primary">¿Olvidó la Contraseña?</a>
                     </div>
                 </form>
+            </div>
+
+            <div class="col-12 col-md-8 ps-4" id="descripcion_landing">
+                <h1 class="mb-4 fw-bold text-primary text-center">Que es Storedimo</h1>
+                @include('layouts.descripcionLanding')
             </div>
         </div>
 
