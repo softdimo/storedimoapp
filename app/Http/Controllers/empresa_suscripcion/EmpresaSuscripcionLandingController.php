@@ -251,7 +251,7 @@ class EmpresaSuscripcionLandingController extends Controller
             if ($empresa) {
                 $destinatarios = [
                     config('mail.from.address'),
-                    'softidmo@gmail.com'
+                    'softdimo@gmail.com'
                 ];
 
                 if ($estadoWompi === 'APPROVED') {

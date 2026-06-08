@@ -173,7 +173,7 @@ class EmpresaSuscripcionStore implements Responsable
                                     ['empresa' => $empresaData, 'suscripcion' => $suscripcionData, 'idTransaccion' => 'TRIAL-15-DIAS'],
                                     function ($m) {
                                         $m->to(config('mail.from.address'), 'Administrador Storedimo')
-                                        ->cc('softidmo@gmail.com')
+                                        ->cc('softdimo@gmail.com')
                                         ->subject('Nueva suscripción de PRUEBA (Trial) - ' . now()->format('d/m/Y H:i'));
                                     }
                                 );
