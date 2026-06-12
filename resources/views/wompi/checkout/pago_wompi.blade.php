@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-flex align-items-center" style="min-height: 90vh;">
+    <div class="d-flex align-items-center" style="min-height: 85.3vh;">
         <div class="container my-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">

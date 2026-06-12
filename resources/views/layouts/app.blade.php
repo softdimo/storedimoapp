@@ -62,7 +62,13 @@
                     Request()->path() == 'login' ||
                     Request()->path() == 'logout' ||
                     Request()->path() == 'recuperar_clave' ||
-                    Request()->is('recuperar_clave_link*'))
+                    Request()->is('recuperar_clave_link*') ||
+                    Request()->is('suscripcion_empresa*') ||
+                    Request()->is('nit_validator_landing') ||
+                    Request()->is('documento_validator_landing') ||
+                    Request()->is('validar_correo_empresa_landing') ||
+                    Request()->is('pago_resultado*') ||
+                    Request()->is('empresa_pago_fallido*'))
                 @include('layouts.topbar_login')
             @else
                 @include('layouts.topbar')
