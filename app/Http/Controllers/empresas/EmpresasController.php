@@ -51,7 +51,9 @@ class EmpresasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $vista = new EmpresaIndex();
+                    $rolId = $sesion[2];
+                    $usuarioId = $sesion[0];
+                    $vista = new EmpresaIndex($rolId, $usuarioId);
                     return $this->validarAccesos($sesion[0], 6, $vista);
                 }
             }

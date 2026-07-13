@@ -1,19 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Empresas')
 
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-
 @section('css')
     <style>
 
     </style>
 @stop
-
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
 
 @section('content')
     @php
@@ -26,14 +18,15 @@
             @include('layouts.sidebarmenu')
         </div>
 
-        {{-- ======================================================================= --}}
-        {{-- ======================================================================= --}}
-
         <div class="p-3 d-flex flex-column content-container">
             <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
-                <div class="">
-                    <a href="{{ route('empresas.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
-                        Empresa</a>
+                <div>
+                    @if($rolId == 3)
+                        <a href="{{ route('empresas.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
+                            Empresa</a>
+                    @else
+                        <p>&nbsp;</p>
+                    @endif
                 </div>
                 <div class="text-end">
                     <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
@@ -111,17 +104,21 @@
                             <thead>
                                 <tr class="header-table text-center align-middle">
                                     <th>Nit Empresa</th>
-                                    <th>Id Persona Natural</th>
+                                    <th>Documento Persona Natural</th>
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
                                     <th>Celular</th>
                                     <th>Email</th>
                                     <th>Dirección</th>
-                                    <th>DB CONNECTION</th>
-                                    <th>DB HOST</th>
-                                    <th>DB DATABASE</th>
-                                    <th>DB USERNAME</th>
-                                    <th>DB PASSWORD</th>
+
+                                    @if($rolId == 3)
+                                        <th>DB CONNECTION</th>
+                                        <th>DB HOST</th>
+                                        <th>DB DATABASE</th>
+                                        <th>DB USERNAME</th>
+                                        <th>DB PASSWORD</th>
+                                    @endif
+
                                     <th>LOGO</th>
                                     <th>Estado</th>
                                     <th>Opciones</th>
@@ -138,11 +135,14 @@
                                         <td>{{ $empresa->celular_empresa }}</td>
                                         <td>{{ $empresa->email_empresa }}</td>
                                         <td>{{ $empresa->direccion_empresa }}</td>
-                                        <td>{{ $empresa->tipo_bd ? $empresa->tipo_bd : '' }}</td>
-                                        <td>{{ $empresa->db_host ? Crypt::decrypt($empresa->db_host) : '' }}</td>
-                                        <td>{{ $empresa->db_database ? Crypt::decrypt($empresa->db_database) : '' }}</td>
-                                        <td>{{ $empresa->db_username ? Crypt::decrypt($empresa->db_username) : '' }}</td>
-                                        <td>{{ $empresa->db_password ? Crypt::decrypt($empresa->db_password) : '' }}</td>
+
+                                        @if($rolId == 3)
+                                            <td>{{ $empresa->tipo_bd ? $empresa->tipo_bd : '' }}</td>
+                                            <td>{{ $empresa->db_host ? Crypt::decrypt($empresa->db_host) : '' }}</td>
+                                            <td>{{ $empresa->db_database ? Crypt::decrypt($empresa->db_database) : '' }}</td>
+                                            <td>{{ $empresa->db_username ? Crypt::decrypt($empresa->db_username) : '' }}</td>
+                                            <td>{{ $empresa->db_password ? Crypt::decrypt($empresa->db_password) : '' }}</td>
+                                        @endif
 
                                         @if (is_null($empresa->logo_empresa))
                                             <td class="align-middle"></td>
@@ -154,13 +154,20 @@
                                         @endif
 
                                         <td>{{ $empresa->estado ? $empresa->estado : '' }}</td>
-                                        <td>
-                                            <a href="{{ route('empresas.edit', $empresa->id_empresa) }}"
-                                                class="btn btn-success rounded-circle btn-circle text-white btn-editar-empresa"
-                                                title="Editar Empresa">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
-                                        </td>
+
+                                        @if($rolId == 3)
+                                            <td>
+                                                <a href="{{ route('empresas.edit', $empresa->id_empresa) }}"
+                                                    class="btn btn-success rounded-circle btn-circle text-white btn-editar-empresa"
+                                                    title="Editar Empresa">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </a>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <p>&nbsp;</p>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -171,10 +178,6 @@
         </div>
     </div>
 @stop
-
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
 
 @section('scripts')
     <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
