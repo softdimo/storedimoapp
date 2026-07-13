@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Client;
 use App\Models\Usuario;
 use App\Traits\MetodosTrait;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\empresas\EnviarCorreoEmpresa;
 class UsuarioStore implements Responsable
 {
     use MetodosTrait;
@@ -96,10 +98,16 @@ class UsuarioStore implements Responsable
                 
                 if(isset($resUsuarioStore) && !empty($resUsuarioStore) && $resUsuarioStore->success)
                 {
+                    if(!is_null($resUsuarioStore->correo_empresa))
+                    {
+                        Mail::to($resUsuarioStore->correo_empresa)
+                            ->send(new EnviarCorreoEmpresa());
+                    }
+
                     return $this->respuestaExito(
                         "Usuario creado satisfactoriamente.<br>
-                         El usuario es el correo: <strong>" .  $resUsuarioStore->usuario->email . "</strong><br>
-                         Y la clave es: <strong>El número de documento</strong>",
+                        El usuario es el correo: <strong>" .  $resUsuarioStore->usuario->email . "</strong><br>
+                        Y la clave es: <strong>El número de documento</strong>",
                         'usuarios.index'
                     );
                 }

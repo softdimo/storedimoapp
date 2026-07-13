@@ -79,6 +79,7 @@
                             id="tblDetalleanulacion_{{ $venta->id_venta }}">
                             <thead>
                                 <tr class="header-table text-center">
+                                    <th>Producto</th>
                                     <th>Motivo Anulación</th>
                                     <th>Fecha Anulación (D-M-Y)</th>
                                     <th>Usuario Anulación</th>
@@ -87,6 +88,7 @@
                             <tbody>
                                 @foreach ($ventaDetalles as $anulacion)
                                     <tr class="text-center">
+                                        <td>{{ $anulacion->nombre_producto }}</td>
                                         <td>{{ $anulacion->motivo_anulacion }}</td>
                                         <td>{{ $anulacion->fecha_anulacion }}</td>
                                         <td>{{ $anulacion->usuario_anulacion }}</td>
