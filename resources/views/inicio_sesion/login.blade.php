@@ -16,9 +16,9 @@
     <div class="bg-light p-4">
         <div class="row ms-0 me-0">
             <div class="col-12 col-md-4 border border-dark-subtle p-4 shadow-lg rounded-4 bg-white text-center" style="overflow-y: auto;">
-                <div class="d-flex justify-content-center p-3">
+                {{-- <div class="d-flex justify-content-center p-3">
                     <img src="{{asset('imagenes/logo_storedimo_fondo.png')}}" alt="logo" class="text-center" width="200" height="100">
-                </div>
+                </div> --}}
                 
                 <form class="p-3" method="post" action="{{route('login.store')}}" autocomplete="off">
                     @csrf
