@@ -27,7 +27,7 @@ class EmpresaIndex implements Responsable
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'administracion/empresa_index', [
-                'json' => [
+                'query' => [
                     'id_rol' => $this->rolId,
                     'id_usuario' => $this->usuarioId
                 ]
