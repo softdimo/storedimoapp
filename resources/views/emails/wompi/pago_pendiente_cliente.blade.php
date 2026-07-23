@@ -4,11 +4,11 @@
         <meta charset="UTF-8">
         <style>
             body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0; }
-            .container { max-width: 600px; margin: 0 auto; padding: 30px; }
+            .container-fluid { min-width: 95%; margin: 0 auto; padding: 15px; }
             /* Cambiado a gris azulado neutro para denotar un estado de transición formal */
             .header { background-color: #607D8B; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
             .header h1 { color: white; margin: 0; font-size: 22px; }
-            .body { background-color: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+            .body { background-color: #f9f9f9; padding: 15px; border: 1px solid #ddd; }
             .footer { background-color: #eee; padding: 15px; text-align: center; font-size: 12px; color: #888; border-radius: 0 0 8px 8px; }
             /* Badge cambiado a naranja/ámbar para alertar "En proceso" sin alarmar */
             .badge { background-color: #ff9800; color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; }
@@ -18,7 +18,7 @@
         </style>
     </head>
     <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="header">
             <h1>Tu registro en Storedimo está en proceso</h1>
         </div>

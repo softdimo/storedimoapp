@@ -4,11 +4,11 @@
         <meta charset="UTF-8">
         <style>
             body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0; }
-            .container { max-width: 600px; margin: 0 auto; padding: 30px; }
+            .container-fluid { min-width: 95%; margin: 0 auto; padding: 15px; }
             /* Cambiado a un tono naranja/amarillo de advertencia para diferenciarlo de "Aprobado" */
             .header { background-color: #fd7e14; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
             .header h1 { color: white; margin: 0; font-size: 20px; }
-            .body { background-color: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+            .body { background-color: #f9f9f9; padding: 15px; border: 1px solid #ddd; }
             .footer { background-color: #eee; padding: 15px; text-align: center; font-size: 12px; color: #888; border-radius: 0 0 8px 8px; }
             .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
             .info-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
@@ -16,7 +16,7 @@
         </style>
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid">
             <div class="header">
                 <h1>⏳ Pago en estado "Pendiente por aprobación" — Storedimo</h1>
             </div>
