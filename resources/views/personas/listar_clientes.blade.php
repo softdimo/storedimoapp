@@ -32,19 +32,15 @@
 
         <div class="p-3 d-flex flex-column content-container">
 
-            <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
-                <div class="">
-                    <a href="{{ route('personas.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
-                        Clientes</a>
-                </div>
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
+                <a href="{{ route('personas.create') }}" class="btn-modern-primary">
+                    <i class="fa fa-plus-circle"></i> Crear Clientes
+                </a>
 
-                <div class="text-end">
-                    <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
-                        data-bs-target="#modalAyudaListarClientes">
-                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"
-                            style="color: #337AB7"></i>
-                    </a>
-                </div>
+                <a href="#" role="button" title="Ayuda" data-bs-toggle="modal"
+                    data-bs-target="#modalAyudaListarClientes" class="help-icon-modern">
+                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
+                </a>
             </div>
 
             {{-- =============================================================== --}}
@@ -59,7 +55,7 @@
                                 <div class="col-12">
                                     <div class="rounded-top text-white text-center p-2"
                                         style="background-color: #337AB7; border: solid 1px #337AB7;">
-                                        <span class="modal-title"><strong>Ayuda de Listar Clientes</strong></span>
+                                        <span class="modal-title fs-5"><strong>Ayuda de Listar Clientes</strong></span>
                                     </div>
                                     {{-- =========================== --}}
                                     <div class="p-3">
@@ -99,17 +95,18 @@
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Clientes
-                </h5>
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-users"></i>
+                    <span>Listar Clientes</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_clientes"
+                    <div>
+                        <table class="table table-modern w-100 mb-0" id="tbl_clientes"
                             aria-describedby="clientes">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     <th>Tipo Cliente</th>
                                     <th>Nombres</th>
                                     <th>Apellidos</th>
@@ -143,8 +140,8 @@
                             </tbody>
                         </table>
                     </div>
-                </div> {{-- FIN div --}}
-            </div> {{-- FIN div --}}
+                </div> {{-- FIN div_campos_clientes --}}
+            </div> {{-- FIN div_crear_cliente --}}
         </div>
     </div>
 
@@ -156,10 +153,10 @@
         <div class="modal-dialog" style="min-width: 60%">
             <div class="modal-content p-3" id="modalEditarClienteContent">
                 {{-- El contenido AJAX se cargará aquí --}}
-            </div> {{-- modal-content --}}
-        </div> {{-- modal-dialog --}}
+            </div> {{-- modal-content --}}
+        </div> {{-- modal-dialog --}}
     </div>
-    {{-- FINAL Modal EDITAR PROVEEDOR --}}
+    {{-- FINAL Modal EDITAR PROVEEDOR --}}
 @stop
 
 {{-- =============================================================== --}}
@@ -175,7 +172,7 @@
             // INICIO DataTable Lista Clientes
             $("#tbl_clientes").DataTable({
                 dom: 'Blfrtip',
-                "infoEmpty": "No hay registros",
+                infoEmpty: "No hay registros",
                 stripe: true,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
@@ -184,16 +181,16 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');
                         }
                     }
                 ],
-                "pageLength": 25,
-                "scrollX": true,
+                pageLength: 25,
+                scrollX: true
             });
             // CIERRE DataTable Lista Clientes
 

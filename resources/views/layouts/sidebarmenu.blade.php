@@ -16,72 +16,128 @@
         ->distinct()
         ->orderBy('menu.id_menu')
         ->get();
-    
+
     $menuGroups = $menus->where('ruta', '#')->values();
     $menuItems = $menus->where('ruta', '!=', '#');
 @endphp
 
-<aside class="vh-100 sidebar" id="sidebar" style="border: 1px solid #e7e7e7">
-    <nav class="w-100 ">
-        <ul class="nav navbar-nav d-flex flex-column justify-content-center flex-nowrap" id="sidebarnav">
-            <li class="pt-1 pb-1 d-flex justify-content-between align-items-center"
-                style="background-color: #EEEEEE; border-bottom: 1px solid #e7e7e7">
-                <i class="fa fa-th-list text-center" style="color: #000; width: 10%"></i>
-                <a href="/home" class="nav-link active text-decoration-none text-start" style="width: 80%">Menú Principal</a>
-                <span class="" style="width: 10%"></span>
+<aside class="sidebar-modern vh-100" id="sidebar">
+
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column" id="sidebarnav">
+
+            <li class="sidebar-section-title">General</li>
+
+            <li class="nav-item">
+                <a href="/home" class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                    <i class="fa fa-th-large sidebar-icon"></i>
+                    <span>Dashboard</span>
+                </a>
             </li>
 
             @foreach($menuGroups as $menuGroup)
                 @php
-                    $hasChildren = $menuItems->where('menu_id', $menuGroup->id_menu)->count() > 0;
+                    $children = $menuItems->where('menu_id', $menuGroup->id_menu);
+                    $hasChildren = $children->count() > 0;
+                    $groupIsActive = $children->contains(function($item) {
+                        return request()->routeIs($item->ruta);
+                    });
                 @endphp
+
                 @if($hasChildren)
-                    <li class="nav-item pt-1 pb-1 d-flex flex-column" style="border-bottom: 1px solid #e7e7e7">
-                        <div class="d-flex flex-row justify-content-between align-items-center colapsar"
-                             id="menu_{{$menuGroup->id_menu}}"
+                    <li class="sidebar-group {{ $groupIsActive ? 'open' : '' }}">
+                        <div class="sidebar-group-title"
                              role="button"
                              data-bs-toggle="collapse"
-                             data-bs-target="#ul_menu_{{$menuGroup->id_menu}}"
-                             aria-controls="ul_menu_{{$menuGroup->id_menu}}"
-                             aria-expanded="false"
-                             aria-label="Toggle navigation">
-                            <div class="col-11">
-                                <i class="fa {{$menuGroup->icono}} text-center" style="color: #000; width: 10%"></i>
-                                <a href="#" class="text-decoration-none" style="width: 80%" id="">{{$menuGroup->nombre}}</a>
-                            </div>
-                            <div class="col-1 text-center text-dark">
-                                <span class="fa collapse-icon" aria-hidden="false" style=""></span>
-                            </div>
+                             data-bs-target="#ul_menu_{{ $menuGroup->id_menu }}"
+                             aria-expanded="{{ $groupIsActive ? 'true' : 'false' }}">
+                            <span class="sidebar-group-title-text">
+                                <i class="fa {{ $menuGroup->icono ?? 'fa-folder-o' }} sidebar-group-icon"></i>
+                                {{ $menuGroup->nombre }}
+                            </span>
+                            <i class="fa fa-chevron-right sidebar-chevron"></i>
                         </div>
 
-                        <ul class="nav collapse navbar-collapse ps-3" id="ul_menu_{{$menuGroup->id_menu}}">
-                            @foreach($menuItems->where('menu_id', $menuGroup->id_menu) as $item)
-                                <li class="nav-item w-100">
-                                    <a class="link-underline-light" href="{{route($item->ruta)}}">{{$item->nombre}}</a>
+                        <ul class="nav flex-column collapse {{ $groupIsActive ? 'show' : '' }}" id="ul_menu_{{ $menuGroup->id_menu }}">
+                            @foreach($children as $item)
+                                <li class="nav-item">
+                                    <a class="sidebar-link sidebar-sublink {{ request()->routeIs($item->ruta) ? 'active' : '' }}"
+                                       href="{{ route($item->ruta) }}">
+                                        <span>{{ $item->nombre }}</span>
+                                    </a>
                                 </li>
                             @endforeach
                         </ul>
                     </li>
                 @endif
             @endforeach
+
         </ul>
     </nav>
 </aside>
 
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function ()
     {
-        const elementosColapsar = document.querySelectorAll('.colapsar');
+        document.querySelectorAll('.sidebar-group-title').forEach(function (toggle)
+        {
+            const targetId = toggle.getAttribute('data-bs-target');
+            const targetEl = document.querySelector(targetId);
+            const groupLi = toggle.closest('.sidebar-group');
 
-        elementosColapsar.forEach(colapsar => {
-            const iconoColapsar = colapsar.querySelector('.collapse-icon');
-
-            iconoColapsar.classList.add('fa-angle-left');
-
-            colapsar.addEventListener('click', function () {
-                iconoColapsar.classList.toggle('fa-angle-left');
-                iconoColapsar.classList.toggle('fa-angle-down');
+            targetEl.addEventListener('show.bs.collapse', function () {
+                groupLi.classList.add('open');
             });
+
+            targetEl.addEventListener('hide.bs.collapse', function () {
+                groupLi.classList.remove('open');
+            });
+        });
+
+        // ===== Responsive: abrir/cerrar sidebar en móvil =====
+        const sidebarEl = document.getElementById('sidebar');
+        const backdropEl = document.getElementById('sidebarBackdrop');
+        const toggleBtn = document.getElementById('sidebarToggle');
+
+        function abrirSidebar() {
+            sidebarEl.classList.add('active');
+            backdropEl.classList.add('active');
+        }
+
+        function cerrarSidebar() {
+            sidebarEl.classList.remove('active');
+            backdropEl.classList.remove('active');
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (sidebarEl.classList.contains('active')) {
+                    cerrarSidebar();
+                } else {
+                    abrirSidebar();
+                }
+            });
+        }
+
+        backdropEl.addEventListener('click', cerrarSidebar);
+
+        // Cierra el sidebar al elegir una opción (solo en móvil)
+        sidebarEl.querySelectorAll('.sidebar-link, .sidebar-sublink').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth < 768) {
+                    cerrarSidebar();
+                }
+            });
+        });
+
+        // Si el usuario agranda la ventana, aseguramos que quede cerrado/reseteado
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                cerrarSidebar();
+            }
         });
     });
 </script>

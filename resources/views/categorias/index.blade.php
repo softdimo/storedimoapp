@@ -31,10 +31,10 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="text-end">
-                <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
+            <div class="text-end mb-2">
+                <a href="#" role="button" title="Ayuda" class="help-icon-modern" data-bs-toggle="modal"
                     data-bs-target="#modalAyudaCategorias">
-                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda" style="color: #337AB7"></i>
+                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
                 </a>
             </div>
 
@@ -96,115 +96,120 @@
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
-                    Gestionar Categorías</h5>
+            <div class="page-title-modern">
+                <i class="fa fa-tags"></i>
+                <span>Gestionar Categorías</span>
+            </div>
 
-                <div class="d-flex justify-content-between p-3">
-                    <div class="col-12 mb-auto" style="border: solid 1px #337AB7; border-radius: 5px; width:30%">
-                        <h5 class="border rounded-top text-white p-2" style="background-color: #337AB7">Registrar Categoría
-                        </h5>
-
-                        {!! Form::open([
-                            'method' => 'POST',
-                            'route' => ['categorias.store'],
-                            'class' => 'mt-2',
-                            'autocomplete' => 'off',
-                            'id' => 'formCrearCategoria',
-                        ]) !!}
-                        @csrf
-
-                        <div class="p-3 d-flex flex-column" style="height: 50%;">
-                            <div>
-                                <label for="categoria">Nombre Categoría<span class="text-danger"> *</span></label>
-                                {!! Form::text('categoria', null, [
-                                    'class' => 'form-control',
-                                    'id' => 'categoria',
-                                    'required' => 'required',
-                                    'minlength' => '3',
-                                    'maxlength' => '100',
-                                    'pattern' => "^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]{3,100}$",
-                                    'title' => 'Debe contener solo letras, espacios, guiones o apóstrofes (mínimo 3 caracteres)',
-                                    'placeholder' => 'Ingrese nombre de categoría',
-                                ]) !!}
-                            </div>
-
-                            {{-- ====================================================== --}}
-                            {{-- ====================================================== --}}
-
-                            <!-- Contenedor para el GIF -->
-                            <div id="loadingIndicatorCrearCategoria" class="loadingIndicator">
-                                <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
-                            </div>
-
-                            {{-- ====================================================== --}}
-                            {{-- ====================================================== --}}
-
-                            <div class="d-flex justify-content-center mt-3 ">
-                                <button type="submit" class="btn btn-success rounded-2 me-3">
-                                    <i class="fa fa-floppy-o"></i>
-                                    Guardar
-                                </button>
-
-                                {{-- <button type="button" class="btn btn-danger rounded-2">
-                                        <i class="fa fa-remove"></i>
-                                        Cancelar
-                                    </button> --}}
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
+            <div class="d-flex flex-column flex-lg-row gap-3 categorias-panels">
+                <div class="card-modern" style="width: 100%; max-width: 340px;">
+                    <div class="card-modern-header">
+                        <i class="fa fa-plus-circle"></i>
+                        <span>Registrar Categoría</span>
                     </div>
 
-                    <div class="col-12" style="border: solid 1px #337AB7; border-radius: 5px;; width:68%">
-                        <h5 class="border rounded-top text-white p-2 m-0" style="background-color: #337AB7">Listar
-                            Categorías</h5>
+                    {!! Form::open([
+                        'method' => 'POST',
+                        'route' => ['categorias.store'],
+                        'class' => 'mt-0',
+                        'autocomplete' => 'off',
+                        'id' => 'formCrearCategoria',
+                    ]) !!}
+                    @csrf
 
-                        <div class="table-responsive p-3">
-                            <table class="table table-striped table-bordered w-100 mb-0" id="tbl_categorias"
-                                aria-describedby="categorias">
-                                <thead>
-                                    <tr class="header-table text-center align-middle">
-                                        <th>Código</th>
-                                        <th>Nombre Categoría</th>
-                                        <th>Estado</th>
-                                        <th>Modificar</th>
-                                    </tr>
-                                </thead>
-                                {{-- ============================== --}}
-                                <tbody>
-                                    @foreach ($categorias as $categoria)
-                                        <tr class="text-center align-middle">
-                                            <td>{{ $categoria->id_categoria }}</td>
-                                            <td>{{ $categoria->categoria }}</td>
-                                            <td>{{ $categoria->estado }}</td>
-
-                                            @if ($categoria->id_estado == 1 || $categoria->id_estado == '1')
-                                                <td>
-                                                    <button type="button" class="btn btn-success rounded-circle btn-circle btn-editar-categoria" title="Modificar" data-id="{{$categoria->id_categoria}}">
-                                                        <i class="fa fa-pencil-square-o"></i>
-                                                    </button>
-
-                                                    {{-- ============================== --}}
-                                                    <button class="btn btn-danger rounded-circle btn-circle btn-cambiar-estado" title="Cambiar Estado" data-id="{{$categoria->id_categoria}}">
-                                                        <i class="fa fa-solid fa-recycle"></i>
-                                                    </button>
-                                                </td>
-                                            @else
-                                                <td>
-                                                    {{-- ============================== --}}
-                                                    <button class="btn btn-danger rounded-circle btn-circle btn-cambiar-estado" title="Cambiar Estado" data-id="{{$categoria->id_categoria}}">
-                                                        <i class="fa fa-solid fa-recycle"></i>
-                                                    </button>
-                                                </td>
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    <div class="p-4 form-modern">
+                        <div>
+                            <label for="categoria">Nombre Categoría<span class="text-danger"> *</span></label>
+                            {!! Form::text('categoria', null, [
+                                'class' => 'form-control',
+                                'id' => 'categoria',
+                                'required' => 'required',
+                                'minlength' => '3',
+                                'maxlength' => '100',
+                                'pattern' => "^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]{3,100}$",
+                                'title' => 'Debe contener solo letras, espacios, guiones o apóstrofes (mínimo 3 caracteres)',
+                                'placeholder' => 'Ingrese nombre de categoría',
+                            ]) !!}
                         </div>
-                    </div> {{-- FIN div_ --}}
+
+                        {{-- ====================================================== --}}
+                        {{-- ====================================================== --}}
+
+                        <!-- Contenedor para el GIF -->
+                        <div id="loadingIndicatorCrearCategoria" class="loadingIndicator">
+                            <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
+                        </div>
+
+                        {{-- ====================================================== --}}
+                        {{-- ====================================================== --}}
+
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="submit" class="btn-modern-success">
+                                <i class="fa fa-floppy-o"></i>
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-            </div> {{-- FIN div_ --}}
+
+                <div class="card-modern flex-grow-1">
+                    <div class="card-modern-header">
+                        <i class="fa fa-list"></i>
+                        <span>Listar Categorías</span>
+                    </div>
+
+                    <div class="p-3">
+                        <table class="table table-modern w-100 mb-0" id="tbl_categorias"
+                            aria-describedby="categorias">
+                            <thead>
+                                <tr class="text-center align-middle">
+                                    <th>Código</th>
+                                    <th>Nombre Categoría</th>
+                                    <th>Estado</th>
+                                    <th>Modificar</th>
+                                </tr>
+                            </thead>
+                            {{-- ============================== --}}
+                            <tbody>
+                                @foreach ($categorias as $categoria)
+                                    <tr class="text-center align-middle">
+                                        <td>{{ $categoria->id_categoria }}</td>
+                                        <td>{{ $categoria->categoria }}</td>
+                                        <td>
+                                            @if(strtolower($categoria->estado ?? '') == 'activo')
+                                                <span class="badge text-bg-success">{{ $categoria->estado }}</span>
+                                            @elseif($categoria->estado)
+                                                <span class="badge text-bg-danger">{{ $categoria->estado }}</span>
+                                            @endif
+                                        </td>
+
+                                        @if ($categoria->id_estado == 1 || $categoria->id_estado == '1')
+                                            <td>
+                                                <button type="button" class="btn btn-success rounded-circle btn-circle btn-editar-categoria" title="Modificar" data-id="{{$categoria->id_categoria}}">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </button>
+
+                                                {{-- ============================== --}}
+                                                <button class="btn btn-danger rounded-circle btn-circle btn-cambiar-estado" title="Cambiar Estado" data-id="{{$categoria->id_categoria}}">
+                                                    <i class="fa fa-solid fa-recycle"></i>
+                                                </button>
+                                            </td>
+                                        @else
+                                            <td>
+                                                {{-- ============================== --}}
+                                                <button class="btn btn-danger rounded-circle btn-circle btn-cambiar-estado" title="Cambiar Estado" data-id="{{$categoria->id_categoria}}">
+                                                    <i class="fa fa-solid fa-recycle"></i>
+                                                </button>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div> {{-- FIN div_ --}}
+            </div>
         </div>
     </div>
 
@@ -230,9 +235,9 @@
         <div class="modal-dialog">
             <div class="modal-content p-3" id="modalCambiarEstadoCategoriaContent">
                 {{-- El contenido AJAX se cargará aquí --}}
-            </div> {{-- FIN modal-content --}}
-        </div> {{-- FIN modal-dialog --}}
-    </div> {{-- FIN modal --}}
+            </div> {{-- FIN modal-content --}}
+        </div> {{-- FIN modal-dialog --}}
+    </div> {{-- FIN modal --}}
     {{-- FINAL Modal ESTADO CATEGORÍA --}}
 @stop
 
@@ -255,8 +260,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');

@@ -15,14 +15,14 @@
 
 @section('content')
     <div class="d-flex p-0">
-        <div class="p-0" style="width: 15%">
+        <div class="p-0 sidebar-container">
             @include('layouts.sidebarmenu')
         </div>
 
         {{-- ======================================================================= --}}
         {{-- ======================================================================= --}}
 
-        <div class="p-3 d-flex flex-column" style="width: 85%">
+        <div class="p-3 d-flex flex-column content-container">
             @if (isset($alertaTrial))
                 <div class="w-100 mt-0 mb-0">
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -122,5 +122,3 @@
         });
     </script>
 @stop
-
-

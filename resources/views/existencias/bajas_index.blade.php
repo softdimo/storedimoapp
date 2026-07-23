@@ -49,18 +49,15 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="d-flex justify-content-between pe-3 mt-2 mb-2">
-                <div class="">
-                    <a href="{{ route('existencias.create') }}" class="btn text-white"
-                        style="background-color:#337AB7">Registrar Bajas</a>
-                </div>
-                <div class="text-end">
-                    <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
-                        data-bs-target="#modalAyudaListarBajas">
-                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"
-                            style="color: #337AB7"></i>
-                    </a>
-                </div>
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
+                <a href="{{ route('existencias.create') }}" class="btn-modern-primary">
+                    <i class="fa fa-plus-circle"></i> Registrar Bajas
+                </a>
+
+                <a href="#" role="button" title="Ayuda" data-bs-toggle="modal"
+                    data-bs-target="#modalAyudaListarBajas" class="help-icon-modern">
+                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
+                </a>
             </div>
 
             <div class="modal fade" id="modalAyudaListarBajas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -72,7 +69,7 @@
                                 <div class="col-12">
                                     <div class="rounded-top text-white text-center p-2"
                                         style="background-color: #337AB7; border: solid 1px #337AB7;">
-                                        <span class="modal-title fs-4"><strong>Ayuda de Listar Bajas</strong></span>
+                                        <span class="modal-title fs-5"><strong>Ayuda de Listar Bajas</strong></span>
                                     </div>
                                     {{-- =========================== --}}
                                     <div class="p-3">
@@ -106,16 +103,18 @@
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Bajas</h5>
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-arrow-circle-down"></i>
+                    <span>Listar Bajas</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_bajas"
+                    <div>
+                        <table class="table table-modern w-100 mb-0" id="tbl_bajas"
                             aria-describedby="bajas">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     <th>Código Bajas</th>
                                     <th>Empleado Responsable Baja</th>
                                     <th>Fecha Baja</th>
@@ -133,8 +132,8 @@
                                         <td>{{ $baja->estado }}</td>
                                         <td>
                                             <a href="#" role="button"
-                                                class="btn rounded-circle btn-circle text-white btn-detalle-baja"
-                                                title="Ver Detalles" style="background-color: #286090"
+                                                class="btn btn-info rounded-circle btn-circle text-white btn-detalle-baja"
+                                                title="Ver Detalles"
                                                 data-id="{{ $baja->id_baja }}">
                                                 <i class="fa fa-eye"></i>
                                             </a>
@@ -157,8 +156,8 @@
                             Reporte Bajas
                         </button>
                     </div> -->
-                </div> {{-- FIN div_campos_usuarios --}}
-            </div> {{-- FIN div_crear_usuario --}}
+                </div> {{-- FIN div_campos_bajas --}}
+            </div> {{-- FIN div_crear_baja --}}
         </div>
     </div> {{-- FIN contenedor principal --}}
 
@@ -236,9 +235,9 @@
                         </button>
                     </div>
                 </div>
-            </div> {{-- FIN modal-content --}}
-        </div> {{-- FIN modal-dialog --}}
-    </div> {{-- FIN modal --}}
+            </div> {{-- FIN modal-content --}}
+        </div> {{-- FIN modal-dialog --}}
+    </div> {{-- FIN modal --}}
     {{-- FINAL Modal REPORTE VENTAS --}} -->
 
     {{-- =============================================================== --}}
@@ -269,22 +268,22 @@
             // INICIO DataTable Bajas
             $("#tbl_bajas").DataTable({
                 dom: 'Blfrtip',
-                "infoEmpty": "No hay registros",
+                infoEmpty: "No hay registros",
                 stripe: true,
                 bSort: false,
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');
                         }
                     }
                 ],
-                "pageLength": 25,
-                "scrollX": true,
+                pageLength: 25,
+                scrollX: true
             });
             // CIERRE DataTable Bajas
 

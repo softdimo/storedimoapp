@@ -29,19 +29,15 @@
         </div>
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
-                <div class="">
-                    <a href="{{ route('usuarios.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
-                        Usuario</a>
-                </div>
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
+                <a href="{{ route('usuarios.create') }}" class="btn-modern-primary">
+                    <i class="fa fa-plus-circle"></i> Crear Usuario
+                </a>
 
-                <div class="text-end">
-                    <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
-                        data-bs-target="#modalAyudaListarUsuarios">
-                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"
-                            style="color: #337AB7"></i>
-                    </a>
-                </div>
+                <a href="#" role="button" title="Ayuda" data-bs-toggle="modal"
+                    data-bs-target="#modalAyudaListarUsuarios" class="help-icon-modern">
+                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
+                </a>
             </div>
 
             <div class="modal fade" id="modalAyudaListarUsuarios" tabindex="-1" role="dialog"
@@ -106,24 +102,18 @@
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Usuarios
-                </h5>
-
-                {{-- <div class="row pe-3 mt-3">
-                    <div class="col-12 d-flex justify-content-end">
-                        <a href="{{ route('usuarios.create') }}" class="btn text-white"
-                            style="background-color:#337AB7">Crear Usuario</a>
-                    </div>
-                </div> --}}
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-users"></i>
+                    <span>Listar Usuarios</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="{{-- table-responsive --}}">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_usuarios"
+                    <div>
+                        <table class="table table-modern w-100 mb-0" id="tbl_usuarios"
                             aria-describedby="users-usuarios">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     <th>Nombres</th>
                                     <th>Apellidos</th>
                                     <th>Usuario</th>
@@ -146,6 +136,15 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($usuarioIndex as $usuario)
+                                    @php
+                                        $rolColores = [
+                                            'Administrador' => 'rol-badge-blue',
+                                            'Super Admin'   => 'rol-badge-dark',
+                                            'Vendedor'      => 'rol-badge-green',
+                                            'Consulta'      => 'rol-badge-gray',
+                                        ];
+                                        $rolClase = $rolColores[$usuario->rol] ?? 'rol-badge-gray';
+                                    @endphp
                                     <tr class="text-center align-middle">
                                         <td>{{ $usuario->nombre_usuario }}</td>
                                         <td>{{ $usuario->apellido_usuario }}</td>
@@ -153,7 +152,7 @@
                                         <td>{{ $usuario->tipo_documento }}</td>
                                         <td>{{ $usuario->identificacion }}</td>
                                         <td>{{ $usuario->email }}</td>
-                                        <td>{{ $usuario->rol }}</td>
+                                        <td><span class="rol-badge {{ $rolClase }}">{{ $usuario->rol }}</span></td>
                                         <td>{{ $usuario->nombre_empresa }}</td>
                                         <td>{{ $usuario->tipo_persona }}</td>
                                         <td>{{ $usuario->numero_telefono }}</td>
@@ -207,17 +206,17 @@
             </div>
         </div>
     </div>
-    {{-- FINAL Modal CAMBIAR CONTRASEÑA --}}
+    {{-- FINAL Modal CAMBIAR CONTRASEÑA --}}
 
     {{-- INICIO Modal EDITAR USUARIO --}}
     <div class="modal fade" id="modalEditarUsuario" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog" style="min-width: 60%">
             <div class="modal-content p-3" id="modalEditarUsuarioContent">
                 {{-- El contenido AJAX se cargará aquí --}}
-            </div> {{-- modal-content --}}
-        </div> {{-- modal-dialog --}}
+            </div> {{-- modal-content --}}
+        </div> {{-- modal-dialog --}}
     </div>
-    {{-- FINAL Modal EDITAR USUARIO --}}
+    {{-- FINAL Modal EDITAR USUARIO --}}
 @stop
 
 @section('scripts')
@@ -237,8 +236,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');

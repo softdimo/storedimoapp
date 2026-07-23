@@ -37,22 +37,24 @@
         </div>
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="d-flex justify-content-between pe-3 mt-2 mb-2">
-                <div class="">
-                    <a href="{{ route('entradas.create') }}" class="btn text-white"
-                        style="background-color:#337AB7">Registrar Compras</a>
-                </div>
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
+                <a href="{{ route('entradas.create') }}" class="btn-modern-primary">
+                    <i class="fa fa-plus-circle"></i> Registrar Compras
+                </a>
             </div>
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Compras</h5>
+
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span>Listar Compras</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_entradas"
+                    <div>
+                        <table class="table table-modern w-100 mb-0" id="tbl_entradas"
                             aria-describedby="entradas">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     {{-- <th>Empresa</th> --}}
                                     <th>IdCompra</th>
                                     <th>Valor Total</th>
@@ -87,7 +89,7 @@
                                         @endif
 
                                         <td>{{ $entrada->nombres_usuario }}</td>
-                                        
+
                                         <td>
                                             @if ($entrada->id_estado == 1)
                                                 <span class="badge text-bg-success">Exitosa</span>
@@ -98,34 +100,45 @@
 
                                         @if ($entrada->id_estado == 1)
                                             <td>
-                                                <button title="Ver Detalles"
-                                                    class="btn rounded-circle btn-circle text-white btn-detalle-entrada"
-                                                    style="background-color: #286090" data-id="{{ $entrada->id_compra }}">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </button>
-
-                                                {{-- Lógica para el botón Anular --}}
-                                                @php
-                                                    $fechaCompra = Carbon\Carbon::parse($entrada->fecha_compra);
-                                                    $minutos = $fechaCompra->diffInMinutes(now());
-                                                    $esEditable = $minutos > 60;
-                                                @endphp
-
-                                                @if($esEditable && in_array(42, $permisos))
-                                                    <button title="Anular"
-                                                        class="btn rounded-circle btn-circle text-white btn-danger btn-anular-entrada"
+                                                <div class="d-flex justify-content-center align-items-center gap-1">
+                                                    <button title="Ver Detalles"
+                                                        class="btn btn-info rounded-circle btn-circle text-white btn-detalle-entrada"
                                                         data-id="{{ $entrada->id_compra }}">
-                                                        <i class="fa fa-remove"></i>
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
                                                     </button>
-                                                @endif
+
+                                                    {{-- Lógica para el botón Anular --}}
+                                                    @php
+                                                        $fechaCompra = Carbon\Carbon::parse($entrada->fecha_compra);
+                                                        $minutos = $fechaCompra->diffInMinutes(now());
+                                                        $esEditable = $minutos > 60;
+                                                    @endphp
+
+                                                    @if($esEditable && in_array(42, $permisos))
+                                                        <button title="Anular"
+                                                            class="btn rounded-circle btn-circle text-white btn-danger btn-anular-entrada"
+                                                            data-id="{{ $entrada->id_compra }}">
+                                                            <i class="fa fa-remove"></i>
+                                                        </button>
+                                                    @else
+                                                        <span class="btn-circle invisible" aria-hidden="true">
+                                                            <i class="fa fa-remove"></i>
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </td>
                                         @else
                                             <td>
-                                                <button title="Ver Detalles"
-                                                    class="btn rounded-circle btn-circle text-white btn-detalle-entrada"
-                                                    style="background-color: #286090" data-id="{{ $entrada->id_compra }}">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </button>
+                                                <div class="d-flex justify-content-center align-items-center gap-1">
+                                                    <button title="Ver Detalles"
+                                                        class="btn btn-info rounded-circle btn-circle text-white btn-detalle-entrada"
+                                                        data-id="{{ $entrada->id_compra }}">
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>
+                                                    <span class="btn-circle invisible" aria-hidden="true">
+                                                        <i class="fa fa-remove"></i>
+                                                    </span>
+                                                </div>
                                             </td>
                                         @endif
 
@@ -169,7 +182,7 @@
             // INICIO DataTable
             $("#tbl_entradas").DataTable({
                 dom: 'Blfrtip',
-                "infoEmpty": "No hay registros",
+                infoEmpty: "No hay registros",
                 stripe: true,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
@@ -178,17 +191,17 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');
                         }
                     }
                 ],
-                "pageLength": 10,
-                "scrollX": true,
-                "ordering": false
+                pageLength: 10,
+                scrollX: true,
+                ordering: false
             }); // CIERRE DataTable
 
             // =========================================================================

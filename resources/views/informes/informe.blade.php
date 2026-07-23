@@ -7,24 +7,23 @@
 @section('content')
 
 <div class="d-flex p-0">
-    <div class="p-0" style="width: 20%">
+    <div class="p-0 sidebar-container">
         @include('layouts.sidebarmenu')
     </div>
 
-    <div class="p-3 d-flex flex-column" style="width: 80%">
+    <div class="p-3 d-flex flex-column content-container">
 
-        <div class="row page-titles">
-            <div class="col-md-5 col-8 align-self-center">
-                <h3 class="text-themecolor m-b-0 m-t-0">{{ $informe ? $informe->informe_descripcion : 'Informe' }}</h3>
-            </div>
+        <div class="page-title-modern">
+            <i class="fa fa-bar-chart"></i>
+            <span>{{ $informe ? $informe->informe_descripcion : 'Informe' }}</span>
         </div>
 
         <div class="row">
-           
+
             <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <form action="#" class="floating-labels m-t-20" method="POST" id="informe" >
+                <div class="card-modern">
+                    <div class="p-4">
+                        <form action="#" class="floating-labels m-t-20 form-modern" method="POST" id="informe" >
                             @csrf
                             <div class="row m-l-20 m-r-20">
                                 {{-- @foreach($campos['inputs'] as $campo) --}}
@@ -33,7 +32,7 @@
                                 @endforeach
                             </div>
                             <hr>
-                            <div class="row m-l-20 m-r-20">
+                            <div class="row m-l-20 m-r-20 form-checks-modern">
                                 {{-- @foreach($campos['checks'] as $campo) --}}
                                 @foreach($campos->checks as $campo)
                                     {!! $campo !!}
@@ -46,11 +45,15 @@
                                 <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
                             </div>
                             <br>
-                            <div class="card-footer">
+                            <div class="card-footer-modern">
                                 <!-- <input type="hidden" name="empresa_id" id="empresa_id"> -->
-                                <button type="submit" name="buscar" class="btn btn-submit btn-success" type="button" id="buscar">Buscar</button>
-                                <button name="reset" class="btn btn-submit btn-danger" type="reset" id="reset" onclick="limpiar();">Limpiar</button>
-                                <p class="float-right mt-2">
+                                <button type="submit" name="buscar" class="btn-modern-success" type="button" id="buscar">
+                                    <i class="fa fa-search"></i> Buscar
+                                </button>
+                                <button name="reset" class="btn-modern-danger" type="reset" id="reset" onclick="limpiar();">
+                                    <i class="fa fa-eraser"></i> Limpiar
+                                </button>
+                                <p class="form-footer-note mt-2">
                                     Seleccione todos los campos que requiere su informe,
                                     mientras más campos ignore o seleccione como "Todos" tardará más tiempo en obtener los resultados.
                                 </p>
@@ -59,9 +62,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 mt-2">
-                <div class="card ocultar" id="card">
-                    <div class="card-body">
+            <div class="col-12 mt-3">
+                <div class="card-modern ocultar" id="card">
+                    <div class="p-4">
                         <div id="resultado" class="table-responsive">
 
                         </div>

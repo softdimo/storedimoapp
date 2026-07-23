@@ -19,15 +19,14 @@
         </div>
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="d-flex justify-content-between pe-3 mt-2 mb-2">
-                <div class="">
-                    <a href="{{ route('productos.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
-                        Producto</a>
-                </div>
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
+                <a href="{{ route('productos.create') }}" class="btn-modern-primary">
+                    <i class="fa fa-plus-circle"></i> Crear Producto
+                </a>
 
-                <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
-                    data-bs-target="#modalAyudaModificacionProductos">
-                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda" style="color: #337AB7"></i>
+                <a href="#" role="button" title="Ayuda" data-bs-toggle="modal"
+                    data-bs-target="#modalAyudaModificacionProductos" class="help-icon-modern">
+                    <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
                 </a>
             </div>
 
@@ -40,7 +39,7 @@
                                 <div class="col-12">
                                     <div class="rounded-top text-white text-center p-2"
                                         style="background-color: #337AB7; border: solid 1px #337AB7;">
-                                        <span class="modal-title fs-4"><strong>Ayuda de Listar Productos</strong></span>
+                                        <span class="modal-title fs-5"><strong>Ayuda de Listar Productos</strong></span>
                                     </div>
                                     {{-- =========================== --}}
                                     <div class="p-3">
@@ -95,16 +94,18 @@
                 </div> {{-- FIN modal-dialog --}}
             </div> {{-- FIN modalAyudaModificacionProductos --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Productos</h5>
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-cubes"></i>
+                    <span>Listar Productos</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_productos"
+                    <div>
+                        <table class="table table-modern w-100 mb-0" id="tbl_productos"
                             aria-describedby="productos">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     {{-- <th>Código</th> --}}
                                     <th class="align-middle">Referencia</th>
                                     <th class="align-middle">Imagen</th>
@@ -228,8 +229,8 @@
                                 Reporte Productos
                             </a>
                         </div> -->
-                </div> {{-- FIN div_ --}}
-            </div> {{-- FIN div_ --}}
+                </div> {{-- FIN div_campos_productos --}}
+            </div> {{-- FIN div_crear_producto --}}
         </div>
     </div>
 
@@ -260,10 +261,10 @@
         <div class="modal-dialog">
             <div class="modal-content p-3" id="modalCambiarEstadoProductoContent">
                 {{-- El contenido AJAX se cargará aquí --}}
-            </div> {{-- FIN modal-content --}}
-        </div> {{-- FIN modal-dialog --}}
-    </div> {{-- FIN modal --}}
-    {{-- FINAL Modal ESTADO PRODUCTO --}}
+            </div> {{-- FIN modal-content --}}
+        </div> {{-- FIN modal-dialog --}}
+    </div> {{-- FIN modal --}}
+    {{-- FINAL Modal ESTADO PRODUCTO --}}
 @stop
 
 @section('scripts')
@@ -277,7 +278,7 @@
             $("#tbl_productos").DataTable({
                 ordering: false,
                 dom: 'Blfrtip',
-                "infoEmpty": "No hay registros",
+                infoEmpty: "No hay registros",
                 stripe: true,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
@@ -285,15 +286,15 @@
                 bSort: true,
                 buttons: [{
                     extend: 'excelHtml5',
-                    text: 'Excel',
-                    className: 'btn btn-sm btn-success mr-3',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    className: 'btn btn-modern-excel mr-3',
                     customize: function(xlsx) {
                         var sheet = xlsx.xl.worksheets['sheet1.xml'];
                         $('row:first c', sheet).attr('s', '42');
                     }
                 }],
-                "pageLength": 10,
-                "scrollX": true,
+                pageLength: 10,
+                scrollX: true
             });
             // @endif
             // CIERRE DataTable Lista Productos

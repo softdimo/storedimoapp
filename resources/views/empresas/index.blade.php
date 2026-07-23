@@ -19,20 +19,20 @@
         </div>
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
                 <div>
                     @if($rolId == 3)
-                        <a href="{{ route('empresas.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
-                            Empresa</a>
+                        <a href="{{ route('empresas.create') }}" class="btn-modern-primary">
+                            <i class="fa fa-plus-circle"></i> Crear Empresa
+                        </a>
                     @else
                         <p>&nbsp;</p>
                     @endif
                 </div>
                 <div class="text-end">
-                    <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
+                    <a href="#" role="button" title="Ayuda" class="help-icon-modern" data-bs-toggle="modal"
                         data-bs-target="#modalAyudaListarEmpresas">
-                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"
-                            style="color: #337AB7"></i>
+                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
                     </a>
                 </div>
             </div>
@@ -92,17 +92,18 @@
             {{-- ======================================================================= --}}
             {{-- ======================================================================= --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Empresas
-                </h5>
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-building"></i>
+                    <span>Listar Empresas</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
                     <div class="{{-- table-responsive --}}">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_empresas"
+                        <table class="table table-modern w-100 mb-0" id="tbl_empresas"
                             aria-describedby="empresas">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     <th>Nit Empresa</th>
                                     <th>Documento Persona Natural</th>
                                     <th>Nombre</th>
@@ -153,7 +154,13 @@
                                             </td>
                                         @endif
 
-                                        <td>{{ $empresa->estado ? $empresa->estado : '' }}</td>
+                                        <td>
+                                            @if(strtolower($empresa->estado ?? '') == 'activo')
+                                                <span class="badge text-bg-success">{{ $empresa->estado }}</span>
+                                            @elseif($empresa->estado)
+                                                <span class="badge text-bg-danger">{{ $empresa->estado }}</span>
+                                            @endif
+                                        </td>
 
                                         @if($rolId == 3)
                                             <td>
@@ -196,8 +203,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');

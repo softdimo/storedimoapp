@@ -31,16 +31,18 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
-                    Productos en Stock Mínimo</h5>
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <span>Productos en Stock Mínimo</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_stock_minimo"
+                    <div>
+                        <table class="table table-modern w-100 mb-0" id="tbl_stock_minimo"
                             aria-describedby="stock_minimo">
                             <thead>
-                                <tr class="header-table text-center">
+                                <tr class="text-center align-middle">
                                     <th>Referencia</th>
                                     <th>Nombre Producto</th>
                                     <th>Categoría</th>
@@ -52,7 +54,7 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($stockMinimoIndex as $stockMinimo)
-                                    <tr class="text-center">
+                                    <tr class="text-center align-middle">
                                         <td>{{ $stockMinimo->referencia }}</td>
                                         <td>{{ $stockMinimo->nombre_producto }}</td>
                                         <td>{{ $stockMinimo->categoria }}</td>
@@ -64,17 +66,17 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
 
-                <div id="loader-pdf" style="display:none;" class="text-center mt-3">
-                    <i class="fa fa-spinner fa-spin text-danger fw-bold"></i>
-                    <span class="text-danger fw-bold"> Generando PDF, por favor espera...</span>
-                </div>
+                    <div id="loader-pdf" style="display:none;" class="text-center mt-3">
+                        <i class="fa fa-spinner fa-spin text-danger fw-bold"></i>
+                        <span class="text-danger fw-bold"> Generando PDF, por favor espera...</span>
+                    </div>
 
-                <div class="d-flex justify-content-center mt-3 mb-3">
-                    <button class="btn btn-success generar-pdf" style="background-color: #337AB7" {{ count($stockMinimoIndex) == 0 ? 'disabled' : '' }}>
-                        <i class="fa fa-file-pdf-o"></i> Reporte stock Mínimo
-                    </button>
+                    <div class="d-flex justify-content-center mt-3 mb-1">
+                        <button class="btn-modern-primary generar-pdf" {{ count($stockMinimoIndex) == 0 ? 'disabled' : '' }}>
+                            <i class="fa fa-file-pdf-o"></i> Reporte stock Mínimo
+                        </button>
+                    </div>
                 </div>
             </div> {{-- FIN div_crear_usuario --}}
         </div>
@@ -90,7 +92,7 @@
             // INICIO DataTable stock Mínimo
             $("#tbl_stock_minimo").DataTable({
                 dom: 'Blfrtip',
-                "infoEmpty": "No hay registros",
+                infoEmpty: "No hay registros",
                 stripe: true,
                 bSort: true,
                 buttons: [
@@ -112,16 +114,16 @@
                     // },
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');
                         }
                     }
                 ],
-                "pageLength": 10,
-                "scrollX": true,
+                pageLength: 10,
+                scrollX: true
             });
             // CIERRE DataTable stock Mínimo
 

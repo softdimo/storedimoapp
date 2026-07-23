@@ -31,17 +31,17 @@
         {{-- ======================================================================= --}}
 
         <div class="p-3 d-flex flex-column content-container">
-            <div class="d-flex justify-content-between pe-3 mt-3 mb-2">
+            <div class="d-flex justify-content-between align-items-center pe-3 mt-3 mb-3">
                 <div class="">
-                    <a href="{{ route('proveedores.create') }}" class="btn text-white" style="background-color:#337AB7">Crear
-                        Proveedor</a>
+                    <a href="{{ route('proveedores.create') }}" class="btn-modern-primary">
+                        <i class="fa fa-plus-circle"></i> Crear Proveedor
+                    </a>
                 </div>
 
                 <div class="text-end">
-                    <a href="#" role="button" title="Ayuda" class="text-blue" data-bs-toggle="modal"
+                    <a href="#" role="button" title="Ayuda" class="help-icon-modern" data-bs-toggle="modal"
                         data-bs-target="#modalAyudaListarProveedores">
-                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"
-                            style="color: #337AB7"></i>
+                        <i class="fa fa-question-circle fa-2x" aria-hidden="false" title="Ayuda"></i>
                     </a>
                 </div>
             </div>
@@ -101,16 +101,18 @@
             {{-- =============================================================== --}}
             {{-- =============================================================== --}}
 
-            <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
-                <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">Listar
-                    Proveedores</h5>
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <i class="fa fa-truck"></i>
+                    <span>Listar Proveedores</span>
+                </div>
 
                 <div class="col-12 p-3" id="">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered w-100 mb-0" id="tbl_proveedores"
+                    <div class="{{-- table-responsive --}}">
+                        <table class="table table-modern w-100 mb-0" id="tbl_proveedores"
                             aria-describedby="proveedores">
                             <thead>
-                                <tr class="header-table text-center align-middle">
+                                <tr class="text-center align-middle">
                                     <th>Tipo Proveedor</th>
                                     <th>Empresa</th>
                                     <th>Nit empresa</th>
@@ -133,7 +135,13 @@
                                         <td>{{ $proveedor->apellidos_proveedor }}</td>
                                         <td>{{ $proveedor->identificacion }}</td>
                                         <td>{{ $proveedor->celular_proveedor }}</td>
-                                        <td>{{ $proveedor->estado }}</td>
+                                        <td>
+                                            @if(strtolower($proveedor->estado ?? '') == 'activo')
+                                                <span class="badge text-bg-success">{{ $proveedor->estado }}</span>
+                                            @elseif($proveedor->estado)
+                                                <span class="badge text-bg-danger">{{ $proveedor->estado }}</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             <button type="button"
                                                 class="btn btn-success rounded-circle btn-circle btn-editar-proveedor"
@@ -161,10 +169,10 @@
         <div class="modal-dialog" style="max-width: 55%;">
             <div class="modal-content p-3" id="modalEditarProveedorContent">
                 {{-- El contenido AJAX se cargará aquí --}}
-            </div> {{-- modal-content --}}
-        </div> {{-- modal-dialog --}}
+            </div> {{-- modal-content --}}
+        </div> {{-- modal-dialog --}}
     </div>
-    {{-- FINAL Modal EDITAR PROVEEDOR  --}}
+    {{-- FINAL Modal EDITAR PROVEEDOR  --}}
 @stop
 
 {{-- =============================================================== --}}
@@ -189,8 +197,8 @@
                 buttons: [
                     {
                         extend: 'excelHtml5',
-                        text: 'Excel',
-                        className: 'btn btn-sm btn-success mr-3',
+                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
                             $('row:first c', sheet).attr('s', '42');
