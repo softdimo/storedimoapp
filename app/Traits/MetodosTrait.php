@@ -305,7 +305,8 @@ trait MetodosTrait
      */
     public function shareEmpresasSuscripciones(?int $idEmpresaActual = null): void
     {
-        try {
+        try
+        {
             $this->initHttpClient();
             $id = $idEmpresaActual ?? 'null';
             
@@ -314,7 +315,6 @@ trait MetodosTrait
 
             // El pluck se hace aquí sobre la colección final que ya trae la unión hecha desde la API
             $empresasDisponibles = collect($data)->pluck('nombre_empresa', 'id_empresa');
-
             view()->share('empresas_suscripciones', $empresasDisponibles);
             
         } catch (Exception $e) {

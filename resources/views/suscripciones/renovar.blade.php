@@ -1,26 +1,21 @@
 @extends('layouts.app')
-@section('title', 'Crear Suscripción')
-
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-
+@section('title', 'Renovar Suscripción')
 @section('css')
 
-@stop
+<style>
+    .no-pointer {
+        pointer-events: none;
+        background-color: #e2e3e5 !important; /* opcional, estilo de readonly */
+    }
+</style>
 
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
+@stop
 
 @section('content')
     <div class="d-flex p-0">
         <div class="p-0 sidebar-container">
             @include('layouts.sidebarmenu')
         </div>
-
-        {{-- ======================================================================= --}}
-        {{-- ======================================================================= --}}
 
         <div class="p-3 content-container">
             <div class="d-flex justify-content-between pe-3 mt-3 mb-3">
@@ -31,40 +26,31 @@
                 </div>
             </div>
 
-            {{-- =============================================================== --}}
-            {{-- =============================================================== --}}
-
             <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px 5px 0 0;">
                 <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
-                    Crear Suscripción (Obligatorios * )
+                    Renovar Suscripción (Obligatorios * )
                 </h5>
 
                 {!! Form::open([
                     'method' => 'POST',
-                    'route' => ['suscripciones.store'],
+                    'route' => ['guardar_renovacion'],
                     'class' => 'mt-2',
                     'autocomplete' => 'off',
-                    'id' => 'formCrearSuscripcion',
+                    'id' => 'formRenovarSuscripcion',
                     ]) !!}
                     @csrf
 
-                    @include('suscripciones.fields_suscripciones')
-
-                    {{-- ========================================================= --}}
-                    {{-- ========================================================= --}}
+                    @include('suscripciones.fields_renovacion')
 
                     <!-- Contenedor para el GIF -->
                     <div id="loadingIndicatorStore" class="loadingIndicator">
                         <img src="{{ asset('imagenes/loading.gif') }}" alt="Procesando...">
                     </div>
 
-                    {{-- ========================================================= --}}
-                    {{-- ========================================================= --}}
-
                     <div class="mt-4 mb-3 d-flex justify-content-center">
                         <button type="submit" class="btn btn-success rounded-2 me-3">
                             <i class="fa fa-floppy-o"></i>
-                            Crear
+                            Renovar
                         </button>
                     </div>
                 {!! Form::close() !!}
@@ -73,14 +59,9 @@
     </div>
 @stop
 
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-{{-- =============================================================== --}}
-
 @section('scripts')
     <script>
-        $(document).ready(function()
-        {
+        $(document).ready(function() {
             $('.select2').select2({
                 allowClear: false,
                 width: '100%'
@@ -91,9 +72,6 @@
                 document.querySelector('.select2-search__field').focus();
             });
 
-            // ==============================================================
-            // ==============================================================
-
             $('#div_dias_trial').hide();
             $('#div_valor_mensual').hide();
             $('#div_valor_trimestral').hide();
@@ -102,13 +80,13 @@
             $('#div_descripcion_plan').hide();
             $('#div_id_tipo_pago').hide();
 
-            // ==============================================================
-            // ==============================================================
-
             const planesData = @json($planesData);
 
-            // ==============================================================
-            // ==============================================================
+
+            document.getElementById('fecha_final').addEventListener('keydown', e => e.preventDefault());
+            document.getElementById('fecha_final').addEventListener('click', e => e.preventDefault());
+            document.getElementById('fecha_inicial').addEventListener('keydown', e => e.preventDefault());
+            document.getElementById('fecha_inicial').addEventListener('click', e => e.preventDefault());
 
             // Función para obtener fecha LOCAL en formato YYYY-MM-DD
             function obtenerHoy() {
@@ -173,7 +151,7 @@
                     const hoy = obtenerHoy();
                     
                     // 2. Asignar a fecha inicial
-                    $('#formCrearSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
 
                     // 3. Calcular días (asegurate que plan.dias_trial sea un número)
                     let diasTrial = $('#dias_trial').val();
@@ -181,15 +159,13 @@
 
                     // 4. Calcular fecha final
                     const fechaFin = sumarDias(hoy, dias);
-                    console.log('fechaInicial:', hoy);
-                    console.log('fechaFin:', fechaFin);
                     
                     // 5. Asignar fecha final
-                    $('#formCrearSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
                     
                     // AGREGAR: Bloquear escritura para que no modifiquen los 15 días
-                    $('#formCrearSuscripcion').find('#fecha_inicial').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
-                    $('#formCrearSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_inicial').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_final').attr('readonly', true).addClass('bg-secondary-subtle').trigger('change');
 
                     // Asignar 10 a estado Trial
                     // $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
@@ -217,14 +193,14 @@
                     $('#id_tipo_pago').attr('required');
                     $('#valor_suscripcion').val('');
 
-                    $('#formCrearSuscripcion').find('#fecha_inicial').val('').trigger('change');
-                    $('#formCrearSuscripcion').find('#fecha_final').val('').trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_inicial').val('').trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_final').val('').trigger('change');
 
                     // AGREGAR: Permitir escritura nuevamente
-                    $('#formCrearSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
-                    $('#formCrearSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $('#formRenovarSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $('#formRenovarSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
 
-                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
+                    $('#formRenovarSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
 
                 } else {
 
@@ -249,16 +225,16 @@
                     $('#id_tipo_pago').removeAttr('required');
                     $('#id_tipo_pago').val('').trigger('change'); // Reiniciar selección
 
-                    $('#formCrearSuscripcion').find('#fecha_inicial').val('').trigger('change');
-                    $('#formCrearSuscripcion').find('#fecha_final').val('').trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_inicial').val('').trigger('change');
+                    $('#formRenovarSuscripcion').find('#fecha_final').val('').trigger('change');
 
                     $('#valor_suscripcion').val('');
 
                     // AGREGAR: Limpiar atributos por si acaso
-                    $('#formCrearSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
-                    $('#formCrearSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $('#formRenovarSuscripcion').find('#fecha_inicial').removeAttr('readonly').removeClass('bg-secondary-subtle');
+                    $('#formRenovarSuscripcion').find('#fecha_final').removeAttr('readonly').removeClass('bg-secondary-subtle');
 
-                    $('#formCrearSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
+                    $('#formRenovarSuscripcion').find('#id_estado_suscripcion').val('').trigger('change');
                 }
             });
 
@@ -268,7 +244,6 @@
             $('#id_tipo_pago').on('change select2:select', function (e) {
 
                 const idTipoPago = $(this).val();
-                console.log(idTipoPago);
                 
                 let valorMensual = $('#valor_mensual').val();
                 let valorTrimestral = $('#valor_trimestral').val();
@@ -309,10 +284,10 @@
                 }
 
                 // Asignar a fecha inicial y fechfinal
-                $('#formCrearSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
-                $('#formCrearSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
+                $('#formRenovarSuscripcion').find('#fecha_inicial').val(hoy).trigger('change');
+                $('#formRenovarSuscripcion').find('#fecha_final').val(fechaFin).trigger('change');
 
-                $('#formCrearSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
+                $('#formRenovarSuscripcion').find('#id_estado_suscripcion').val(1).trigger('change');
             });
 
             // ==============================================================

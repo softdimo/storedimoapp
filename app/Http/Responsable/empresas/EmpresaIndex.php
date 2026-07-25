@@ -11,8 +11,9 @@ use GuzzleHttp\Client;
 class EmpresaIndex implements Responsable
 {
     public $rolId;
+    public $usuarioId;
 
-     public function __construct($rolId, $usuarioId)
+    public function __construct($rolId, $usuarioId)
     {
         $this->rolId = $rolId;
         $this->usuarioId = $usuarioId;

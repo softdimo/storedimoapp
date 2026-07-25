@@ -22,9 +22,6 @@ class SuscripcionStore implements Responsable
 
     public function toResponse($request)
     {
-
-        // dd(request()->all());
-
         $idEmpresaSuscrita = request('id_empresa_suscrita', null);
         $idPlanSuscrito = request('id_plan_suscrito', null);
         $diasTrial = request('dias_trial', null);
@@ -36,17 +33,9 @@ class SuscripcionStore implements Responsable
         $fechaCancelacion = request('fecha_cancelacion', null);
         $renovacionAutomatica = request('renovacion_automatica', null);
         $observacionesSuscripcion = request('observaciones_suscripcion', null);
-
-        // ========================================================
-
-        // $consultarSuscripcionEmpresa = $this->consultarSuscripcionEmpresa($idEmpresaSuscrita);
-
-        // if (isset($consultarSuscripcionEmpresa) && !is_null($consultarSuscripcionEmpresa) && !empty($consultarSuscripcionEmpresa)) {
-        //     alert()->warning('Cuidado', 'Empresa existente');
-        //     return redirect()->route('empresas.create')->withInput();
-        // }
         
-        try {
+        try
+        {
             $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'administracion/suscripcion_store', [
                 'json' => [
                     'id_empresa_suscrita' => $idEmpresaSuscrita,

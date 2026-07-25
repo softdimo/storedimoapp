@@ -9,7 +9,10 @@ use App\Http\Responsable\suscripciones\SuscripcionIndex;
 use App\Http\Responsable\suscripciones\SuscripcionStore;
 use App\Http\Responsable\suscripciones\SuscripcionEdit;
 use App\Http\Responsable\suscripciones\SuscripcionUpdate;
+use App\Http\Responsable\suscripciones\RenovarSuscripcion;
 use App\Models\Suscripcion;
+use App\Models\Empresa;
+use App\Models\Usuario;
 use GuzzleHttp\Client;
 use App\Traits\MetodosTrait;
 
@@ -45,7 +48,10 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $vista = new SuscripcionIndex();
+                    $rolId = $sesion[2];
+                    $usuarioId = $sesion[0];
+
+                    $vista = new SuscripcionIndex($rolId, $usuarioId);
                     return $this->validarAccesos($sesion[0], 68, $vista);
                 }
             }
@@ -59,7 +65,8 @@ class SuscripcionesController extends Controller
     public function create()
     {
         try {
-            if (!$this->checkDatabaseConnection()) {
+            if (!$this->checkDatabaseConnection())
+            {
                 return view('db_conexion');
             } else {
                 $sesion = $this->validarVariablesSesion();
@@ -72,11 +79,22 @@ class SuscripcionesController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    // Llama al método del trait para cargar empresas disponibles
-                    $this->shareEmpresasSuscripciones(null);
+                    $rolId = $sesion[2];
 
-                    $vista = 'suscripciones.create';
-                    return $this->validarAccesos($sesion[0], 69, $vista);
+                    if($rolId == 3)
+                    {
+                        // Llama al método del trait para cargar empresas disponibles
+                        $this->shareEmpresasSuscripciones(null);
+    
+                        view()->share('rolId', $rolId);
+                        $vista = 'suscripciones.create';
+                        return $this->validarAccesos($sesion[0], 69, $vista);
+                    }
+                    else
+                    {
+                        return view('errors.403');
+                    }
+
                 }
             }
         } catch (Exception $e)
@@ -123,7 +141,8 @@ class SuscripcionesController extends Controller
 
     public function edit(Request $request, $idSuscripcion)
     {
-        try {
+        try
+        {
             if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
             } else {
@@ -190,5 +209,38 @@ class SuscripcionesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function renovarSuscripcion()
+    {
+        try
+        {
+            if (!$this->checkDatabaseConnection())
+            {
+                return view('db_conexion');
+            } else
+            {
+                $sesion = $this->validarVariablesSesion();
+
+                if (
+                    empty($sesion[0]) || is_null($sesion[0]) &&
+                    empty($sesion[1]) || is_null($sesion[1]) &&
+                    empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
+                {
+                    return redirect()->to(route('login'));
+                } else
+                {
+                    $empresa = Usuario::with('empresa')->find($sesion[0]);
+                    view()->share('empresa', $empresa);
+                    $vista = new RenovarSuscripcion();
+                    return $this->validarAccesos($sesion[0], 86, $vista);
+                }
+            }
+            
+        } catch (Exception $e)
+        {
+            alert()->error("Exception Update Usuario!");
+            return redirect()->to(route('login'));
+        }
     }
 }
