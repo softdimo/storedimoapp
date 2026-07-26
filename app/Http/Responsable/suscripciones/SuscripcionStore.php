@@ -52,9 +52,11 @@ class SuscripcionStore implements Responsable
                     'id_audit' => session('id_usuario')
                 ]
             ]);
+
             $resSuscripcionStore = json_decode($reqSuscripcionStore->getBody()->getContents());
 
-            if(isset($resSuscripcionStore->success) && $resSuscripcionStore->success) {
+            if(isset($resSuscripcionStore->success) && $resSuscripcionStore->success)
+            {
                 alert()->success('Proceso Exitoso', 'Suscripción creada satisfactoriamente');
                 return redirect()->to(route('suscripciones.index'));
             }

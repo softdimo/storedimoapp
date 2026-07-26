@@ -5,6 +5,8 @@ namespace App\Http\Responsable\suscripciones;
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
+use App\Models\Suscripcion;
+use App\Http\Responsable\suscripciones\RenovarSuscripcion;
 
 class SuscripcionUpdate implements Responsable
 {
@@ -40,7 +42,8 @@ class SuscripcionUpdate implements Responsable
         $peticionSuscripcionEmpresa = $this->clientApi->get($this->baseUri.'administracion/suscripcion_edit/'.$this->idSuscripcion);
         $suscripcionActual = json_decode($peticionSuscripcionEmpresa->getBody()->getContents());
 
-        try {
+        try
+        {
             $reqSuscripcionEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/suscripcion_update/'.$this->idSuscripcion, [
                 'json' => [
                     'id_plan_suscrito' => $idPlanSuscrito ?? $suscripcionActual->id_plan_suscrito,
@@ -63,9 +66,82 @@ class SuscripcionUpdate implements Responsable
                 return redirect()->to(route('suscripciones.index'));
             }
         } catch (Exception $e) {
-            dd($e);
             alert()->error('Error', 'Actualizando la Suscripción, contacte a Soporte.');
             return back();
         }
+    }
+
+    public function guardarRenovacion($request)
+    {
+        try {
+            // Extraer parámetros del request de forma compacta
+            $parametros = $request->only([
+                'empresa_actual',
+                'id_empresa',
+                'id_plan_suscrito',
+                'valor_mensual',
+                'valor_trimestral',
+                'valor_semestral',
+                'valor_anual',
+                'descripcion_plan',
+                'dias_trial',
+                'id_tipo_pago',
+                'valor_suscripcion',
+                'fecha_inicial',
+                'fecha_final'
+            ]);
+
+            $idEmpresa = $parametros['id_empresa'];
+            $idPlanSuscrito = $parametros['id_plan_suscrito'];
+
+            // Consultar suscripciones existentes
+            $suscripciones = $this->consultarSuscripciones($idEmpresa, $idPlanSuscrito);
+
+            // Si ya existe una suscripción, el trial no aplica
+            if ($suscripciones->isNotEmpty())
+            {
+                $parametros['dias_trial'] = 0;
+            }
+
+            // Validar si el usuario intenta adquirir nuevamente el plan Trial
+            if ($this->usuarioYaTuvoTrial($suscripciones))
+            {
+                alert()->info('Advertencia', 'Ya has adquirido el plan Trial, no lo puedes adquirir de nuevo');
+                return back();
+            }
+
+            $renovarSuscripcion = new RenovarSuscripcion();
+            return $renovarSuscripcion->guardarRenovacionSuscripcion($parametros);
+
+        } catch (Exception $e)
+        {
+            dd($e);
+            alert()->error('Error', 'Renovando la suscripción, contácte a Soporte.');
+            return back();
+        }
+    }
+
+    private function consultarSuscripciones($idEmpresa, $idPlanSuscrito)
+    {
+        try
+        {
+            return Suscripcion::where('id_empresa_suscrita', $idEmpresa)
+                ->where('id_plan_suscrito', $idPlanSuscrito)
+                ->orderByDesc('id_suscripcion')
+                ->get();
+
+        } catch (Exception $e)
+        {
+            alert()->error('Error', 'Consultando suscripción, contácte a Soporte.');
+            return back();
+        }
+    }
+
+    private function usuarioYaTuvoTrial($suscripciones)
+    {
+        return $suscripciones->contains(function ($suscripcion)
+        {
+            return $suscripcion->id_plan_suscrito == 1;
+        });
     }
 }

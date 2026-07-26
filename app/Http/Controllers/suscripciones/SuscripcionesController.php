@@ -239,8 +239,23 @@ class SuscripcionesController extends Controller
             
         } catch (Exception $e)
         {
-            alert()->error("Exception Update Usuario!");
+            alert()->error("Ha ocurrido un error cargando el formulario, contácte a soporte!");
             return redirect()->to(route('login'));
         }
+    }
+
+    public function guardarRenovacion(Request $request)
+    {
+        try
+        {
+            $suscripcionUpdate = new SuscripcionUpdate($request->id_plan_suscrito);
+            return $suscripcionUpdate->guardarRenovacion($request);
+            
+        } catch (\Throwable $e)
+        {
+            alert()->error("Ha ocurrido un error guardando la renovación, contácte a soporte!");
+            return back();
+        }
+
     }
 }

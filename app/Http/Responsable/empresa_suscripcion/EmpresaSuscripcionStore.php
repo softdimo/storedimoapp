@@ -47,7 +47,8 @@ class EmpresaSuscripcionStore implements Responsable
         if ($request->hasFile('logo_empresa')) {
             $logoEmpresa = $request->file('logo_empresa');
 
-            if ($logoEmpresa->isValid()) {
+            if ($logoEmpresa->isValid())
+            {
                 $tiposPermitidos = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp'];
                 $tipoMime = $logoEmpresa->getMimeType();
 
@@ -75,7 +76,8 @@ class EmpresaSuscripcionStore implements Responsable
 
         $consultarEmpresa = $this->consultarEmpresa($nitEmpresa, $nombreEmpresa);
         
-        try {
+        try
+        {
             if (isset($consultarEmpresa) && !is_null($consultarEmpresa) && !empty($consultarEmpresa)) {
                 alert()->warning('Cuidado', 'Empresa existente');
                 return redirect()->route('home.index')->withInput();
@@ -110,7 +112,8 @@ class EmpresaSuscripcionStore implements Responsable
             // ===================================================================
 
             // INICIO Store SUSCIPCIÓN EMPRESA
-            if (isset($resEmpresaStore->success) && $resEmpresaStore->success) {
+            if (isset($resEmpresaStore->success) && $resEmpresaStore->success)
+            {
                 $idEmpresaRecienCreada = $resEmpresaStore->empresa->id_empresa;
                 $idEmpresaSuscrita = $idEmpresaRecienCreada;
                 $idPlanSuscrito = request('id_plan_suscrito', null);

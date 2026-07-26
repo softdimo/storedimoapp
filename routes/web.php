@@ -257,7 +257,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         Route::group(['namespace' => 'App\Http\Controllers\suscripciones'], function () {
             Route::resource('suscripciones', 'SuscripcionesController');
             Route::get('renovar', 'SuscripcionesController@renovarSuscripcion')->name('renovar');
-            Route::post('guardar_renovacion', 'SuscripcionesController@guardarRenovacon')->name('guardar_renovacion');
+            Route::post('guardar_renovacion', 'SuscripcionesController@guardarRenovacion')->name('guardar_renovacion');
         });
         
         // ========================================================================
