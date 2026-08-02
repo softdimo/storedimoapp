@@ -23,9 +23,6 @@ class EmpresaSuscripcionStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
-    // ===================================================================
-    // ===================================================================
-
     public function toResponse($request)
     {
         $idTipoDocumento = request('id_tipo_documento', null);

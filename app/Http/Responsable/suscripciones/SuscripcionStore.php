@@ -22,6 +22,7 @@ class SuscripcionStore implements Responsable
 
     public function toResponse($request)
     {
+        dd($request);
         $idEmpresaSuscrita = request('id_empresa_suscrita', null);
         $idPlanSuscrito = request('id_plan_suscrito', null);
         $diasTrial = request('dias_trial', null);
@@ -42,7 +43,7 @@ class SuscripcionStore implements Responsable
                     'id_plan_suscrito' => $idPlanSuscrito,
                     'dias_trial' => $diasTrial,
                     'id_tipo_pago' => $idTipoPago,
-                    'valor_suscripcion' => $valorSuscripcion,
+                    'valor_suscripcion' => doubleval(str_replace(".", "", $valorSuscripcion)),
                     'fecha_inicial' => $fechaInicial,
                     'fecha_final' => $fechaFinal,
                     'id_estado_suscripcion' => $idEstadoSuscripcion,

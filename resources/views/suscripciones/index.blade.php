@@ -75,7 +75,7 @@
                                         <td>{{ $suscripcion->nombre_plan }}</td>
                                         <td>{{ $suscripcion->dias_trial }}</td>
                                         <td>{{ $suscripcion->modalidad_suscripcion }}</td>
-                                        <td>{{ $suscripcion->valor_suscripcion }}</td>
+                                        <td>$ {{ $suscripcion->valor_suscripcion }}</td>
                                         <td>{{ $suscripcion->fecha_inicial }}</td>
                                         <td>{{ $suscripcion->fecha_final }}</td>
                                         <td>{{ $suscripcion->estado }}</td>

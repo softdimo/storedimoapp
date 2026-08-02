@@ -3,7 +3,7 @@
         <div class="form-group d-flex flex-column">
             <label for="id_empresa_suscrita" class="form-label">Empresa <span class="text-danger">*</span></label>
 
-            {!! Form::select('id_empresa_suscrita', collect(['' => 'Seleccionar...'])->union($empresas_suscripciones), old('id_empresa_suscrita', $suscripcionEdit->id_empresa_suscrita ?? null),
+            {!! Form::select('id_empresa_suscrita', collect(['' => 'Seleccionar...'])->union($empresas_suscripciones), old('id_empresa_suscrita', $suscripcionEdit->id_empresa_suscrita ?? $empresas_suscripciones),
                 array_merge(
                     [
                         'class' => 'form-select select2',

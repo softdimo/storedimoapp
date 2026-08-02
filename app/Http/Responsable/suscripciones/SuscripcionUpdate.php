@@ -49,7 +49,7 @@ class SuscripcionUpdate implements Responsable
                     'id_plan_suscrito' => $idPlanSuscrito ?? $suscripcionActual->id_plan_suscrito,
                     'dias_trial' => $diasTrial ?? $suscripcionActual->dias_trial,
                     'id_tipo_pago_suscripcion' => $idTipoPago ?? $suscripcionActual->id_tipo_pago_suscripcion,
-                    'valor_suscripcion' => $valorSuscripcion ?? $suscripcionActual->valor_suscripcion,
+                    'valor_suscripcion' => doubleval(str_replace(".", "", $valorSuscripcion)) ?? $suscripcionActual->valor_suscripcion,
                     'fecha_inicial' => $fechaInicial ?? $suscripcionActual->fecha_inicial,
                     'fecha_final' => $fechaFinal ?? $suscripcionActual->fecha_final,
                     'id_estado_suscripcion' => $idEstadoSuscripcion ?? $suscripcionActual->id_estado_suscripcion,
@@ -115,7 +115,6 @@ class SuscripcionUpdate implements Responsable
 
         } catch (Exception $e)
         {
-            dd($e);
             alert()->error('Error', 'Renovando la suscripción, contácte a Soporte.');
             return back();
         }

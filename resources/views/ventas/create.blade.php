@@ -770,9 +770,9 @@
                 let idProductoVenta = $('#producto_venta').val();
                 let productoVenta = $('#producto_venta option:selected').text();
 
-                 let precioUnitario = $('#p_unitario_venta').text().replace(".", "").replace(".", "").replace(".", "");
-                 let precioDetal = $('#p_detal_venta').text().replace(".", "").replace(".", "").replace(".", "");
-                 let precioPorMayor = $('#p_x_mayor_venta').text().replace(".", "").replace(".", "").replace(".", "");
+                let precioUnitario = $('#p_unitario_venta').text().replace(".", "").replace(".", "").replace(".", "");
+                let precioDetal = $('#p_detal_venta').text().replace(".", "").replace(".", "").replace(".", "");
+                let precioPorMayor = $('#p_x_mayor_venta').text().replace(".", "").replace(".", "").replace(".", "");
 
                 let pUnitarioVenta = parseFloat(precioUnitario);
                 let pDetalVenta = parseFloat(precioDetal);

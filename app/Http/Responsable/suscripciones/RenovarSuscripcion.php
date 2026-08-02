@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Crypt;
 use App\Traits\MetodosTrait;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Empresa;
 
 class RenovarSuscripcion implements Responsable
 {
+    use MetodosTrait;
+
+    protected $baseUri;
+    protected $clientApi;
+
+    public function __construct()
+    {
+        $this->baseUri = env('BASE_URI');
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
     public function toResponse($request)
     {
         try
@@ -58,7 +70,7 @@ class RenovarSuscripcion implements Responsable
                 if (isset($resSuscripcionStore->success) && $resSuscripcionStore->success)
                 {
                     // Capturamos los datos que retornó la API para usarlos en los correos o en Wompi
-                    $empresaData = $parametros['empresa_actual'];
+                    $empresaData = $this->datosEmpresa($parametros['id_empresa']);
                     $suscripcionData = $resSuscripcionStore->suscripcion;
 
                     if ($idPlanSuscrito == 1)
@@ -129,19 +141,31 @@ class RenovarSuscripcion implements Responsable
                         'valor' => $valorEnCentavos,
                         'referencia' => $referencia,
                         'firma' => $firmaHash,
-                        'email' => $emailEmpresa,
-                        'nombre' => $nombreEmpresa,
-                        'celular'    => $celularEmpresa,
+                        'email' => $empresaData->emailEmpresa,
+                        'nombre' => $empresaData->nombreEmpresa,
+                        'celular' => $empresaData->celularEmpresa,
                         'publicKey' => config('services.wompi.public_key')
                     ]);
                 }
 
             } catch (Exception $e)
             {
-                dd($e);
                 alert()->error('Error', 'Renovando la Suscripción, contácte a Soporte.');
                 return back();
             }
+        }
+    }
+
+    private function datosEmpresa($Idempresa)
+    {
+        try
+        {
+            return Empresa::find($Idempresa);
+
+        } catch(Exception $e)
+        {
+            alert()->error('Error', 'consultando los datos de la empresa, contácte a Soporte.');
+            return back();
         }
     }
 }
