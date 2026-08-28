@@ -1,7 +1,7 @@
 
 {!! Form::open([
     'method' => 'POST',
-    'route' => ['cambiar_clave'],
+    'route' => ['cambiar_clave_usuario'],
     'class' => 'mt-2',
     'autocomplete' => 'off',
     'id' => 'formCambiarClave_' . $usuario->id_usuario,
@@ -33,10 +33,9 @@
 
                 <div class="col-12 col-md-6">
                     <div class="form-group d-flex flex-column">
-                        <label for="confirmar_clave" class=""
-                            style="font-size: 15px">Confirmar
-                            Contraseña<span
-                                class="text-danger">*</span></label>
+                        <label for="confirmar_clave" class="" style="font-size: 15px">Confirmar Contraseña
+                            <span class="text-danger">*</span>
+                        </label>
                         {{ Form::text('confirmar_clave', null, ['class' => 'form-control', 'id' => 'confirmar_clave_' . $usuario->id_usuario, 'placeholder' => 'Confirmar Contraseña', 'required' => 'required']) }}
                     </div>
                 </div>

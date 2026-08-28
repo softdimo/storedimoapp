@@ -26,29 +26,53 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+        // \Illuminate\Support\Facades\View::composer('*', function ($view) {
+        View::composer('*', function ($view) {
+            $jwtToken = session('api_jwt_token');
+            $idUsuario = session('id_usuario');
+            $logoEmpresa = asset('imagenes/logo_storedimo.png');
+
+            // if (!$idUsuario) {
+            //     $view->with('logoEmpresa', $logoEmpresa);
+            //     return;
+            // }
+
+            if (!$idUsuario) {
+                $view->with([
+                    'logoEmpresa' => $logoEmpresa,
+                    'usuarioLogueado' => null,
+                    'nombreEmpresa' => null
+                ]);
+                return;
+            }
+
             try {
                 $baseUri = env('BASE_URI');
                 $clientApi = new Client(['base_uri' => $baseUri]);
-                $idUsuario = session('id_usuario');
 
-                $logoEmpresa = asset('imagenes/logo_storedimo.png');
-
-                if (!$idUsuario) {
-                    $view->with('logoEmpresa', $logoEmpresa);
-                    return;
-                }
-
-                $response = $clientApi->get($baseUri . 'administracion/consulta_usuario_logueado/' . $idUsuario);
+                // $response = $clientApi->get($baseUri . 'administracion/consulta_usuario_logueado/' . $idUsuario, [
+                $response = $clientApi->get('administracion/consulta_usuario_logueado/' . $idUsuario, [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $jwtToken, // <--- Header JWT
+                        'Accept'        => 'application/json',
+                    ],
+                    'timeout' => 3 // <--- Evita que la carga de vistas se bloquee
+                ]);
                 $usuario = json_decode($response->getBody()->getContents());
 
                 $view->with([
-                    'usuarioLogueado' => $usuario,
-                    'logoEmpresa' => $usuario->logo_empresa ?? $logoEmpresa,
-                    'nombreEmpresa' => $usuario->nombre_empresa ?? null,
+                    'usuarioLogueado'   => $usuario,
+                    'logoEmpresa'       => $usuario->logo_empresa ?? $logoEmpresa,
+                    'nombreEmpresa'     => $usuario->nombre_empresa ?? null,
                 ]);
+
             } catch (\Exception $e) {
-                $view->with('logoEmpresa', $logoEmpresa);
+                // $view->with('logoEmpresa', $logoEmpresa);
+                $view->with([
+                    'usuarioLogueado' => null,
+                    'logoEmpresa'     => $logoEmpresa,
+                    'nombreEmpresa'   => null,
+                ]);
             }
         });
 

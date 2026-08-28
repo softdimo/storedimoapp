@@ -16,9 +16,18 @@ class EmpresaStore implements Responsable
     public function __construct()
     {
         $this->baseUri = env('BASE_URI');
-        $this->clientApi = new Client([
-            'base_uri' => $this->baseUri
-        ]);
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
     }
 
     // ===================================================================
@@ -72,45 +81,28 @@ class EmpresaStore implements Responsable
             if ($logoEmpresa->isValid()) {
 
                 // Validación de tipo MIME
-                $tiposPermitidos = [
-                    'image/jpg',
-                    'image/jpeg',
-                    'image/png',
-                    'image/webp'
-                ];
+                $tiposPermitidos = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp'];
 
                 $tipoMime = $logoEmpresa->getMimeType();
 
                 if (!in_array($tipoMime, $tiposPermitidos)) {
-                    alert()->error(
-                        'Error',
-                        'El tipo de imagen no es válido. Solo se permiten JPG, JPEG, PNG o WEBP.'
-                    );
+                    alert()->error('Error', 'El tipo de imagen no es válido. Solo se permiten JPG, JPEG, PNG o WEBP.');
                     return back();
                 }
 
                 // Validación tamaño (2MB)
-
                 $tamanioMaximoKB = 2048;
                 $tamanioArchivoKB = $logoEmpresa->getSize() / 1024;
 
                 if ($tamanioArchivoKB > $tamanioMaximoKB) {
-                    alert()->error(
-                        'Error',
-                        'La imagen excede el tamaño máximo permitido de 2 MB.'
-                    );
+                    alert()->error('Error', 'La imagen excede el tamaño máximo permitido de 2 MB.');
                     return back();
                 }
 
                 // Convertir a Base64
-
                 $contenido = file_get_contents($logoEmpresa);
 
-                $logoEmpresaBase64 =
-                    'data:' .
-                    $logoEmpresa->getMimeType() .
-                    ';base64,' .
-                    base64_encode($contenido);
+                $logoEmpresaBase64 = 'data:' . $logoEmpresa->getMimeType() . ';base64,' . base64_encode($contenido);
             }
         }
 
@@ -122,78 +114,49 @@ class EmpresaStore implements Responsable
         );
 
         try {
-
-            if (
-                isset($consultarEmpresa) &&
-                !is_null($consultarEmpresa) &&
-                !empty($consultarEmpresa)
+            if (isset($consultarEmpresa) && !is_null($consultarEmpresa) && !empty($consultarEmpresa)
             ) {
+                alert()->warning('Cuidado', 'Empresa existente');
 
-                alert()->warning(
-                    'Cuidado',
-                    'Empresa existente'
-                );
-
-                return redirect()
-                    ->route('empresas.create')
-                    ->withInput();
+                return redirect()->route('empresas.create')->withInput();
 
             } else {
+                $reqEmpresaStore = $this->clientApi->post('administracion/empresa_store', [
+                    'headers' => $this->getHeaders(),
+                    'json' => [
+                        'id_tipo_documento'      => $idTipoDocumento,
+                        'nit_empresa'            => $nitEmpresa,
+                        'ident_empresa_natural'  => $identEmpresaNatural,
+                        'nombre_empresa'         => $nombreEmpresa,
+                        'telefono_empresa'       => $telefonoEmpresa,
+                        'celular_empresa'        => $celularEmpresa,
+                        'email_empresa'          => $emailEmpresa,
+                        'direccion_empresa'      => $direccionEmpresa,
+                        'id_tipo_bd'             => $idTipoBd,
 
-                $reqEmpresaStore = $this->clientApi->post(
-                    $this->baseUri . 'administracion/empresa_store',
-                    [
-                        'json' => [
+                        'db_host'               => $dbHost,
+                        'db_database'           => $dbDatabase,
+                        'db_username'           => $dbUsername,
+                        'db_password'           => $dbPassword,
 
-                            'id_tipo_documento'      => $idTipoDocumento,
-                            'nit_empresa'            => $nitEmpresa,
-                            'ident_empresa_natural'  => $identEmpresaNatural,
-                            'nombre_empresa'         => $nombreEmpresa,
-                            'telefono_empresa'       => $telefonoEmpresa,
-                            'celular_empresa'        => $celularEmpresa,
-                            'email_empresa'          => $emailEmpresa,
-                            'direccion_empresa'      => $direccionEmpresa,
-                            'id_tipo_bd'             => $idTipoBd,
-
-                            'db_host'               => $dbHost,
-                            'db_database'           => $dbDatabase,
-                            'db_username'           => $dbUsername,
-                            'db_password'           => $dbPassword,
-
-                            'logo_empresa'          => $logoEmpresaBase64,
-                            'id_estado'             => $idEstado,
-                            'id_audit'              => session('id_usuario')
-
-                        ]
+                        'logo_empresa'          => $logoEmpresaBase64,
+                        'id_estado'             => $idEstado,
+                        'id_audit'              => session('id_usuario')
                     ]
-                );
+                ]);
 
-                $resEmpresaStore = json_decode(
-                    $reqEmpresaStore->getBody()->getContents()
-                );
+                $resEmpresaStore = json_decode($reqEmpresaStore->getBody()->getContents());
 
-                if (
-                    isset($resEmpresaStore) &&
-                    !empty($resEmpresaStore) &&
-                    !is_null($resEmpresaStore)
+                if (isset($resEmpresaStore) && !empty($resEmpresaStore) && !is_null($resEmpresaStore)
                 ) {
-
-                    alert()->success(
-                        'Proceso Exitoso',
-                        'Empresa creada satisfactoriamente'
-                    );
+                    alert()->success('Proceso Exitoso', 'Empresa creada satisfactoriamente');
 
                     return redirect()->to(route('empresas.index'));
                 }
             }
 
         } catch (Exception $e) {
-
-            alert()->error(
-                'Error',
-                'Creando la empresa, contacte a Soporte.'
-            );
-
+            alert()->error('Error', 'Creando la empresa, contacte a Soporte.');
             return back();
         }
     }
@@ -203,15 +166,13 @@ class EmpresaStore implements Responsable
 
     public function consultarEmpresa($nitEmpresa, $nombreEmpresa)
     {
-        $consultarEmpresa = $this->clientApi->post(
-            $this->baseUri . 'administracion/consultar_empresa',
-            [
-                'json' => [
-                    'nit_empresa'    => $nitEmpresa,
-                    'nombre_empresa' => $nombreEmpresa
-                ]
+        $consultarEmpresa = $this->clientApi->post('administracion/consultar_empresa', [
+            'headers' => $this->getHeaders(),
+            'json' => [
+                'nit_empresa'    => $nitEmpresa,
+                'nombre_empresa' => $nombreEmpresa
             ]
-        );
+        ]);
 
         return json_decode($consultarEmpresa->getBody()->getContents());
     }

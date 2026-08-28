@@ -13,17 +13,41 @@ trait MetodosTrait
     protected $baseUri;
     protected $clientApi;
     protected $apiTimeout = 10.0; // Timeout en segundos
+    protected $configData = null;
+
+    // protected function initHttpClient()
+    // {
+    //     if (!$this->clientApi) {
+    //         $this->baseUri = env('BASE_URI');
+    //         $this->clientApi = new Client([
+    //             'base_uri' => $this->baseUri,
+    //             'timeout' => $this->apiTimeout,
+    //             'headers' => [
+    //                 'Accept' => 'application/json'
+    //             ]
+    //         ]);
+    //     }
+    // }
 
     protected function initHttpClient()
     {
         if (!$this->clientApi) {
             $this->baseUri = env('BASE_URI');
+
+            $headers = [
+                'Accept' => 'application/json'
+            ];
+
+            // Inyección global del Token JWT si existe en la sesión
+            $jwtToken = session('api_jwt_token');
+            if ($jwtToken) {
+                $headers['Authorization'] = 'Bearer ' . $jwtToken;
+            }
+
             $this->clientApi = new Client([
                 'base_uri' => $this->baseUri,
-                'timeout' => $this->apiTimeout,
-                'headers' => [
-                    'Accept' => 'application/json'
-                ]
+                'timeout'  => $this->apiTimeout,
+                'headers'  => $headers
             ]);
         }
     }
@@ -81,33 +105,39 @@ trait MetodosTrait
 
     // ======================================
 
-    protected $configData = null;
-
     public function cargarConfiguracionInicial()
     {
-        // 1. Verificamos si ya tenemos los datos en memoria para evitar llamadas extra
+        // 1. Evita llamadas duplicadas si ya se consultó en el mismo request (exitoso o fallido)
         if ($this->configData !== null) {
             return $this->configData;
         }
 
         try {
-            // 2. Aseguramos que el cliente HTTP esté inicializado
+            // Validar existencia previa de token para no perder tiempo en petición HTTP fallida
+            if (!session('api_jwt_token')) {
+                $this->configData = [];
+                return $this->configData;
+            }
+
             $this->initHttpClient();
 
-            // 3. Realizamos la petición (usando la ruta relativa, ya que base_uri ya está configurada)
-            $response = $this->clientApi->get('administracion/config_inicial_trait');
+            // Timeout ajustado para este endpoint específico
+            $response = $this->clientApi->get('administracion/config_inicial_trait', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . session('api_jwt_token'),
+                    'Accept'        => 'application/json',
+                ],
+                // 'timeout' => 5.0
+            ]);
 
-            // 4. Asignamos el resultado a la propiedad
-            $this->configData = json_decode($response->getBody()->getContents(), true);
-
+            $this->configData = json_decode($response->getBody()->getContents(), true) ?? [];
             return $this->configData;
 
         } catch (Exception $e) {
-            // Log del error para debugging, evita el dd() en producción
             logger()->error("Error en cargarConfiguracionInicial: " . $e->getMessage());
-            
-            // alert()->error('Error', 'No se pudo cargar la configuración inicial Traits.');
-            return null;
+            // Guardamos array vacío para detener reintentos en este mismo ciclo
+            $this->configData = [];
+            return $this->configData;
         }
     }
 
@@ -144,156 +174,36 @@ trait MetodosTrait
         view()->share('tipos_bd',$this->tiposBd());
         view()->share('usuarios',$this->usuarios());
         view()->share('tipos_cliente',$this->tiposCliente());
-
-        // Para el pluck del select normal
-        view()->share('planes',$this->planes());
-
-        // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
-        view()->share('planesData', $this->planesData());
-
+        view()->share('planes',$this->planes()); // Para el pluck del select normal
+        view()->share('planesData', $this->planesData()); // Para obtener TODOS los campos del plan en un arreglo indexado por id_plan
         view()->share('tiposMetrica', $this->tiposMetrica());
     } // FIN shareBasicData()
 
     // =======================================================================================
 
-    public function roles()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['roles'] ?? [])->pluck('name', 'id');
-    }
-
-    public function rolesTenant()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['rolesTenant'] ?? [])->pluck('name', 'id');
-    }
-
-    public function estados()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['estados'] ?? [])->pluck('estado', 'id_estado');
-    }
-
-    public function estadosSuscripciones()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['estados_suscripciones'] ?? [])->pluck('estado', 'id_estado');
-    }
-
-    public function tiposDocumento()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_documento'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
-    }
-
-    public function tiposDocumentoUsuario()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_documento_usuario'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
-    }
-
-    public function tiposPersona()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_persona'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
-    }
-
-    public function tiposEmpleado()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_empleado'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
-    }
-
-    public function tiposProveedor()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_proveedor'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
-    }
-
-    public function generos()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['generos'] ?? [])->pluck('genero', 'id_genero');
-    }
-
-    public function tiposBaja()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_baja'] ?? [])->pluck('tipo_baja', 'id_tipo_baja');
-    }
-
-    public function tiposPagoVentas()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_pago_ventas'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
-    }
-
-    public function tiposPagoNomina()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_pago_nomina'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
-    }
-
-    public function tiposPagoSuscripcion()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_pago_suscripcion'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
-    }
-
-    public function periodosPago()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['periodos_pago'] ?? [])->pluck('periodo_pago', 'id_periodo_pago');
-    }
-
-    public function porcentajesComision()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['porcentajes_comision'] ?? [])->pluck('porcentaje_comision', 'id_porcentaje_comision');
-    }
-
-    public function empresas()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['empresas'] ?? [])->pluck('nombre_empresa', 'id_empresa');
-    }
-
-    public function tiposBd()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_bd'] ?? [])->pluck('tipo_bd', 'id_tipo_bd');
-    }
-
-    public function usuarios()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['usuarios'] ?? [])->pluck('user', 'id_usuario');
-    }
-
-    public function tiposCliente()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tipos_cliente'] ?? [])->pluck('tipo_persona', 'id_tipo_persona');
-    }
-
-    public function planes()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['planes'] ?? [])->pluck('nombre_plan', 'id_plan');
-    }
-
-    public function planesData()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        // No usamos pluck aquí porque queremos el objeto completo indexado por ID
-        return collect($data['planesData'] ?? []);
-    }
-
-    public function tiposMetrica()
-    {
-        $data = $this->cargarConfiguracionInicial();
-        return collect($data['tiposMetrica'] ?? [])->pluck('tipo_metrica', 'id_tipo_metrica');
-    }
+    public function roles() { return collect($this->cargarConfiguracionInicial()['roles'] ?? [])->pluck('name', 'id'); }
+    public function rolesTenant() { return collect($this->cargarConfiguracionInicial()['rolesTenant'] ?? [])->pluck('name', 'id'); }
+    public function estados() { return collect($this->cargarConfiguracionInicial()['estados'] ?? [])->pluck('estado', 'id_estado'); }
+    public function estadosSuscripciones() { return collect($this->cargarConfiguracionInicial()['estados_suscripciones'] ?? [])->pluck('estado', 'id_estado'); }
+    public function tiposDocumento() { return collect($this->cargarConfiguracionInicial()['tipos_documento'] ?? [])->pluck('tipo_documento', 'id_tipo_documento'); }
+    public function tiposDocumentoUsuario() { return collect($this->cargarConfiguracionInicial()['tipos_documento_usuario'] ?? [])->pluck('tipo_documento', 'id_tipo_documento'); }
+    public function tiposPersona() { return collect($this->cargarConfiguracionInicial()['tipos_persona'] ?? [])->pluck('tipo_persona', 'id_tipo_persona'); }
+    public function tiposEmpleado() { return collect($this->cargarConfiguracionInicial()['tipos_empleado'] ?? [])->pluck('tipo_persona', 'id_tipo_persona'); }
+    public function tiposProveedor() { return collect($this->cargarConfiguracionInicial()['tipos_proveedor'] ?? [])->pluck('tipo_persona', 'id_tipo_persona'); }
+    public function generos() { return collect($this->cargarConfiguracionInicial()['generos'] ?? [])->pluck('genero', 'id_genero'); }
+    public function tiposBaja() { return collect($this->cargarConfiguracionInicial()['tipos_baja'] ?? [])->pluck('tipo_baja', 'id_tipo_baja'); }
+    public function tiposPagoVentas() { return collect($this->cargarConfiguracionInicial()['tipos_pago_ventas'] ?? [])->pluck('tipo_pago', 'id_tipo_pago'); }
+    public function tiposPagoNomina() { return collect($this->cargarConfiguracionInicial()['tipos_pago_nomina'] ?? [])->pluck('tipo_pago', 'id_tipo_pago'); }
+    public function tiposPagoSuscripcion() { return collect($this->cargarConfiguracionInicial()['tipos_pago_suscripcion'] ?? [])->pluck('tipo_pago', 'id_tipo_pago'); }
+    public function periodosPago() { return collect($this->cargarConfiguracionInicial()['periodos_pago'] ?? [])->pluck('periodo_pago', 'id_periodo_pago'); }
+    public function porcentajesComision() { return collect($this->cargarConfiguracionInicial()['porcentajes_comision'] ?? [])->pluck('porcentaje_comision', 'id_porcentaje_comision'); }
+    public function empresas() { return collect($this->cargarConfiguracionInicial()['empresas'] ?? [])->pluck('nombre_empresa', 'id_empresa'); }
+    public function tiposBd() { return collect($this->cargarConfiguracionInicial()['tipos_bd'] ?? [])->pluck('tipo_bd', 'id_tipo_bd'); }
+    public function usuarios() { return collect($this->cargarConfiguracionInicial()['usuarios'] ?? [])->pluck('user', 'id_usuario'); }
+    public function tiposCliente() { return collect($this->cargarConfiguracionInicial()['tipos_cliente'] ?? [])->pluck('tipo_persona', 'id_tipo_persona'); }
+    public function planes() { return collect($this->cargarConfiguracionInicial()['planes'] ?? [])->pluck('nombre_plan', 'id_plan'); }
+    public function planesData() { return collect($this->cargarConfiguracionInicial()['planesData'] ?? []); }
+    public function tiposMetrica() { return collect($this->cargarConfiguracionInicial()['tiposMetrica'] ?? [])->pluck('tipo_metrica', 'id_tipo_metrica'); }
 
     // =======================================================================================
 
@@ -305,13 +215,27 @@ trait MetodosTrait
      */
     public function shareEmpresasSuscripciones(?int $idEmpresaActual = null): void
     {
-        try
-        {
+        // Validar token de sesión antes de realizar la petición HTTP
+        if (!session('api_jwt_token')) {
+            view()->share('empresas_suscripciones', collect([]));
+            return;
+        }
+
+        try {
             $this->initHttpClient();
             $id = $idEmpresaActual ?? 'null';
             
-            $response = $this->clientApi->get("administracion/empresas_disponibles_suscripcion/{$id}");
+            // $response = $this->clientApi->get("administracion/empresas_disponibles_suscripcion/{$id}");
+            $response = $this->clientApi->get("administracion/empresas_disponibles_suscripcion/{$id}", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . session('api_jwt_token'),
+                    'Accept'        => 'application/json',
+                ],
+                // 'timeout' => 5.0
+            ]);
+
             $data = json_decode($response->getBody()->getContents(), true);
+            // $data = json_decode($response->getBody()->getContents(), true) ?? [];
 
             // El pluck se hace aquí sobre la colección final que ya trae la unión hecha desde la API
             $empresasDisponibles = collect($data)->pluck('nombre_empresa', 'id_empresa');
@@ -329,13 +253,12 @@ trait MetodosTrait
     {
         try {
             $this->initHttpClient();
-            
             $permisos = $this->getPermisosFromApi();
-            
             view()->share('permisos', $permisos);
             view()->share('permisosAsignados', []);
 
         } catch (RequestException $e) {
+            logger()->error("Error en sharePermissionsData: " . $e->getMessage());
             view()->share('permisos', []);
             return back()->with('error', 'Error obteniendo permisos del sistema');
         }
@@ -343,89 +266,173 @@ trait MetodosTrait
 
     protected function getPermisosFromApi()
     {
-        $cacheKey = 'permisos_view_share_' . session('id_usuario');
+        $idUsuario = session('id_usuario');
+        $jwtToken  = session('api_jwt_token');
+
+        // Si no hay sesión o token, evitamos la llamada HTTP y retornamos un array/objeto vacío
+        if (!$idUsuario || !$jwtToken) {
+            return [];
+        }
+
+        // $cacheKey = 'permisos_view_share_' . session('id_usuario');
+        $cacheKey = 'permisos_view_share_' . $idUsuario;
         
-        return Cache::remember($cacheKey, now()->addMinutes(1), function () {
-            $response = $this->clientApi->get('administracion/permisos_view_share_trait');
-            return json_decode($response->getBody()->getContents());
+        // return Cache::remember($cacheKey, now()->addMinutes(1), function () {
+        //     $response = $this->clientApi->get('administracion/permisos_view_share_trait');
+        //     return json_decode($response->getBody()->getContents());
+        // });
+
+        return Cache::remember($cacheKey, now()->addMinutes(1), function () use ($jwtToken) {
+            try {
+                // Nos aseguramos de tener la instancia del cliente lista
+                $this->initHttpClient();
+
+                // Pasamos explícitamente el encabezado Authorization
+                $response = $this->clientApi->get('administracion/permisos_view_share_trait', [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $jwtToken,
+                        'Accept'        => 'application/json',
+                    ],
+                    'timeout' => 5.0, // Timeout para prevenir bloqueos en la vista
+                ]);
+
+                return json_decode($response->getBody()->getContents());
+
+            } catch (\Exception $e) {
+                logger()->error("Error obteniendo permisos en getPermisosFromApi: " . $e->getMessage());
+                return []; // Retorna un array vacío en caso de falla para no romper la app
+            }
         });
     }
 
+    // public function permisos()
+    // {
+    //     try
+    //     {
+    //         $this->initHttpClient();
+    //         $cacheKey = 'permisos_list_' . session('id_usuario');
+
+    //         return Cache::remember($cacheKey, now()->addMinutes(1), function () {
+    //             $response = $this->clientApi->get('administracion/permisos_trait');
+    //             return json_decode($response->getBody()->getContents());
+    //         });
+
+    //     } catch (RequestException $e) {
+    //         logger()->error("Error en permisos: " . $e->getMessage());
+    //         return [];
+    //     }
+    // }
+
     public function permisos()
     {
-        try
-        {
-            $this->initHttpClient();
-            $cacheKey = 'permisos_list_' . session('id_usuario');
+        $idUsuario = session('id_usuario');
+        $jwtToken  = session('api_jwt_token');
 
-            return Cache::remember($cacheKey, now()->addMinutes(1), function () {
-                $response = $this->clientApi->get('administracion/permisos_trait');
+        // Validación preventiva
+        if (!$idUsuario || !$jwtToken) {
+            return [];
+        }
+
+        try {
+            $this->initHttpClient();
+            $cacheKey = 'permisos_list_' . $idUsuario;
+
+            return Cache::remember($cacheKey, now()->addMinutes(1), function () use ($jwtToken) {
+                $response = $this->clientApi->get('administracion/permisos_trait', [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                        'Accept'        => 'application/json',
+                    ],
+                    'timeout' => 5.0
+                ]);
+
                 return json_decode($response->getBody()->getContents());
             });
 
-        } catch (RequestException $e)
-        {
+        } catch (RequestException $e) {
+            logger()->error("Error en permisos: " . $e->getMessage());
             return [];
         }
     }
 
     public function permisosPorUsuario($idUsuario)
     {
-        try
-        {
+        $jwtToken = session('api_jwt_token');
+
+        // Si no hay token de sesión, evitamos hacer la consulta a la API
+        if (!$jwtToken) {
+            return [];
+        }
+
+        try {
             $this->initHttpClient();
             $cacheKey = 'permisos_usuario_' . $idUsuario;
 
-            return Cache::remember($cacheKey, now()->addMinutes(1), function () use ($idUsuario) {
+            // return Cache::remember($cacheKey, now()->addMinutes(1), function () use ($idUsuario) {
+            //     $response = $this->clientApi->get("administracion/permisos_por_usuario_trait/{$idUsuario}");
+            //     return json_decode($response->getBody()->getContents());
+            // });
+
+            return Cache::remember($cacheKey, now()->addMinutes(1), function () use ($idUsuario, $jwtToken) {
                 $response = $this->clientApi->get("administracion/permisos_por_usuario_trait/{$idUsuario}", [
                     'headers' => [
-                        'Authorization' => 'Bearer ' . session('api_token')
-                    ]
+                        'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                        'Accept'        => 'application/json',
+                    ],
+                    'timeout' => 5.0
                 ]);
+
                 return json_decode($response->getBody()->getContents());
             });
 
         } catch (RequestException $e) {
+            logger()->error("Error en permisosPorUsuario: " . $e->getMessage());
             return [];
         }
     }
 
     public function validarAccesos($usuarioId, $permissionId, $vista, $infCodigo = null)
     {
-        try
-        {
+        try {
             $permisosUsuario = $this->permisosPorUsuario($usuarioId);
 
-            if (empty($permisosUsuario))
-            {
+            if (empty($permisosUsuario)) {
                 return view('errors.403')->with('error', 'No se encontraron permisos');
             }
 
-            if (!in_array($permissionId, $permisosUsuario)) {
+            // if (!in_array($permissionId, $permisosUsuario)) {
+            //     return view('errors.403');
+            // }
+
+            if (!in_array($permissionId, (array) $permisosUsuario)) {
                 return view('errors.403');
             }
 
             // Si es una vista simple
-            if (is_string($vista) && is_null($infCodigo))
-            {
+            if (is_string($vista) && is_null($infCodigo)) {
                 return view($vista);
             }
 
             // Si es una vista de informe
-            if ($vista === 'informe_gerencial' && $infCodigo)
-            {
-                try
-                {
+            if ($vista === 'informe_gerencial' && $infCodigo) {
+                try {
+                    $this->initHttpClient(); // Uso del cliente centralizado con JWT
+
                     // Realiza la solicitud POST a la API
-                    $client = new Client(['base_uri' => env('BASE_URI')]);
+                    // $client = new Client(['base_uri' => env('BASE_URI')]);
         
-                    $response = $client->post('administracion/informe_gerencial', [
-                            'json' => [
-                                'infCodigo' => $infCodigo,
-                                'id_audit' => session('id_usuario')
-                            ]
-                        ]
-                    );
+                    // $response = $client->post('administracion/informe_gerencial', [
+                    $response = $this->clientApi->post('administracion/informe_gerencial', [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+                            'Accept'        => 'application/json',
+                        ],
+                        'json' => [
+                            'infCodigo' => $infCodigo,
+                            'id_audit' => session('id_usuario')
+                        ],
+                        // 'timeout' => 5.0
+                    ]);
 
                     $respuesta = json_decode($response->getBody()->getContents(), true);
                     
@@ -434,8 +441,8 @@ trait MetodosTrait
 
                     return view('informes.informe', compact('campos', 'informe'));
 
-                } catch (Exception $e)
-                {
+                } catch (Exception $e) {
+                    logger()->error("Error en informe gerencial: " . $e->getMessage());
                     alert()->error('Error en el informe gerencial');
                     return redirect()->route('home');
                 }
@@ -444,8 +451,8 @@ trait MetodosTrait
             // Si la vista es una respuesta diferente
             return $vista;
 
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
+            logger()->error("Error en validarAccesos: " . $e->getMessage());
             return view('errors.403')->with('error', 'Error validando permisos');
         }
     }

@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use GuzzleHttp\Client;
 
 class TrafficLogger
@@ -49,6 +50,8 @@ class TrafficLogger
 
             // 2. Configuramos el cliente de Guzzle igual que en tu controlador
             $baseUri = env('BASE_URI');
+            $jwtToken = Session::get('api_jwt_token');
+
             $client = new Client(['base_uri' => $baseUri]);
 
             // 3. Preparamos los datos
@@ -62,12 +65,27 @@ class TrafficLogger
                 'user_agent'  => $request->userAgent(),
             ];
 
-            // 4. Llamamos a la API
-            // Usamos la ruta completa o relativa a baseUri
+            // 4. Inyección de Headers
+            $headers = [
+                'Accept' => 'application/json',
+            ];
+
+            // Si hay un JWT en la sesión, lo adjuntamos
+            if ($jwtToken) {
+                $headers['Authorization'] = 'Bearer ' . $jwtToken;
+            }
+
+            // 5. Envío Asíncrono a la API (Timeout ajustado a 1.0s para no alentar la navegación)
             $client->post('administracion/metricas_store', [
-                'json' => $datosParaLog,
-                'timeout' => 2 // Muy importante: si la API no responde en 2s, sigue adelante
+                'json'    => $datosParaLog,
+                'headers' => $headers,
+                'timeout' => 1.0
             ]);
+
+            // $client->post('administracion/metricas_store', [
+            //     'json' => $datosParaLog,
+            //     'timeout' => 2 // Muy importante: si la API no responde en 2s, sigue adelante
+            // ]);
 
         } catch (\Exception $e) {
             // Silenciamos errores para no bloquear la experiencia del usuario

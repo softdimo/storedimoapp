@@ -21,13 +21,19 @@ class EmpresaIndex implements Responsable
 
     public function toResponse($request)
     {
-        try
-        {
+        $jwtToken = session('api_jwt_token');
+
+        try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
             
             // Realiza la solicitud a la API
-            $peticion = $clientApi->get($baseUri . 'administracion/empresa_index', [
+            // $peticion = $clientApi->get($baseUri . 'administracion/empresa_index', [
+            $peticion = $clientApi->get('administracion/empresa_index', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'id_rol' => $this->rolId,
                     'id_usuario' => $this->usuarioId
@@ -38,9 +44,9 @@ class EmpresaIndex implements Responsable
 
             view()->share('rolId', $this->rolId);
             return view('empresas.index', compact('empresas'));
-        } catch (Exception $e)
-        {
-            alert()->error('Error', 'Exception Index Empresas, contacte a Soporte.');
+
+        } catch (Exception $e) {
+            alert()->error('Error', 'Error Index Empresas, contacte a Soporte.');
             return back();
         }
     }

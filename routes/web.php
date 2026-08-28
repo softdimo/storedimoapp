@@ -88,6 +88,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
             Route::resource('usuarios', 'UsuariosController');
             Route::post('email_validator', 'UsuariosController@emailValidator')->name('email_validator');
             Route::post('identification_validator', 'UsuariosController@identificationValidator')->name('identification_validator');
+            Route::post('cambiar_clave_usuario', 'UsuariosController@cambiarClaveUsuario')->name('cambiar_clave_usuario');
         });
 
         // ========================================================================

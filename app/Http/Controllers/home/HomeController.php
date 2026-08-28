@@ -8,6 +8,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Traits\MetodosTrait;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -140,23 +141,36 @@ class HomeController extends Controller
     // ======================================================================
     // ======================================================================
 
+    // ======================================================================
+    // CONSULTAS A LA API CON TOKEN JWT Y TIMEOUT
+    // ======================================================================
+
     public function ventaDiaMes()
     {
         $hoy = Carbon::today()->toDateString();
         $inicioMes = Carbon::now()->startOfMonth()->toDateString();
+        $jwtToken = session('api_jwt_token');
 
         try {
-            $peticion = $this->clientApi->get($this->baseUri. 'venta_dia_mes', [
+            // $peticion = $this->clientApi->get($this->baseUri. 'venta_dia_mes', [
+            $peticion = $this->clientApi->get('venta_dia_mes', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- Envío del Token JWT
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
-                    'fecha_venta_dia' => $hoy,
-                    'fecha_venta_inicio_mes' => $inicioMes,
-                    'empresa_actual' => session('empresa_actual.id_empresa')
-                ]
+                    'fecha_venta_dia'           => $hoy,
+                    'fecha_venta_inicio_mes'    => $inicioMes,
+                    'empresa_actual'            => session('empresa_actual.id_empresa')
+                ],
+                'timeout' => 5
             ]);
+
             $resultado = json_decode($peticion->getBody()->getContents());
             return $resultado ?? ['ventasDia' => 0, 'ventasMes' => 0];
             
         } catch (Exception $e) {
+            Log::error("Error consultando venta dia mes en API: " . $e->getMessage());
             return ['ventasDia' => 0, 'ventasMes' => 0];
         }
     }
@@ -168,20 +182,28 @@ class HomeController extends Controller
     {
         $hoy = Carbon::today()->toDateString();
         $inicioMes = Carbon::now()->startOfMonth()->toDateString();
+        $jwtToken = session('api_jwt_token');
 
         try {
-            $peticion = $this->clientApi->get($this->baseUri. 'entrada_dia_mes', [
+            // $peticion = $this->clientApi->get($this->baseUri. 'entrada_dia_mes', [
+            $peticion = $this->clientApi->get('entrada_dia_mes', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- Envío del Token JWT
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
-                    'fecha_entrada_dia' => $hoy,
-                    'fecha_entrada_inicio_mes' => $inicioMes,
-                    'empresa_actual' => session('empresa_actual.id_empresa')
-                ]
+                    'fecha_entrada_dia'         => $hoy,
+                    'fecha_entrada_inicio_mes'  => $inicioMes,
+                    'empresa_actual'            => session('empresa_actual.id_empresa')
+                ],
+                'timeout' => 5
             ]);
             
             $resultado = json_decode($peticion->getBody()->getContents());
             return $resultado ?? ['entradasDia' => 0, 'entradasMes' => 0];
             
         } catch (Exception $e) {
+            Log::error("Error consultando entrada dia mes en API: " . $e->getMessage());
             return ['entradasDia' => 0, 'entradasMes' => 0];
         }
     }

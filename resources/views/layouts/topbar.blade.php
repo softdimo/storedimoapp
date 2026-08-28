@@ -105,7 +105,7 @@
                             @if(session('sesion_iniciada'))
                                 <ul class="dropdown-menu bg-white" style="right:0;left:auto">
                                     <li class="dropdown-item text-dark hover-li">
-                                        <i class="fa fa-user fa-fw fa-1x"></i> {{ $usuarioLogueado->rol }}
+                                        <i class="fa fa-user fa-fw fa-1x"></i> {{ $usuarioLogueado->rol ?? '' }}
                                         <h6 class="text-danger">{{ $usuarioLogueado->nombre_usuario }} {{ $usuarioLogueado->apellido_usuario }}</h6>
                                     </li>
 

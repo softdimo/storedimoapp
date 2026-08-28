@@ -17,14 +17,22 @@ class UsuarioEdit implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $peticion = $clientApi->get($baseUri . 'administracion/usuario_edit/'. $this->idUsuario, [
+            // $peticion = $clientApi->get($baseUri . 'administracion/usuario_edit/'. $this->idUsuario, [
+            $peticion = $clientApi->get('administracion/usuario_edit/'. $this->idUsuario, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
-                ]
+                ],
+                // 'timeout' => 5.0
             ]);
             $usuario = json_decode($peticion->getBody()->getContents());
 
@@ -38,6 +46,7 @@ class UsuarioEdit implements Responsable
              };
 
         } catch (Exception $e) {
+            logger()->error("Error en UsuarioEdit Responsable: " . $e->getMessage());
             alert()->error('Error consultando el usuario para editar, contacte a Soporte.');
             return back();
         }

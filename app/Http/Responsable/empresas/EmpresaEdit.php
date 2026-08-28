@@ -20,11 +20,19 @@ class EmpresaEdit implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $peticion = $clientApi->get($baseUri . 'administracion/empresa_edit/'. $this->idEmpresa);
+            $peticion = $clientApi->get('administracion/empresa_edit/'. $this->idEmpresa, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ]
+            ]);
+
             $empresa = json_decode($peticion->getBody()->getContents());
 
             return view('empresas.edit', compact('empresa'));
