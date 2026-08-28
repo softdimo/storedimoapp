@@ -109,50 +109,58 @@
 
                 <div class="col-12 p-3" id="">
                     <div class="{{-- table-responsive --}}">
-                        <table class="table table-modern w-100 mb-0" id="tbl_proveedores"
-                            aria-describedby="proveedores">
-                            <thead>
-                                <tr class="text-center align-middle">
-                                    <th>Tipo Proveedor</th>
-                                    <th>Empresa</th>
-                                    <th>Nit empresa</th>
-                                    <th>Nombres</th>
-                                    <th>Apellidos</th>
-                                    <th>Identificación</th>
-                                    <th>Celular</th>
-                                    <th>Estado</th>
-                                    <th>Opciones</th>
-                                </tr>
-                            </thead>
-                            {{-- ============================== --}}
-                            <tbody>
-                                @foreach ($resProveedoresIndex as $proveedor)
-                                    <tr class="text-center align-middle">
-                                        <td>{{ $proveedor->tipo_persona }}</td>
-                                        <td>{{ $proveedor->proveedor_juridico }}</td>
-                                        <td>{{ $proveedor->nit_proveedor }}</td>
-                                        <td>{{ $proveedor->nombres_proveedor }}</td>
-                                        <td>{{ $proveedor->apellidos_proveedor }}</td>
-                                        <td>{{ $proveedor->identificacion }}</td>
-                                        <td>{{ $proveedor->celular_proveedor }}</td>
-                                        <td>
-                                            @if(strtolower($proveedor->estado ?? '') == 'activo')
-                                                <span class="badge text-bg-success">{{ $proveedor->estado }}</span>
-                                            @elseif($proveedor->estado)
-                                                <span class="badge text-bg-danger">{{ $proveedor->estado }}</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <button type="button"
-                                                class="btn btn-success rounded-circle btn-circle btn-editar-proveedor"
-                                                title="Editar Proveedor" data-id="{{ $proveedor->id_proveedor }}">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="col-12 p-3" id="">
+    <div class="{{-- table-responsive --}}">
+        <table class="table table-modern w-100 mb-0" id="tbl_proveedores"
+            aria-describedby="proveedores">
+            <thead>
+                <tr class="text-center align-middle">
+                    <th>Tipo Proveedor</th>
+                    <th>Empresa</th>
+                    <th>Tipo Documento</th>
+                    <th>Nit / Identificación</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Celular</th>
+                    <th>Estado</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            {{-- ============================== --}}
+            <tbody>
+                @foreach ($resProveedoresIndex as $proveedor)
+                    <tr class="text-center align-middle">
+                        <td>{{ $proveedor->tipo_persona }}</td>
+                        <td>{{ $proveedor->proveedor_juridico }}</td>
+                        <td>{{ $proveedor->tipo_documento }}</td>
+                        @if(filled($proveedor->nit_proveedor))
+                            <td>{{ $proveedor->nit_proveedor }}</td>
+                        @else
+                            <td>{{ $proveedor->identificacion }}</td>
+                        @endif
+                        <td>{{ $proveedor->nombres_proveedor }}</td>
+                        <td>{{ $proveedor->apellidos_proveedor }}</td>
+                        <td>{{ $proveedor->celular_proveedor }}</td>
+                        <td>
+                            @if(strtolower($proveedor->estado ?? '') == 'activo')
+                                <span class="badge text-bg-success">{{ $proveedor->estado }}</span>
+                            @elseif($proveedor->estado)
+                                <span class="badge text-bg-danger">{{ $proveedor->estado }}</span>
+                            @endif
+                        </td>
+                        <td>
+                            <button type="button"
+                                class="btn btn-success rounded-circle btn-circle btn-editar-proveedor"
+                                title="Editar Proveedor" data-id="{{ $proveedor->id_proveedor }}">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
                     </div>
                 </div> {{-- FIN div_campos_usuarios --}}
             </div> {{-- FIN div_crear_usuario --}}

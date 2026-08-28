@@ -104,8 +104,10 @@
                             aria-describedby="empresas">
                             <thead>
                                 <tr class="text-center align-middle">
-                                    <th>Nit Empresa</th>
-                                    <th>Documento Persona Natural</th>
+                                    <th>Tipo</th>
+                                    {{-- <th>Nit Empresa</th> --}}
+                                    {{-- <th>Documento Persona Natural</th> --}}
+                                    <th>Identificacion</th>
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
                                     <th>Celular</th>
@@ -129,8 +131,14 @@
                             <tbody>
                                 @foreach ($empresas as $empresa)
                                     <tr class="text-center align-middle">
-                                        <td>{{ $empresa->nit_empresa }}</td>
-                                        <td>{{ $empresa->ident_empresa_natural }}</td>
+                                        <td>{{ $empresa->tipo_documento }}</td>
+                                        @if(filled($empresa->nit_empresa))
+                                            <td>{{ $empresa->nit_empresa }}</td>
+                                        @else
+                                            <td>{{ $empresa->ident_empresa_natural }}</td>
+                                        @endif
+                                        {{-- <td>{{ $empresa->nit_empresa }}</td>
+                                        <td>{{ $empresa->ident_empresa_natural }}</td> --}}
                                         <td>{{ $empresa->nombre_empresa }}</td>
                                         <td>{{ $empresa->telefono_empresa }}</td>
                                         <td>{{ $empresa->celular_empresa }}</td>

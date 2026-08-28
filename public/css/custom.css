@@ -53,7 +53,7 @@ body {
         left: -100%;
         width: 50% !important;
         transition: 0.3s;
-        z-index: 1000;
+        z-index: 1000 !important;
         background: white;
     }
 
@@ -703,11 +703,11 @@ body {
         top: 0;
         left: 0;
         height: 100vh;
-        width: 280px;
-        max-width: 82vw;
+        width: 220px;
+        max-width: 70vw;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
-        z-index: 1050;
+        z-index: 2100;
         box-shadow: 6px 0 24px rgba(0, 0, 0, 0.18);
     }
 
@@ -721,7 +721,7 @@ body {
     position: fixed;
     inset: 0;
     background-color: rgba(15, 23, 42, 0.45);
-    z-index: 1040;
+    z-index: 2050;
     opacity: 0;
     transition: opacity 0.25s ease;
 }
