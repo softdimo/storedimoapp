@@ -4,12 +4,11 @@ namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Exception;
 use Carbon\Carbon;
 use App\Traits\MetodosTrait;
 use GuzzleHttp\Client;
-use GuzzleHttp\Promise\Utils;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -21,11 +20,7 @@ class HomeController extends Controller
     {
         $this->shareData();
         $this->baseUri = env('BASE_URI');
-        $this->clientApi = new Client([
-            'base_uri' => $this->baseUri,
-            'timeout' => 5,          // máx 5s por petición individual
-            'connect_timeout' => 3,  // máx 3s para conectar
-        ]);
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
     /**
      * Display a listing of the resource.
@@ -39,7 +34,7 @@ class HomeController extends Controller
                 return view('db_conexion');
             } else {
                 $sesion = $this->validarVariablesSesion();
-
+        
                 $sesionInvalida = collect($sesion)->slice(0, 3)->contains(fn($val) => empty($val)) || !$sesion[3];
 
                 if ($sesionInvalida) {
@@ -48,10 +43,9 @@ class HomeController extends Controller
 
                 $ventaDiaMes = $this->ventaDiaMes();
                 $entradaDiaMes = $this->entradaDiaMes();
-                $tendencia = $this->tendenciaUltimosDias(7);
 
-                return view('home.index', compact('ventaDiaMes', 'entradaDiaMes', 'tendencia'));
-
+                return view('home.index', compact('ventaDiaMes','entradaDiaMes'));
+   
             }
         } catch (Exception $e) {
             alert()->error("Exception Index Usuario!");
@@ -70,7 +64,7 @@ class HomeController extends Controller
      */
     public function create()
     {
-
+        
     }
 
     // ======================================================================
@@ -84,7 +78,7 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
-
+        
     }
 
     // ======================================================================
@@ -114,7 +108,7 @@ class HomeController extends Controller
     {
         //
     }
-
+    
     // ======================================================================
     // ======================================================================
 
@@ -147,27 +141,40 @@ class HomeController extends Controller
     // ======================================================================
     // ======================================================================
 
+    // ======================================================================
+    // CONSULTAS A LA API CON TOKEN JWT Y TIMEOUT
+    // ======================================================================
+
     public function ventaDiaMes()
     {
         $hoy = Carbon::today()->toDateString();
         $inicioMes = Carbon::now()->startOfMonth()->toDateString();
+        $jwtToken = session('api_jwt_token');
 
         try {
-            $peticion = $this->clientApi->get($this->baseUri. 'venta_dia_mes', [
+            // $peticion = $this->clientApi->get($this->baseUri. 'venta_dia_mes', [
+            $peticion = $this->clientApi->get('venta_dia_mes', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- Envío del Token JWT
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
-                    'fecha_venta_dia' => $hoy,
-                    'fecha_venta_inicio_mes' => $inicioMes,
-                    'empresa_actual' => session('empresa_actual.id_empresa')
-                ]
+                    'fecha_venta_dia'           => $hoy,
+                    'fecha_venta_inicio_mes'    => $inicioMes,
+                    'empresa_actual'            => session('empresa_actual.id_empresa')
+                ],
+                'timeout' => 5
             ]);
+
             $resultado = json_decode($peticion->getBody()->getContents());
             return $resultado ?? ['ventasDia' => 0, 'ventasMes' => 0];
-
+            
         } catch (Exception $e) {
+            Log::error("Error consultando venta dia mes en API: " . $e->getMessage());
             return ['ventasDia' => 0, 'ventasMes' => 0];
         }
     }
-
+    
     // ======================================================================
     // ======================================================================
 
@@ -175,112 +182,29 @@ class HomeController extends Controller
     {
         $hoy = Carbon::today()->toDateString();
         $inicioMes = Carbon::now()->startOfMonth()->toDateString();
+        $jwtToken = session('api_jwt_token');
 
         try {
-            $peticion = $this->clientApi->get($this->baseUri. 'entrada_dia_mes', [
+            // $peticion = $this->clientApi->get($this->baseUri. 'entrada_dia_mes', [
+            $peticion = $this->clientApi->get('entrada_dia_mes', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- Envío del Token JWT
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
-                    'fecha_entrada_dia' => $hoy,
-                    'fecha_entrada_inicio_mes' => $inicioMes,
-                    'empresa_actual' => session('empresa_actual.id_empresa')
-                ]
+                    'fecha_entrada_dia'         => $hoy,
+                    'fecha_entrada_inicio_mes'  => $inicioMes,
+                    'empresa_actual'            => session('empresa_actual.id_empresa')
+                ],
+                'timeout' => 5
             ]);
-
+            
             $resultado = json_decode($peticion->getBody()->getContents());
             return $resultado ?? ['entradasDia' => 0, 'entradasMes' => 0];
-
+            
         } catch (Exception $e) {
+            Log::error("Error consultando entrada dia mes en API: " . $e->getMessage());
             return ['entradasDia' => 0, 'entradasMes' => 0];
-        }
-    }
-
-    // ======================================================================
-    // ======================================================================
-
-    /**
-     * Arma el array de tendencia (labels, ventas, compras) para los
-     * últimos $dias días, usando los endpoints existentes, pero disparando
-     * TODAS las peticiones en paralelo (async) en vez de una por una.
-     * Esto evita el timeout de 60s que da PHP con llamadas secuenciales.
-     * Se cachea 15 min por empresa para no golpear la API en cada recarga.
-     *
-     * @param  int  $dias
-     * @return array{labels: array, ventas: array, compras: array}
-     */
-    public function tendenciaUltimosDias(int $dias = 7): array
-    {
-        $idEmpresa = session('empresa_actual.id_empresa');
-        $cacheKey = "tendencia_dashboard_{$idEmpresa}_{$dias}_" . Carbon::today()->toDateString();
-
-        return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($dias, $idEmpresa) {
-
-            $fechas = [];
-            for ($i = $dias - 1; $i >= 0; $i--) {
-                $fechas[] = Carbon::today()->subDays($i)->toDateString();
-            }
-
-            // Disparamos las 14 peticiones (7 ventas + 7 compras) al mismo tiempo,
-            // sin esperar respuesta una por una.
-            $promesas = [];
-            foreach ($fechas as $fecha) {
-                $promesas["venta_{$fecha}"] = $this->clientApi->getAsync('venta_dia_mes', [
-                    'query' => [
-                        'fecha_venta_dia' => $fecha,
-                        'fecha_venta_inicio_mes' => $fecha,
-                        'empresa_actual' => $idEmpresa,
-                    ],
-                ]);
-                $promesas["compra_{$fecha}"] = $this->clientApi->getAsync('entrada_dia_mes', [
-                    'query' => [
-                        'fecha_entrada_dia' => $fecha,
-                        'fecha_entrada_inicio_mes' => $fecha,
-                        'empresa_actual' => $idEmpresa,
-                    ],
-                ]);
-            }
-
-            // Esperamos a que todas terminen (o fallen) sin que un error tumbe las demás.
-            $resultados = Utils::settle($promesas)->wait();
-
-            $labels = [];
-            $ventas = [];
-            $compras = [];
-
-            foreach ($fechas as $fecha) {
-                $labels[] = Carbon::parse($fecha)->translatedFormat('D d');
-                $ventas[]  = $this->extraerValorRespuesta($resultados["venta_{$fecha}"] ?? null, 'ventasDia');
-                $compras[] = $this->extraerValorRespuesta($resultados["compra_{$fecha}"] ?? null, 'entradasDia');
-            }
-
-            return [
-                'labels' => $labels,
-                'ventas' => $ventas,
-                'compras' => $compras,
-            ];
-        });
-    }
-
-    // ======================================================================
-    // ======================================================================
-
-    /**
-     * Extrae un campo numérico del resultado de una promesa de Guzzle
-     * (Utils::settle), devolviendo 0 si la petición falló o el campo no existe.
-     *
-     * @param  array|null  $resultadoSettle  Entrada del array que devuelve Utils::settle()
-     * @param  string      $campo            Nombre del campo a extraer (ej. 'ventasDia')
-     * @return float
-     */
-    private function extraerValorRespuesta(?array $resultadoSettle, string $campo): float
-    {
-        if (!$resultadoSettle || $resultadoSettle['state'] !== 'fulfilled') {
-            return 0;
-        }
-
-        try {
-            $body = json_decode($resultadoSettle['value']->getBody()->getContents());
-            return $body->{$campo} ?? 0;
-        } catch (Exception $e) {
-            return 0;
         }
     }
 }

@@ -22,6 +22,17 @@ class EmpresaUpdate implements Responsable
 
     // ===================================================================
 
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
+
     public function toResponse($request)
     {
         $idTipoDocumento = request('id_tipo_documento', null);
@@ -74,11 +85,16 @@ class EmpresaUpdate implements Responsable
         // ===================================================================
 
         // Obtener los datos actuales del producto antes de actualizar
-        $peticionEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/'.$this->idEmpresa);
+        // $peticionEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/'.$this->idEmpresa);
+        $peticionEmpresa = $this->clientApi->get('administracion/empresa_edit/'.$this->idEmpresa, [
+            'headers' => $this->getHeaders(),
+        ]);
         $empresaActual = json_decode($peticionEmpresa->getBody()->getContents());
 
         try {
-            $reqEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/empresa_update/'.$this->idEmpresa, [
+            // $reqEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/empresa_update/'.$this->idEmpresa, [
+            $reqEmpresaUpdate = $this->clientApi->put('administracion/empresa_update/'.$this->idEmpresa, [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_tipo_documento' => $idTipoDocumento ?? $empresaActual->id_tipo_documento,
                     'nit_empresa' => $nitEmpresa ?? $empresaActual->nit_empresa,

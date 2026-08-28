@@ -16,6 +16,16 @@ class UsuarioUpdate implements Responsable
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
     public function toResponse($request)
     {
         $idUsuario = request('id_usuario', null);
@@ -46,7 +56,9 @@ class UsuarioUpdate implements Responsable
 
             try
             {
-                $peticionUsuarioUpdate = $this->clientApi->put($this->baseUri.'administracion/usuario_update/'. $idUsuario, [
+                // $peticionUsuarioUpdate = $this->clientApi->put($this->baseUri.'administracion/usuario_update/'. $idUsuario, [
+                $peticionUsuarioUpdate = $this->clientApi->put('administracion/usuario_update/'. $idUsuario, [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'id_tipo_persona' => $idTipoPersona,
                         'nombre_usuario' => $nombreUsuario,
@@ -81,7 +93,9 @@ class UsuarioUpdate implements Responsable
 
     private function consultarId($identificacion)
     {
-        $queryIdentificacion = $this->clientApi->post($this->baseUri.'administracion/query_identificacion', [
+        // $queryIdentificacion = $this->clientApi->post($this->baseUri.'administracion/query_identificacion', [
+        $queryIdentificacion = $this->clientApi->post('administracion/query_identificacion', [
+            'headers' => $this->getHeaders(),
             'json' => ['identificacion' => $identificacion]
         ]);
         return json_decode($queryIdentificacion->getBody()->getContents());

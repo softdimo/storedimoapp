@@ -43,6 +43,12 @@ class VerificarTokenSesion
                 
                 $idUsuario = Session::get('id_usuario');
                 $tokenEnSesion = Session::get('session_token');
+                $jwtToken = Session::get('api_jwt_token');
+
+                // Si no hay JWT disponible en sesión, permitimos el flujo para evitar bucles o deslogueos erróneos
+                if (!$jwtToken) {
+                    return $next($request);
+                }
 
                 try {
                     /*
@@ -66,6 +72,10 @@ class VerificarTokenSesion
                     
                     // Añadimos ?t=timestamp para forzar a la API a darnos el dato fresco de la BD
                     $response = $client->get("administracion/consultar_session_token/{$idUsuario}?t=" . time(), [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $jwtToken, // <--- HEADER JWT INYECTADO
+                            'Accept'        => 'application/json',
+                        ],
                         'timeout' => 3
                     ]);
                     $datosApi = json_decode($response->getBody()->getContents());

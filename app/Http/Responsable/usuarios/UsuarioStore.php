@@ -23,6 +23,15 @@ class UsuarioStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
     public function toResponse($request)
     {
         $nombreUsuario = request('nombre_usuario', null);
@@ -41,8 +50,7 @@ class UsuarioStore implements Responsable
         $fechaTerminacionContrato = request('fecha_terminacion_contrato', null);
         $idEmpresa = request('id_empresa') ? request('id_empresa') : session('id_empresa');
 
-        if(strlen($identificacion) < 6)
-        {
+        if(strlen($identificacion) < 6) {
             alert()->info('Info', 'El documento debe se de mínimo 6 caracteres');
             return back();
         }
@@ -50,12 +58,11 @@ class UsuarioStore implements Responsable
         // Consultamos si ya existe un usuario con la cedula ingresada
         $consultarIdentificacion = $this->consultarId($identificacion);
         
-        if(isset($consultarIdentificacion) && !empty($consultarIdentificacion) && !is_null($consultarIdentificacion))
-        {
+        if (isset($consultarIdentificacion) && !empty($consultarIdentificacion) && !is_null($consultarIdentificacion)) {
             alert()->info('Info', 'Este número de documento ya existe.');
             return back();
-        } else
-        {
+
+        } else {
             // Contruimos el nombre de usuario
             $separarApellidos = explode(" ", $apellidoUsuario);
             $usuario = substr($this->quitarCaracteresEspeciales(trim($nombreUsuario)), 0,1) . trim($this->quitarCaracteresEspeciales($separarApellidos[0]));
@@ -63,14 +70,14 @@ class UsuarioStore implements Responsable
             $usuario = strtolower($usuario);
             $complemento = "";
 
-            while($this->consultaUsuario($usuario.$complemento))
-            {
+            while($this->consultaUsuario($usuario.$complemento)) {
                 $complemento++;
             }
 
-            try
-            {
-                $peticionUsuarioStore = $this->clientApi->post($this->baseUri.'administracion/usuario_store', [
+            try {
+                // $peticionUsuarioStore = $this->clientApi->post($this->baseUri.'administracion/usuario_store', [
+                $peticionUsuarioStore = $this->clientApi->post('administracion/usuario_store', [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'nombre_usuario' => $nombreUsuario,
                         'apellido_usuario' => $apellidoUsuario,
@@ -91,15 +98,15 @@ class UsuarioStore implements Responsable
                         'clave_fallas' => 0,
                         'id_audit' => session('id_usuario'),
                         'id_empresa' => $idEmpresa
-                    ]
+                    ],
+                    // 'timeout' => 5.0
                 ]);
 
                 $resUsuarioStore = json_decode($peticionUsuarioStore->getBody()->getContents());
                 
-                if(isset($resUsuarioStore) && !empty($resUsuarioStore) && $resUsuarioStore->success)
-                {
-                    if(!is_null($resUsuarioStore->correo_empresa))
-                    {
+                if (isset($resUsuarioStore) && !empty($resUsuarioStore) && $resUsuarioStore->success) {
+
+                    if(!is_null($resUsuarioStore->correo_empresa)) {
                         Mail::to($resUsuarioStore->correo_empresa)
                             ->send(new EnviarCorreoEmpresa());
                     }
@@ -112,30 +119,48 @@ class UsuarioStore implements Responsable
                     );
                 }
 
-            } catch (Exception $e)
-            {
-                return $this->respuestaException('Exception, contacte a Soporte.' . $e->getMessage());
+            } catch (Exception $e) {
+                dd($e);
+                return $this->respuestaException('Error creando el usuario, contacte a Soporte.');
             }
         }
     }
 
     private function consultarId($identificacion)
     {
-        $queryIdentificacion = $this->clientApi->post($this->baseUri.'administracion/query_identificacion', [
-            'json' => ['identificacion' => $identificacion]
-        ]);
-        return json_decode($queryIdentificacion->getBody()->getContents());
+        // $queryIdentificacion = $this->clientApi->post($this->baseUri.'administracion/query_identificacion', [
+        //     'json' => ['identificacion' => $identificacion]
+        // ]);
+        // return json_decode($queryIdentificacion->getBody()->getContents());
+
+        try {
+            $queryIdentificacion = $this->clientApi->post('administracion/query_identificacion', [
+                'headers' => $this->getHeaders(),
+                'json'    => ['identificacion' => $identificacion],
+                // 'timeout' => 5.0
+            ]);
+            
+            return json_decode($queryIdentificacion->getBody()->getContents());
+
+        } catch (Exception $e) {
+            logger()->error("Error en consultarId: " . $e->getMessage());
+            return null;
+        }
     }
 
     private function consultaUsuario($usuario)
     {
         try {
-            $queryUsuario = $this->clientApi->post($this->baseUri.'administracion/query_usuario', [
-                'json' => ['usuario' => $usuario]
+            // $queryUsuario = $this->clientApi->post($this->baseUri.'administracion/query_usuario', [
+            $queryUsuario = $this->clientApi->post('administracion/query_usuario', [
+                'headers' => $this->getHeaders(),
+                'json' => ['usuario' => $usuario],
+                // 'timeout' => 5.0
             ]);
             return json_decode($queryUsuario->getBody()->getContents());
 
         } catch (Exception $e) {
+            dd($e);
             return $this->respuestaException('Exception, contacte a Soporte.' . $e->getMessage());
         }
     }

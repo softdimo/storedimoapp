@@ -1,24 +1,16 @@
 <div class="row m-0 p-3">
     <div class="col-12 col-md-3 mt-3">
         <div class="form-group d-flex flex-column">
-            <label for="id_empresa_suscrita" class="form-label">Empresa <span class="text-danger">*</span></label>
+            <label for="empresa_actual" class="form-label">Empresa <span class="text-danger">*</span></label>
+            {!! Form::text('empresa_actual', $empresa->empresa->nombre_empresa, [
+                'class' => 'form-control bg-secondary-subtle',
+                'id' => 'empresa_actual',
+                'readonly' => true
+            ]) !!}
 
-            {!! Form::select('id_empresa_suscrita', collect(['' => 'Seleccionar...'])->union($empresas_suscripciones), old('id_empresa_suscrita', $suscripcionEdit->id_empresa_suscrita ?? $empresas_suscripciones),
-                array_merge(
-                    [
-                        'class' => 'form-select select2',
-                        'id' => 'id_empresa_suscrita',
-                        'required' => 'required',
-                    ],
-                    // AÑADE 'disabled' en modo edición
-                    isset($suscripcionEdit) ? ['disabled' => 'disabled'] : []
-                )
-            ) !!}
+            <input type="hidden" name="id_empresa" id="id_empresa" value="{{ $empresa->empresa->id_empresa }}"/>
         </div>
     </div>
-
-    {{-- ======================= --}}
-    {{-- ======================= --}}
 
     <div class="col-12 col-md-3 mt-3">
         <div class="form-group d-flex flex-column">
@@ -31,8 +23,6 @@
         </div>
     </div>
 
-    {{-- ======================= --}}
-
     <div class="col-12 col-md-3 mt-3" id="div_valor_mensual">
         <div class="form-group d-flex flex-column">
             <label for="valor_mensual" class="form-label">Valor Mensual</label>
@@ -43,8 +33,6 @@
             ]) !!}
         </div>
     </div>
-
-    {{-- ======================= --}}
 
     <div class="col-12 col-md-3 mt-3" id="div_valor_trimestral">
         <div class="form-group d-flex flex-column">
@@ -141,7 +129,7 @@
         <div class="form-group d-flex flex-column">
             <label for="fecha_inicial" class="form-label">Fecha Inicial<span class="text-danger">*</span></label>
             {!! Form::date('fecha_inicial', old('fecha_inicial', isset($suscripcionEdit) ? $suscripcionEdit->fecha_inicial : null), [
-                'class' => 'form-control',
+                'class' => 'form-control no-pointer',
                 'id' => 'fecha_inicial',
                 'required' => 'required',
                 'onkeydown' => 'return false'
@@ -155,37 +143,13 @@
         <div class="form-group d-flex flex-column">
             <label for="fecha_final" class="form-label">Fecha Final<span class="text-danger">*</span></label>
             {!! Form::date('fecha_final', old('fecha_final', isset($suscripcionEdit) ? $suscripcionEdit->fecha_final : null), [
-                'class' => 'form-control',
+                'class' => 'form-control no-pointer',
                 'id' => 'fecha_final',
                 'required' => 'required',
-                'onkeydown' => 'return false'
+                'onkeydown' => 'return false',
             ]) !!}
         </div>
     </div>
-
-    {{-- ======================= --}}
-
-    <div class="col-12 col-md-3 mt-3">
-        <div class="form-group d-flex flex-column">
-            <label for="id_estado_suscripcion" class="form-label">Estado<span class="text-danger">*</span></label>
-            {!! Form::select('id_estado_suscripcion', collect(['' => 'Seleccionar...'])->union($estados_suscripciones), old('id_estado_suscripcion', isset($suscripcionEdit) ? $suscripcionEdit->id_estado_suscripcion : 1), [
-                'class' => 'form-select select2',
-                'id' => 'id_estado_suscripcion',
-                'required' => 'required',
-            ]) !!}
-        </div>
-    </div>
-
-    {{-- ======================= --}}
-    
-    <div class="col-12 col-md-3 mt-3">
-        <div class="form-group d-flex flex-column">
-            <label for="fecha_cancelacion" class="form-label">Fecha Cancelación</label>
-            {!! Form::date('fecha_cancelacion', old('fecha_cancelacion', isset($suscripcionEdit) ? $suscripcionEdit->fecha_cancelacion : null), ['class' => 'form-control', 'id' => 'fecha_cancelacion','onkeydown' => 'return false']) !!}
-        </div>
-    </div>
-
-    {{-- ======================= --}}
 
     <div class="col-12 col-md-3 mt-3">
         <div class="d-flex flex-column justify-content-center align-items-center">
@@ -202,19 +166,6 @@
                     'style' => 'margin-top: 1.25em;'
                 ]
             ) !!}
-        </div>
-    </div>
-
-    {{-- ======================= --}}
-    
-    <div class="col-12 mt-3">
-        <div class="form-group d-flex flex-column">
-            <label for="observaciones_suscripcion" class="form-label">Observaciones Suscripción</label>
-            {!! Form::textarea('observaciones_suscripcion', old('observaciones_suscripcion', isset($suscripcionEdit) ? $suscripcionEdit->observaciones_suscripcion : null), [
-                'class' => 'form-control',
-                'id' => 'observaciones_suscripcion',
-                'rows' => 3
-            ]) !!}
         </div>
     </div>
 </div> {{-- FIN div campos --}}

@@ -88,6 +88,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
             Route::resource('usuarios', 'UsuariosController');
             Route::post('email_validator', 'UsuariosController@emailValidator')->name('email_validator');
             Route::post('identification_validator', 'UsuariosController@identificationValidator')->name('identification_validator');
+            Route::post('cambiar_clave_usuario', 'UsuariosController@cambiarClaveUsuario')->name('cambiar_clave_usuario');
         });
 
         // ========================================================================
@@ -256,6 +257,8 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         // SUSCRIPCIONES
         Route::group(['namespace' => 'App\Http\Controllers\suscripciones'], function () {
             Route::resource('suscripciones', 'SuscripcionesController');
+            Route::get('renovar', 'SuscripcionesController@renovarSuscripcion')->name('renovar');
+            Route::post('guardar_renovacion', 'SuscripcionesController@guardarRenovacion')->name('guardar_renovacion');
         });
         
         // ========================================================================

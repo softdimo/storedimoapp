@@ -20,12 +20,26 @@ class EmpresasController extends Controller
     use MetodosTrait;
     protected $baseUri;
     protected $clientApi;
+    protected $jwtToken;
 
     public function __construct()
     {
-        $this->shareData();
+        $this->middleware(function ($request, $next) {
+            $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
+            $this->jwtToken = session('jwt_token'); // 🟢 Asignación global del Token
+            return $next($request);
+        });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    /* Devuelve las cabeceras estándar para las peticiones a la API */
+    private function getHeaders(): array
+    {
+        return [
+            'Authorization' => 'Bearer ' . $this->jwtToken,
+            'Accept'        => 'application/json',
+        ];
     }
 
     /**
@@ -262,7 +276,9 @@ class EmpresasController extends Controller
         }
     
         try {
-            $response = $this->clientApi->post($this->baseUri . 'administracion/validar_nit', [
+            // $response = $this->clientApi->post($this->baseUri . 'administracion/validar_nit', [
+            $response = $this->clientApi->post('administracion/validar_nit', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'nit_empresa' => $request->input('nit_empresa')
                 ]
@@ -272,7 +288,7 @@ class EmpresasController extends Controller
                 json_decode($response->getBody()->getContents(), true)
             );
         } catch (Exception $e) {
-            // dd($e);
+            dd($e);
             return response()->json([
                 'error' => 'No se pudo validar el NIT en el servicio externo.',
                 'valido' => false
@@ -286,7 +302,9 @@ class EmpresasController extends Controller
     public function validarCorreoEmpresa(Request $request)
     {
         try {
-            $response = $this->clientApi->post($this->baseUri . 'administracion/validar_correo_empresa', [
+            // $response = $this->clientApi->post($this->baseUri . 'administracion/validar_correo_empresa', [
+            $response = $this->clientApi->post('administracion/validar_correo_empresa', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'email_empresa' => $request->input('email_empresa')
                 ]

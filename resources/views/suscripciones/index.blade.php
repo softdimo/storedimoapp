@@ -22,9 +22,13 @@
         <div class="p-3 d-flex flex-column content-container">
             <div class="d-flex justify-content-end pe-0 mt-3 mb-2">
                 <div class="">
-                    <a href="{{ route('suscripciones.create') }}" class="btn text-white" style="background-color:#337AB7">
-                        Crear Suscripción
-                    </a>
+                    @if($rolId == 3)
+                        <a href="{{ route('suscripciones.create') }}" class="btn text-white" style="background-color:#337AB7">
+                            Crear Suscripción
+                        </a>
+                    @else
+                        <p>&nbsp;</p>
+                    @endif
                 </div>
             </div>
 
@@ -33,7 +37,12 @@
 
             <div class="p-0" style="border: solid 1px #337AB7; border-radius: 5px;">
                 <h5 class="border rounded-top text-white text-center pt-2 pb-2 m-0" style="background-color: #337AB7">
-                    Listar Suscripciones
+                    @if ($rolId == 3)
+                        Listar
+                    @else
+                        Mis
+                    @endif
+                    Suscripciones
                 </h5>
 
                 <div class="col-12 p-3" id="">
@@ -42,7 +51,7 @@
                             aria-describedby="users-usuarios">
                             <thead>
                                 <tr class="header-table text-center align-middle">
-                                    <th>Id</th>
+                                    <th>Id Suscripción</th>
                                     <th>Empresa</th>
                                     <th>Plan</th>
                                     <th>Días Trial</th>
@@ -66,20 +75,31 @@
                                         <td>{{ $suscripcion->nombre_plan }}</td>
                                         <td>{{ $suscripcion->dias_trial }}</td>
                                         <td>{{ $suscripcion->modalidad_suscripcion }}</td>
-                                        <td>{{ $suscripcion->valor_suscripcion }}</td>
+                                        <td>$ {{ $suscripcion->valor_suscripcion }}</td>
                                         <td>{{ $suscripcion->fecha_inicial }}</td>
                                         <td>{{ $suscripcion->fecha_final }}</td>
                                         <td>{{ $suscripcion->estado }}</td>
                                         <td>{{ $suscripcion->fecha_cancelacion }}</td>
                                         <td>{{ $suscripcion->renovacion_automatica }}</td>
                                         <td>{{ $suscripcion->observaciones_suscripcion }}</td>
-                                        <td>
-                                            <a href="{{ route('suscripciones.edit', $suscripcion->id_suscripcion) }}"
-                                                class="btn btn-success text-white rounded-circle btn-circle btn-editar-suscripcion"
-                                                title="Editar Suscripción">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
-                                        </td>
+
+                                        @if($rolId == 3)
+                                            <td>
+                                                <a href="{{ route('suscripciones.edit', $suscripcion->id_suscripcion) }}"
+                                                    class="btn btn-success text-white rounded-circle btn-circle btn-editar-suscripcion"
+                                                    title="Editar Suscripción">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </a>
+                                            </td>
+                                        @else  
+                                            <td>
+                                                <a href="{{ route('renovar') }}"
+                                                    class="btn btn-info text-white rounded-circle btn-circle"
+                                                    title="Renovar Suscripción">
+                                                    <i class="fa fa-refresh"></i>
+                                                </a>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
