@@ -31,7 +31,7 @@
             <li class="nav-item">
                 <a href="/home" class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">
                     <i class="fa fa-th-large sidebar-icon"></i>
-                    <span>Dashboard</span>
+                    <span>Panel principal</span>
                 </a>
             </li>
 
@@ -86,6 +86,8 @@
             const targetId = toggle.getAttribute('data-bs-target');
             const targetEl = document.querySelector(targetId);
             const groupLi = toggle.closest('.sidebar-group');
+
+            if (!targetEl) return; // Si el target no existe, salimos de la función
 
             targetEl.addEventListener('show.bs.collapse', function () {
                 groupLi.classList.add('open');
