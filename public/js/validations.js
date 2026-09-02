@@ -277,7 +277,8 @@ function initDynamicIdValidation(config) {
         selectSelector,
         inputSelector,
         errorSelector,
-        map // Mapa de reglas
+        map, // Mapa de reglas
+        serverValidationCallback = null
     } = config;
 
     const $select = $(selectSelector);
@@ -326,9 +327,9 @@ function initDynamicIdValidation(config) {
                 $errorMsg.addClass("d-none");
                 $input.val("").removeClass("is-invalid");
             }, 4000);
-        } else {
-            $input.addClass("is-valid");
-        }
+        } // else {
+        //     $input.addClass("is-valid");
+        // }
     });
 
     // 3. Limpiar el input si cambian el tipo de documento para evitar conflictos
@@ -336,6 +337,14 @@ function initDynamicIdValidation(config) {
         $input.val("").removeClass("is-invalid is-valid");
         $errorMsg.addClass("d-none");
     });
+
+    // 4. --- VALIDACIÓN DE SERVIDOR ---
+    // <-- Si pasa el formato local, ejecuta la consulta estructurada abajo
+    if (serverValidationCallback && typeof serverValidationCallback === "function") {
+        serverValidationCallback(value, $input, $errorMsg);
+    } else {
+        $input.addClass("is-valid");
+    }
 } // FIN function initDynamicIdValidation(config) Tipos de documentos a parte del NIT
 
 // ==========================================================================================

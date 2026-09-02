@@ -253,6 +253,27 @@ class EmpresasController extends Controller
     // ======================================================================
     // ======================================================================
 
+    public function documentoValidator(Request $request)
+    {
+        try {
+            // $response = $this->clientApi->post($this->baseUri.'administracion/validar_documento', [
+            $response = $this->getHttpClient()->post('administracion/validar_documento', [
+                'headers' => $this->getHeaders(),
+                'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
+            ]);
+        
+            return response()->json(json_decode($response->getBody()->getContents(), true));
+        
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'No se pudo validar el número del documento en la BD.',
+                'valido' => false
+            ], 500);
+        }
+    }
+    // ======================================================================
+    // ======================================================================
+
     public function nit_validator(Request $request)
     {
         try {
@@ -288,7 +309,6 @@ class EmpresasController extends Controller
                 json_decode($response->getBody()->getContents(), true)
             );
         } catch (Exception $e) {
-            dd($e);
             return response()->json([
                 'error' => 'No se pudo validar el NIT en el servicio externo.',
                 'valido' => false

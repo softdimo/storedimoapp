@@ -226,6 +226,7 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
         Route::group(['namespace' => 'App\Http\Controllers\empresas'], function () {
             Route::resource('empresas', 'EmpresasController');
             Route::post('empresa_datos_conexion', 'EmpresasController@empresaDatosConexion')->name('empresa_datos_conexion');
+            Route::post('documento_validator', 'EmpresasController@documentoValidator')->name('documento_validator');
             Route::post('nit_validator', 'EmpresasController@nit_validator')->name('nit_validator');
             Route::post('validar_correo_empresa', 'EmpresasController@validarCorreoEmpresa')->name('validar_correo_empresa');
 

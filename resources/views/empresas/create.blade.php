@@ -200,6 +200,63 @@
                     "4": { onlyNumbers: false, min: 10, max: 15, label: "permiso especial" },
                     "5": { onlyNumbers: false, min: 6, max: 12, label: "cédula de extranjería" }
                     // El NIT (3) lo manejamos con su propia función initNitValidation ya creada
+                },
+                // <-- AGREGADO: Aquí procesamos los datos exactos del cliente/empresa natural
+                serverValidationCallback: async function(documento, $input, $errorMsg) {
+                    try {
+                        const response = await fetch("{{ route('documento_validator_landing') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                ident_empresa_natural: documento
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                            $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
+                            $input.addClass("is-invalid").val("");
+                        } else if (data.valido === false) {
+                            
+                            if (data.empresa.id_estado == 13) {
+                                Swal.fire('Atención!',
+                                    'Este documento ya está registrado y tiene un proceso de suscripción en activación',
+                                    'info'
+                                );
+                                $input.addClass("is-invalid").val("");
+                            } else if (data.empresa.id_estado == 14) {
+                                Swal.fire({
+                                    title: '¡Pago pendiente!',
+                                    text: 'Este documento ya está registrado pero el pago no fue completado. ¿Deseas intentar el pago nuevamente?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Sí, pagar ahora',
+                                    cancelButtonText: 'Cancelar'
+                                }).then((result) => {
+                                    if (result.isConfirmed || result.value == true) {
+                                        window.location.href = "{{ url('/empresa_pago_fallido') }}/" + data.empresa.id_empresa + "/reintentar_pago";
+                                    } else {
+                                        $input.addClass("is-invalid").val("");
+                                    }
+                                });
+                            } else {
+                                $errorMsg.text("Este documento ya está registrado.").removeClass("d-none");
+                                $input.addClass("is-invalid").val("");
+                            }
+
+                        } else {
+                            // Todo perfecto
+                            $input.addClass("is-valid");
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        $errorMsg.text("Error al conectar con el servidor.").removeClass("d-none");
+                    }
                 }
             });
 
