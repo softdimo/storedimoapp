@@ -204,7 +204,7 @@
                 // <-- AGREGADO: Aquí procesamos los datos exactos del cliente/empresa natural
                 serverValidationCallback: async function(documento, $input, $errorMsg) {
                     try {
-                        const response = await fetch("{{ route('documento_validator_landing') }}", {
+                        const response = await fetch("{{ route('documento_validator') }}", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
