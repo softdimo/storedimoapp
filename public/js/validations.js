@@ -319,6 +319,7 @@ function initDynamicIdValidation(config) {
 
         if (!value) return;
 
+        // Validar longitud mínima
         if (value.length < rule.min) {
             $errorMsg.text(`El ${rule.label} debe tener al menos ${rule.min} caracteres.`).removeClass("d-none");
             $input.addClass("is-invalid");
@@ -327,24 +328,23 @@ function initDynamicIdValidation(config) {
                 $errorMsg.addClass("d-none");
                 $input.val("").removeClass("is-invalid");
             }, 4000);
-        } // else {
-        //     $input.addClass("is-valid");
-        // }
-    });
 
-    // 3. Limpiar el input si cambian el tipo de documento para evitar conflictos
+            return; // Detener flujo si no cumple la longitud mínima
+        }
+
+        // 3. Validación de Servidor (Solo si pasa la validación local)
+        if (serverValidationCallback && typeof serverValidationCallback === "function") {
+            serverValidationCallback(value, $input, $errorMsg);
+        } else {
+            $input.addClass("is-valid");
+        }
+    }); // FIN $(document).on("blur", inputSelector, function() {
+
+    // 4. Limpiar el input si cambian el tipo de documento
     $select.on("change", function() {
         $input.val("").removeClass("is-invalid is-valid");
         $errorMsg.addClass("d-none");
     });
-
-    // 4. --- VALIDACIÓN DE SERVIDOR ---
-    // <-- Si pasa el formato local, ejecuta la consulta estructurada abajo
-    if (serverValidationCallback && typeof serverValidationCallback === "function") {
-        serverValidationCallback(value, $input, $errorMsg);
-    } else {
-        $input.addClass("is-valid");
-    }
 } // FIN function initDynamicIdValidation(config) Tipos de documentos a parte del NIT
 
 // ==========================================================================================

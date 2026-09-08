@@ -216,46 +216,30 @@
                             })
                         });
 
+                        console.log(response);
+
+                        // Si el servidor responde con 500 u otro error HTTP
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error("Respuesta de error del servidor:", errorText);
+                            
+                            $errorMsg.text("Error en el servidor al validar el documento.").removeClass("d-none");
+                            $input.addClass("is-invalid");
+                            return;
+                        }
+
                         const data = await response.json();
 
-                        if (!response.ok) {
-                            $errorMsg.text(data.error || "Error de validación").removeClass("d-none");
+                        if (data.valido === false) {
+                            $errorMsg.text("Este número de documento ya se encuentra registrado.").removeClass("d-none");
                             $input.addClass("is-invalid").val("");
-                        } else if (data.valido === false) {
-                            
-                            if (data.empresa.id_estado == 13) {
-                                Swal.fire('Atención!',
-                                    'Este documento ya está registrado y tiene un proceso de suscripción en activación',
-                                    'info'
-                                );
-                                $input.addClass("is-invalid").val("");
-                            } else if (data.empresa.id_estado == 14) {
-                                Swal.fire({
-                                    title: '¡Pago pendiente!',
-                                    text: 'Este documento ya está registrado pero el pago no fue completado. ¿Deseas intentar el pago nuevamente?',
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Sí, pagar ahora',
-                                    cancelButtonText: 'Cancelar'
-                                }).then((result) => {
-                                    if (result.isConfirmed || result.value == true) {
-                                        window.location.href = "{{ url('/empresa_pago_fallido') }}/" + data.empresa.id_empresa + "/reintentar_pago";
-                                    } else {
-                                        $input.addClass("is-invalid").val("");
-                                    }
-                                });
-                            } else {
-                                $errorMsg.text("Este documento ya está registrado.").removeClass("d-none");
-                                $input.addClass("is-invalid").val("");
-                            }
-
                         } else {
-                            // Todo perfecto
                             $input.addClass("is-valid");
                         }
                     } catch (error) {
                         console.error('Error:', error);
                         $errorMsg.text("Error al conectar con el servidor.").removeClass("d-none");
+                        $input.addClass("is-invalid");
                     }
                 }
             });

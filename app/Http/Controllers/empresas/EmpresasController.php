@@ -36,8 +36,21 @@ class EmpresasController extends Controller
     /* Devuelve las cabeceras estándar para las peticiones a la API */
     private function getHeaders(): array
     {
+        // 1. Obtener el token directamente de la sesión activa en el momento de la llamada
+        $token = session('jwt_token') ?? $this->jwtToken;
+
+        // 2. Si no existe, validar si viene guardado con otro nombre o lanzar la excepción controlada
+        if (empty($token)) {
+            Log::error('Intento de consulta a API sin JWT Token en sesión.', [
+                'user_id' => session('id_usuario') ?? 'no_definido',
+                'session_all' => session()->all()
+            ]);
+
+            throw new \Exception("No hay un token JWT activo en la sesión del usuario.");
+        }
+
         return [
-            'Authorization' => 'Bearer ' . $this->jwtToken,
+            'Authorization' => 'Bearer ' . $token,
             'Accept'        => 'application/json',
         ];
     }
@@ -102,11 +115,10 @@ class EmpresasController extends Controller
                 } else
                 {
                     $vista = 'empresas.create';
-                    return $this->validarAccesos($sesion[0], 4, $vista);
+                    return $this->validarAccesos($sesion[0], 5, $vista);
                 }
             }
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             alert()->error("Exception Create Empresas!");
             return redirect()->to(route('login'));
         }
@@ -255,22 +267,43 @@ class EmpresasController extends Controller
 
     public function documentoValidator(Request $request)
     {
+        // try {
+        //     // $response = $this->clientApi->post($this->baseUri.'administracion/validar_documento', [
+        //     $response = $this->clientApi->post('administracion/validar_documento', [
+        //         'headers' => $this->getHeaders(),
+        //         'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
+        //     ]);
+        
+        //     return response()->json(json_decode($response->getBody()->getContents(), true));
+        
+        // } catch (Exception $e) {
+        //     // dd($e);
+        //     return response()->json([
+        //         'error' => 'No se pudo validar el número del documento en la BD.',
+        //         'valido' => false
+        //     ], 500);
+        // }
+
+        // Descomenta esta línea para ver qué tiene la sesión en storage/logs/laravel.log:
+        Log::info('Contenido de la sesión:', session()->all());
+
         try {
-            // $response = $this->clientApi->post($this->baseUri.'administracion/validar_documento', [
-            $response = $this->getHttpClient()->post('administracion/validar_documento', [
+            $response = $this->clientApi->post('administracion/validar_documento', [
                 'headers' => $this->getHeaders(),
                 'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
             ]);
-        
+
             return response()->json(json_decode($response->getBody()->getContents(), true));
-        
-        } catch (Exception $e) {
+
+        } catch (\Throwable $e) {
             return response()->json([
-                'error' => 'No se pudo validar el número del documento en la BD.',
-                'valido' => false
+                'error'   => 'No se pudo validar el número del documento en la BD.',
+                'detalle' => $e->getMessage(),
+                'valido'  => false
             ], 500);
         }
     }
+    
     // ======================================================================
     // ======================================================================
 
