@@ -99,6 +99,9 @@
                     'maxlength' => 15,
                     'minlength' => 7,
                 ]) !!}
+                
+                <!-- Span de error requerido por la función -->
+                <span id="celular_empresa-error" class="text-danger small d-none"></span>
             </div>
         </div>
 
