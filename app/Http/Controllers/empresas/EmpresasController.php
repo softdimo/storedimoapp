@@ -26,34 +26,27 @@ class EmpresasController extends Controller
     {
         $this->middleware(function ($request, $next) {
             $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
-            $this->jwtToken = session('jwt_token'); // 🟢 Asignación global del Token
+            // $this->jwtToken = session('api_jwt_token'); // 🟢 Asignación global del Token
             return $next($request);
         });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
-    /* Devuelve las cabeceras estándar para las peticiones a la API */
-    private function getHeaders(): array
+    // ======================================================================
+    // ======================================================================
+
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
     {
-        // 1. Obtener el token directamente de la sesión activa en el momento de la llamada
-        $token = session('jwt_token') ?? $this->jwtToken;
-
-        // 2. Si no existe, validar si viene guardado con otro nombre o lanzar la excepción controlada
-        if (empty($token)) {
-            Log::error('Intento de consulta a API sin JWT Token en sesión.', [
-                'user_id' => session('id_usuario') ?? 'no_definido',
-                'session_all' => session()->all()
-            ]);
-
-            throw new \Exception("No hay un token JWT activo en la sesión del usuario.");
-        }
-
         return [
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
             'Accept'        => 'application/json',
         ];
     }
+
+    // ======================================================================
+    // ======================================================================
 
     /**
      * Display a listing of the resource.
@@ -125,6 +118,8 @@ class EmpresasController extends Controller
     }
 
     // ======================================================================
+    // ======================================================================
+
     /**
      * Store a newly created resource in storage.
      *
@@ -267,39 +262,18 @@ class EmpresasController extends Controller
 
     public function documentoValidator(Request $request)
     {
-        // try {
-        //     // $response = $this->clientApi->post($this->baseUri.'administracion/validar_documento', [
-        //     $response = $this->clientApi->post('administracion/validar_documento', [
-        //         'headers' => $this->getHeaders(),
-        //         'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
-        //     ]);
-        
-        //     return response()->json(json_decode($response->getBody()->getContents(), true));
-        
-        // } catch (Exception $e) {
-        //     // dd($e);
-        //     return response()->json([
-        //         'error' => 'No se pudo validar el número del documento en la BD.',
-        //         'valido' => false
-        //     ], 500);
-        // }
-
-        // Descomenta esta línea para ver qué tiene la sesión en storage/logs/laravel.log:
-        Log::info('Contenido de la sesión:', session()->all());
-
         try {
             $response = $this->clientApi->post('administracion/validar_documento', [
                 'headers' => $this->getHeaders(),
                 'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
             ]);
-
+        
             return response()->json(json_decode($response->getBody()->getContents(), true));
-
-        } catch (\Throwable $e) {
+        
+        } catch (Exception $e) {
             return response()->json([
-                'error'   => 'No se pudo validar el número del documento en la BD.',
-                'detalle' => $e->getMessage(),
-                'valido'  => false
+                'error' => 'No se pudo validar el número del documento en la BD.',
+                'valido' => false
             ], 500);
         }
     }

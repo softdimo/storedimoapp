@@ -216,8 +216,6 @@
                             })
                         });
 
-                        console.log(response);
-
                         // Si el servidor responde con 500 u otro error HTTP
                         if (!response.ok) {
                             const errorText = await response.text();
