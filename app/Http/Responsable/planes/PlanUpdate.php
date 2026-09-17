@@ -19,6 +19,15 @@ class PlanUpdate implements Responsable
         $this->idPlan = $idPlan;
     }
 
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
     // ===================================================================
 
     public function toResponse($request)
@@ -34,11 +43,14 @@ class PlanUpdate implements Responsable
         // ===================================================================
 
         // Obtener los datos actuales del producto antes de actualizar
-        $planActualConsulta = $this->clientApi->get($this->baseUri.'administracion/plan_edit/'.$this->idPlan);
+        $planActualConsulta = $this->clientApi->get('administracion/plan_edit/'.$this->idPlan, [
+            'headers' => $this->getHeaders(),
+        ]);
         $planActual = json_decode($planActualConsulta->getBody()->getContents());
 
         try {
-            $reqPlanUpdate = $this->clientApi->put($this->baseUri.'administracion/plan_update/'.$this->idPlan, [
+            $reqPlanUpdate = $this->clientApi->put('administracion/plan_update/'.$this->idPlan, [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'nombre_plan' =>  $nombrePlan ?? $planActual->nombre_plan,
                     'valor_mensual' => doubleval(str_replace(".", "", $valorMensual)) ?? $planActual->valor_mensual,
@@ -52,13 +64,11 @@ class PlanUpdate implements Responsable
             ]);
             $resPlanUpdate = json_decode($reqPlanUpdate->getBody()->getContents());
 
-            if(isset($resPlanUpdate->success) && $resPlanUpdate->success)
-            {
+            if(isset($resPlanUpdate->success) && $resPlanUpdate->success) {
                 alert()->success('Proceso Exitoso', 'Plan editado satisfactoriamente');
                 return redirect()->to(route('planes.index'));
             }
         } catch (Exception $e) {
-            dd($e);
             alert()->error('Error', 'Actualizando el Plan, contacte a Soporte.');
             return back();
         }

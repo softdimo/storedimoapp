@@ -22,6 +22,8 @@ class PlanStore implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         $nombrePlan = request('nombre_plan', null);
         $valorMensual = request('valor_mensual', null);
         $valorTrimestral = request('valor_trimestral', null);
@@ -33,7 +35,11 @@ class PlanStore implements Responsable
         // ========================================================
 
         try {
-            $reqPlanStore = $this->clientApi->post($this->baseUri.'administracion/plan_store', [
+            $reqPlanStore = $this->clientApi->post('administracion/plan_store', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'nombre_plan' => $nombrePlan,
                     'valor_mensual' => $valorMensual,

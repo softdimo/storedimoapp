@@ -20,11 +20,18 @@ class PlanEdit implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $peticion = $clientApi->get($baseUri . 'administracion/plan_edit/'. $this->idPlan);
+            $peticion = $clientApi->get('administracion/plan_edit/'. $this->idPlan, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ]
+            ]);
             $planEdit = json_decode($peticion->getBody()->getContents());
 
             return view('planes.edit', compact('planEdit'));
