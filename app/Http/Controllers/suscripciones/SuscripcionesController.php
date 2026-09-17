@@ -24,7 +24,11 @@ class SuscripcionesController extends Controller
 
     public function __construct()
     {
-        $this->shareData();
+        // $this->shareData();
+        $this->middleware(function ($request, $next) {
+            $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
+            return $next($request);
+        });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }

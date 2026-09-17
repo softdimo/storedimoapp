@@ -17,9 +17,22 @@ class MetricasController extends Controller
 
     public function __construct()
     {
-        $this->shareData();
+        // $this->shareData();
+        $this->middleware(function ($request, $next) {
+            $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
+            return $next($request);
+        });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
     }
     
     /**
@@ -156,7 +169,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_total_absoluto', [
+                    $response = $this->clientApi->post('administracion/query_total_absoluto', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -192,7 +206,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_subtotal_actividad', [
+                    $response = $this->clientApi->post('administracion/query_subtotal_actividad', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -227,7 +242,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_movimiento_bd', [
+                    $response = $this->clientApi->post('administracion/query_movimiento_bd', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -262,7 +278,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_por_fuente', [
+                    $response = $this->clientApi->post('administracion/query_por_fuente', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -297,7 +314,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_ranking_tenants', [
+                    $response = $this->clientApi->post('administracion/query_ranking_tenants', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -332,7 +350,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_monitoreo_errores', [
+                    $response = $this->clientApi->post('administracion/query_monitoreo_errores', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -367,7 +386,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_rutas_utilizadas', [
+                    $response = $this->clientApi->post('administracion/query_rutas_utilizadas', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -402,7 +422,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/query_actividad_horas', [
+                    $response = $this->clientApi->post('administracion/query_actividad_horas', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'fecha_inicial_metrica' => $request->input('fecha_inicial_metrica'),
                             'fecha_final_metrica' => $request->input('fecha_final_metrica')
@@ -437,7 +458,8 @@ class MetricasController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $response = $this->clientApi->post($this->baseUri . 'administracion/borrar_registros', [
+                    $response = $this->clientApi->post('administracion/borrar_registros', [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             // Este no requiere fechas, la API lo calcula solo
                             '_token' => $request->input('_token')
