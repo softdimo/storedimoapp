@@ -28,6 +28,15 @@ class SuscripcionesController extends Controller
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
+
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
     
     public function index()
     {

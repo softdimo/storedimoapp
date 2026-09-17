@@ -24,6 +24,15 @@ class RenovarSuscripcion implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
     public function toResponse($request)
     {
         try
@@ -52,7 +61,8 @@ class RenovarSuscripcion implements Responsable
 
             try
             {
-                $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'administracion/suscripcion_store', [
+                $reqSuscripcionStore = $this->clientApi->post('administracion/suscripcion_store', [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'id_empresa_suscrita' => $idEmpresaSuscrita,
                         'id_plan_suscrito' => $idPlanSuscrito,
@@ -74,7 +84,7 @@ class RenovarSuscripcion implements Responsable
                     $suscripcionData = $resSuscripcionStore->suscripcion;
 
                     if ($idPlanSuscrito == 1)
-                    {    
+                    {
                         try
                         {
                             // Correo al cliente - Plan de prueba

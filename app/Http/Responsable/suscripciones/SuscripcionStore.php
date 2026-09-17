@@ -22,7 +22,9 @@ class SuscripcionStore implements Responsable
 
     public function toResponse($request)
     {
-        dd($request);
+        $jwtToken = session('api_jwt_token');
+
+        // dd($request);
         $idEmpresaSuscrita = request('id_empresa_suscrita', null);
         $idPlanSuscrito = request('id_plan_suscrito', null);
         $diasTrial = request('dias_trial', null);
@@ -37,7 +39,11 @@ class SuscripcionStore implements Responsable
         
         try
         {
-            $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'administracion/suscripcion_store', [
+            $reqSuscripcionStore = $this->clientApi->post('administracion/suscripcion_store', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'id_empresa_suscrita' => $idEmpresaSuscrita,
                     'id_plan_suscrito' => $idPlanSuscrito,

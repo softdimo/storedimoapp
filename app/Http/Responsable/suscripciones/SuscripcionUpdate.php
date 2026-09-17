@@ -23,6 +23,17 @@ class SuscripcionUpdate implements Responsable
 
     // ===================================================================
 
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
+
     public function toResponse($request)
     {
         $idPlanSuscrito = request('id_plan_suscrito', null);
@@ -39,12 +50,14 @@ class SuscripcionUpdate implements Responsable
         // ===================================================================
 
         // Obtener los datos actuales del producto antes de actualizar
-        $peticionSuscripcionEmpresa = $this->clientApi->get($this->baseUri.'administracion/suscripcion_edit/'.$this->idSuscripcion);
+        $peticionSuscripcionEmpresa = $this->clientApi->get('administracion/suscripcion_edit/'.$this->idSuscripcion, [
+            'headers' => $this->getHeaders(),
+        ]);
         $suscripcionActual = json_decode($peticionSuscripcionEmpresa->getBody()->getContents());
 
-        try
-        {
-            $reqSuscripcionEmpresaUpdate = $this->clientApi->put($this->baseUri.'administracion/suscripcion_update/'.$this->idSuscripcion, [
+        try {
+            $reqSuscripcionEmpresaUpdate = $this->clientApi->put('administracion/suscripcion_update/'.$this->idSuscripcion, [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_plan_suscrito' => $idPlanSuscrito ?? $suscripcionActual->id_plan_suscrito,
                     'dias_trial' => $diasTrial ?? $suscripcionActual->dias_trial,
@@ -98,14 +111,12 @@ class SuscripcionUpdate implements Responsable
             $suscripciones = $this->consultarSuscripciones($idEmpresa, $idPlanSuscrito);
 
             // Si ya existe una suscripción, el trial no aplica
-            if ($suscripciones->isNotEmpty())
-            {
+            if ($suscripciones->isNotEmpty()) {
                 $parametros['dias_trial'] = 0;
             }
 
             // Validar si el usuario intenta adquirir nuevamente el plan Trial
-            if ($this->usuarioYaTuvoTrial($suscripciones))
-            {
+            if ($this->usuarioYaTuvoTrial($suscripciones)) {
                 alert()->info('Advertencia', 'Ya has adquirido el plan Trial, no lo puedes adquirir de nuevo');
                 return back();
             }
@@ -113,8 +124,7 @@ class SuscripcionUpdate implements Responsable
             $renovarSuscripcion = new RenovarSuscripcion();
             return $renovarSuscripcion->guardarRenovacionSuscripcion($parametros);
 
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             alert()->error('Error', 'Renovando la suscripción, contácte a Soporte.');
             return back();
         }
@@ -122,15 +132,13 @@ class SuscripcionUpdate implements Responsable
 
     private function consultarSuscripciones($idEmpresa, $idPlanSuscrito)
     {
-        try
-        {
+        try {
             return Suscripcion::where('id_empresa_suscrita', $idEmpresa)
                 ->where('id_plan_suscrito', $idPlanSuscrito)
                 ->orderByDesc('id_suscripcion')
                 ->get();
 
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             alert()->error('Error', 'Consultando suscripción, contácte a Soporte.');
             return back();
         }

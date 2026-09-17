@@ -19,13 +19,18 @@ class SuscripcionIndex implements Responsable
 
     public function toResponse($request)
     {
-        try
-        {
+        $jwtToken = session('api_jwt_token');
+
+        try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
             
             // Realiza la solicitud a la API
-            $peticion = $clientApi->get($baseUri . 'administracion/suscripcion_index',[
+            $peticion = $clientApi->get('administracion/suscripcion_index',[
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'id_rol' => $this->rolId,
                     'id_usuario' => $this->usuarioId
@@ -37,8 +42,7 @@ class SuscripcionIndex implements Responsable
             view()->share('rolId', $this->rolId);
             return view('suscripciones.index', compact('suscripcionesIndex'));
             
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             alert()->error('Error', 'Exception Index Suscripciones, contacte a Soporte.');
             return back();
         }
