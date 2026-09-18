@@ -20,6 +20,20 @@ class EmpresaSuscripcionLandingController extends Controller
         $this->shareData();
     }
 
+    // ======================================================================
+    // ======================================================================
+
+    private function getLandingHeaders(): array
+    {
+        return [
+            'X-Landing-API-Key' => config('services.lumen.landing_key'),
+            'Accept'            => 'application/json',
+        ];
+    }
+
+    // ======================================================================
+    // ======================================================================
+
     /**
      * Display a listing of the resource.
      *
@@ -141,7 +155,8 @@ class EmpresaSuscripcionLandingController extends Controller
     
         try {
             // $response = $this->getHttpClient()->post('administracion/validar_nit', [
-            $response = $this->clientApi->post($this->baseUri.'administracion/validar_nit', [
+            $response = $this->clientApi->post($this->baseUri.'landing/validar_nit_landing', [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
                 'json' => ['nit_empresa' => $request->input('nit_empresa')]
             ]);
         
@@ -162,7 +177,7 @@ class EmpresaSuscripcionLandingController extends Controller
     {
         try {
             // $response = $this->getHttpClient()->post('administracion/validar_documento', [
-            $response = $this->clientApi->post($this->baseUri.'administracion/validar_documento', [
+            $response = $this->clientApi->post($this->baseUri.'landing/validar_documento_landing', [
                 'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
             ]);
         
@@ -183,7 +198,7 @@ class EmpresaSuscripcionLandingController extends Controller
     {
         try {
             // $response = $this->getHttpClient()->post('administracion/validar_correo_empresa', [
-            $response = $this->clientApi->post($this->baseUri.'administracion/validar_correo_empresa', [
+            $response = $this->clientApi->post($this->baseUri.'landing/validar_correo_empresa_landing', [
                 'json' => [
                     'email_empresa' => $request->input('email_empresa')
                 ]
@@ -238,7 +253,7 @@ class EmpresaSuscripcionLandingController extends Controller
 
         try {
             // Consultamos a la API de Lumen los datos frescos de la suscripción y empresa mediante tu cliente regular
-            $reqSuscripcion = $this->clientApi->get($this->baseUri . 'administracion/suscripcion_edit/' . $idSuscripcion);
+            $reqSuscripcion = $this->clientApi->get($this->baseUri . 'landing/suscripcion_edit/' . $idSuscripcion);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
             if (!$suscripcion) {
@@ -310,7 +325,7 @@ class EmpresaSuscripcionLandingController extends Controller
     {
         try {
             // Consultar empresa
-            $reqEmpresa = $this->clientApi->get($this->baseUri.'administracion/empresa_edit/' . $idEmpresa);
+            $reqEmpresa = $this->clientApi->get($this->baseUri.'landing/empresa_edit/' . $idEmpresa);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             // Consultar suscripción más reciente de esa empresa

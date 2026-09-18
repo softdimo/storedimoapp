@@ -1,6 +1,6 @@
 <div class="container-fluid px-0">
     <div class="row g-2 m-0"> {{-- m-0 elimina márgenes negativos de la fila; g-2 reduce espacio entre cards --}}
-        @foreach ($planesData as $plan)
+        @foreach ($planesLanding as $plan)
             {{-- col-md-3 garantiza que entren 4 cards por fila (12 / 3 = 4) --}}
             <div class="col-12 col-sm-6 col-md-3 p-2">
                 <div class="card h-100 shadow-sm border-1">

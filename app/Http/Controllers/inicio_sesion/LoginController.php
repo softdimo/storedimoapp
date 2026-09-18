@@ -16,6 +16,7 @@ use App\Http\Responsable\inicio_sesion\RecuperarClave;
 use App\Http\Responsable\inicio_sesion\RecuperarClaveUpdate;
 use App\Traits\MetodosTrait;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -25,9 +26,20 @@ class LoginController extends Controller
 
     public function __construct()
     {
-        $this->shareData();
-        $this->baseUri = env('BASE_URI');
+        // $this->shareData();
+        // $this->baseUri = env('BASE_URI');
+        // $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+
+        $this->baseUri = config('services.lumen.base_uri', env('BASE_URI'));
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    private function getLandingHeaders(): array
+    {
+        return [
+            'X-Landing-API-Key' => config('services.lumen.landing_key'),
+            'Accept'            => 'application/json',
+        ];
     }
 
     // ======================================================================
@@ -39,8 +51,7 @@ class LoginController extends Controller
      */
     public function index()
     {
-        if (!$this->checkDatabaseConnection())
-        {
+        if (!$this->checkDatabaseConnection()) {
             return view('db_conexion');
         }
 
@@ -48,8 +59,57 @@ class LoginController extends Controller
         if (session()->has('sesion_iniciada') && session('sesion_iniciada') === true) {
             return redirect()->route('home.index');
         }
-        
-        return view('inicio_sesion.login');
+
+        // Inicialización por defecto en caso de fallo en la API
+        $planesLanding          = collect([]);
+        $tiposDocumento         = collect([]);
+        $planesSelect           = collect([]);
+        $planesData             = collect([]);
+        $tiposPagoSuscripcion   = collect([]);
+
+        // Consultar datos para Landing y Registro sin sesión activa
+        try {
+            $this->initHttpClient(); // Asegura la instancia base de Guzzle
+
+            // 1. Obtener la lista de planes para la landing (@include('layouts.planesLanding'))
+            $resPlanes = $this->clientApi->get('landing/planes_landing', [
+                'headers' => $this->getLandingHeaders()
+            ]);
+            $planesLanding = collect(json_decode($resPlanes->getBody()->getContents(), true) ?? []);
+
+            // 2. Obtener los selects e información del formulario de registro (@include('layouts.formCrearEmpresaSuscripcionLanding'))
+            $resTraits = $this->clientApi->get('landing/config_inicial_trait_landing', [
+                'headers' => $this->getLandingHeaders()
+            ]);
+            $traitsLanding = json_decode($resTraits->getBody()->getContents(), true) ?? [];
+
+            // dd($planesLanding, $traitsLanding);
+
+            // Mapeo exacto de las variables necesarias para el formulario
+            $tiposDocumento       = collect($traitsLanding['tipos_documento'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
+            $planesSelect         = collect($traitsLanding['planes'] ?? [])->pluck('nombre_plan', 'id_plan');
+            $planesData           = collect($traitsLanding['planesData'] ?? [])->keyBy('id_plan');
+            $tiposPagoSuscripcion = collect($traitsLanding['tipos_pago_suscripcion'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
+
+            // dd($tiposDocumento,$planesSelect,$planesData,$tiposPagoSuscripcion);
+
+        } catch (Exception $e) {
+            Log::error('Error cargando datos de la landing: ' . $e->getMessage());
+
+            dd([
+                'Error Mensaje' => $e->getMessage(),
+                'Linea'         => $e->getLine(),
+                'Archivo'       => $e->getFile()
+            ]);
+        }
+
+        return view('inicio_sesion.login', compact(
+            'planesLanding',
+            'tiposDocumento',
+            'planesSelect',
+            'planesData',
+            'tiposPagoSuscripcion'
+        ));
     }
 
     // ======================================================================

@@ -41,4 +41,8 @@ return [
         'internal_token' => env('INTERNAL_TOKEN_SECRET'),
     ],
 
+    'lumen' => [
+        'landing_key' => env('LANDING_API_KEY'),
+    ],
+
 ];

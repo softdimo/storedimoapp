@@ -20,7 +20,7 @@
                         <label for="id_tipo_documento" class="form-label">Tipo Documento
                             <span class="text-danger">*</span>
                         </label>
-                        {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tipos_documento), old('id_tipo_documento', null), [
+                        {!! Form::select('id_tipo_documento', collect(['' => 'Seleccionar...'])->union($tiposDocumento), old('id_tipo_documento', null), [
                             'class' => 'form-select select2',
                             'id' => 'id_tipo_documento',
                             'required' => 'required',
@@ -178,7 +178,7 @@
                 <div class="col-12 col-md-3 mt-3">
                     <div class="form-group d-flex flex-column">
                         <label for="id_plan_suscrito" class="form-label">Plan <span class="text-danger">*</span></label>
-                        {!! Form::select('id_plan_suscrito', collect(['' => 'Seleccionar...'])->union($planes), old('id_plan_suscrito', null), [
+                        {!! Form::select('id_plan_suscrito', collect(['' => 'Seleccionar...'])->union($planesSelect), old('id_plan_suscrito', null), [
                             'class' => 'form-select select2',
                             'id' => 'id_plan_suscrito',
                             'required' => 'required',
@@ -270,7 +270,7 @@
                 <div class="col-12 col-md-3 mt-3" id="div_id_tipo_pago">
                     <div class="form-group d-flex flex-column">
                         <label for="id_tipo_pago" class="form-label">Modalidad Suscripción<span class="text-danger">*</span></label>
-                        {!! Form::select('id_tipo_pago', collect(['' => 'Seleccionar...'])->union($tipos_pago_suscripcion), old('id_tipo_pago', null), [
+                        {!! Form::select('id_tipo_pago', collect(['' => 'Seleccionar...'])->union($tiposPagoSuscripcion), old('id_tipo_pago', null), [
                             'class' => 'form-select',
                             'id' => 'id_tipo_pago'
                         ]) !!}
