@@ -23,6 +23,14 @@ class EmpresaSuscripcionStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+    private function getLandingHeaders(): array
+    {
+        return [
+            'X-Landing-API-Key' => config('services.lumen.landing_key'),
+            'Accept'            => 'application/json',
+        ];
+    }
+
     public function toResponse($request)
     {
         $idTipoDocumento = request('id_tipo_documento', null);
@@ -73,15 +81,16 @@ class EmpresaSuscripcionStore implements Responsable
 
         $consultarEmpresa = $this->consultarEmpresa($nitEmpresa, $nombreEmpresa);
         
-        try
-        {
+        try {
             if (isset($consultarEmpresa) && !is_null($consultarEmpresa) && !empty($consultarEmpresa)) {
                 alert()->warning('Cuidado', 'Empresa existente');
                 return redirect()->route('home.index')->withInput();
             }
             
             // $reqEmpresaStore = $this->getHttpClient()->post('administracion/empresa_store', [
-            $reqEmpresaStore = $this->clientApi->post($this->baseUri.'administracion/empresa_store', [
+            // $reqEmpresaStore = $this->clientApi->post($this->baseUri.'landing/empresa_store_landing', [
+            $reqEmpresaStore = $this->clientApi->post('landing/empresa_store_landing', [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
                 'json' => [
                     'id_tipo_documento' => $idTipoDocumento,
                     'nit_empresa' => $nitEmpresa,
@@ -109,8 +118,7 @@ class EmpresaSuscripcionStore implements Responsable
             // ===================================================================
 
             // INICIO Store SUSCIPCIÓN EMPRESA
-            if (isset($resEmpresaStore->success) && $resEmpresaStore->success)
-            {
+            if (isset($resEmpresaStore->success) && $resEmpresaStore->success) {
                 $idEmpresaRecienCreada = $resEmpresaStore->empresa->id_empresa;
                 $idEmpresaSuscrita = $idEmpresaRecienCreada;
                 $idPlanSuscrito = request('id_plan_suscrito', null);
@@ -128,7 +136,9 @@ class EmpresaSuscripcionStore implements Responsable
 
                 try {
                     // $reqSuscripcionStore = $this->getHttpClient()->post('administracion/suscripcion_store', [
-                    $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'administracion/suscripcion_store', [
+                    // $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'landing/suscripcion_store_landing', [
+                    $reqSuscripcionStore = $this->clientApi->post('landing/suscripcion_store_landing', [
+                        'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
                         'json' => [
                             'id_empresa_suscrita' => $idEmpresaSuscrita,
                             'id_plan_suscrito' => $idPlanSuscrito,
@@ -244,7 +254,9 @@ class EmpresaSuscripcionStore implements Responsable
     public function consultarEmpresa($nitEmpresa, $nombreEmpresa)
     {
         // $consultarEmpresa = $this->getHttpClient()->post('administracion/consultar_empresa', [
-        $consultarEmpresa = $this->clientApi->post($this->baseUri.'administracion/consultar_empresa', [
+        // $consultarEmpresa = $this->clientApi->post($this->baseUri.'landing/consultar_empresa_landing', [
+        $consultarEmpresa = $this->clientApi->post('landing/consultar_empresa_landing', [
+            'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
             'json' => [
                 'nit_empresa' => $nitEmpresa,
                 'nombre_empresa' => $nombreEmpresa

@@ -26,10 +26,6 @@ class LoginController extends Controller
 
     public function __construct()
     {
-        // $this->shareData();
-        // $this->baseUri = env('BASE_URI');
-        // $this->clientApi = new Client(['base_uri' => $this->baseUri]);
-
         $this->baseUri = config('services.lumen.base_uri', env('BASE_URI'));
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
@@ -83,24 +79,20 @@ class LoginController extends Controller
             ]);
             $traitsLanding = json_decode($resTraits->getBody()->getContents(), true) ?? [];
 
-            // dd($planesLanding, $traitsLanding);
-
             // Mapeo exacto de las variables necesarias para el formulario
             $tiposDocumento       = collect($traitsLanding['tipos_documento'] ?? [])->pluck('tipo_documento', 'id_tipo_documento');
             $planesSelect         = collect($traitsLanding['planes'] ?? [])->pluck('nombre_plan', 'id_plan');
             $planesData           = collect($traitsLanding['planesData'] ?? [])->keyBy('id_plan');
             $tiposPagoSuscripcion = collect($traitsLanding['tipos_pago_suscripcion'] ?? [])->pluck('tipo_pago', 'id_tipo_pago');
 
-            // dd($tiposDocumento,$planesSelect,$planesData,$tiposPagoSuscripcion);
-
         } catch (Exception $e) {
             Log::error('Error cargando datos de la landing: ' . $e->getMessage());
 
-            dd([
-                'Error Mensaje' => $e->getMessage(),
-                'Linea'         => $e->getLine(),
-                'Archivo'       => $e->getFile()
-            ]);
+            // dd([
+            //     'Error Mensaje' => $e->getMessage(),
+            //     'Linea'         => $e->getLine(),
+            //     'Archivo'       => $e->getFile()
+            // ]);
         }
 
         return view('inicio_sesion.login', compact(

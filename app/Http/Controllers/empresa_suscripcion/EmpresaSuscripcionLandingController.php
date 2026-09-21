@@ -178,6 +178,7 @@ class EmpresaSuscripcionLandingController extends Controller
         try {
             // $response = $this->getHttpClient()->post('administracion/validar_documento', [
             $response = $this->clientApi->post($this->baseUri.'landing/validar_documento_landing', [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
                 'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
             ]);
         
@@ -199,6 +200,7 @@ class EmpresaSuscripcionLandingController extends Controller
         try {
             // $response = $this->getHttpClient()->post('administracion/validar_correo_empresa', [
             $response = $this->clientApi->post($this->baseUri.'landing/validar_correo_empresa_landing', [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
                 'json' => [
                     'email_empresa' => $request->input('email_empresa')
                 ]
@@ -253,14 +255,18 @@ class EmpresaSuscripcionLandingController extends Controller
 
         try {
             // Consultamos a la API de Lumen los datos frescos de la suscripción y empresa mediante tu cliente regular
-            $reqSuscripcion = $this->clientApi->get($this->baseUri . 'landing/suscripcion_edit/' . $idSuscripcion);
+            $reqSuscripcion = $this->clientApi->get($this->baseUri . 'landing/suscripcion_edit_landing/' . $idSuscripcion, [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            ]);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
             if (!$suscripcion) {
                 return response()->json(['error' => 'Suscripción no válida'], 404);
             }
 
-            $reqEmpresa = $this->clientApi->get($this->baseUri . 'administracion/empresa_edit/' . $suscripcion->id_empresa_suscrita);
+            $reqEmpresa = $this->clientApi->get($this->baseUri . 'landing/empresa_edit_landing/' . $suscripcion->id_empresa_suscrita, [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            ]);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             if ($empresa) {
@@ -325,11 +331,15 @@ class EmpresaSuscripcionLandingController extends Controller
     {
         try {
             // Consultar empresa
-            $reqEmpresa = $this->clientApi->get($this->baseUri.'landing/empresa_edit/' . $idEmpresa);
+            $reqEmpresa = $this->clientApi->get($this->baseUri.'landing/empresa_edit_landing/' . $idEmpresa, [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            ]);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             // Consultar suscripción más reciente de esa empresa
-            $reqSuscripcion = $this->clientApi->get($this->baseUri.'administracion/suscripcion_empresa_estado_login/' . $idEmpresa);
+            $reqSuscripcion = $this->clientApi->get($this->baseUri.'landing/suscripcion_empresa_estado_login/' . $idEmpresa, [
+                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            ]);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
             $valorSuscripcion = $suscripcion->valor_suscripcion;
