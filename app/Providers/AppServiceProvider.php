@@ -56,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
                         'Authorization' => 'Bearer ' . $jwtToken, // <--- Header JWT
                         'Accept'        => 'application/json',
                     ],
-                    'timeout' => 3 // <--- Evita que la carga de vistas se bloquee
+                    // 'timeout' => 3
                 ]);
                 $usuario = json_decode($response->getBody()->getContents());
 
