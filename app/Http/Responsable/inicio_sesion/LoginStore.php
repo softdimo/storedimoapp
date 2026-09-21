@@ -223,21 +223,33 @@ class LoginStore implements Responsable
         $nuevoToken = Str::random(40);
 
         // 2. Notificamos a la API para que lo guarde en la BD principal
-        // Si la API falla, es mejor capturarlo para no bloquear el login,
-        // pero idealmente debe ser exitoso.
+        // Si la API falla, es mejor capturarlo para no bloquear el login, pero idealmente debe ser exitoso.
         try {
             $this->actualizarTokenSesionBd($user['id_usuario'], $nuevoToken, $apiJwtToken);
         } catch (Exception $e) {
             Log::error("No se pudo actualizar el session_token en la API: " . $e->getMessage());
-            // Opcional: podrías decidir si dejas pasar el login o no
         }
 
         $permisos = $this->obtenerPermisos($user['id_usuario'], $apiJwtToken);
 
-        // 3. Guardamos todo en la sesión local del navegador
+        // 3. ESTRUCTURAMOS EL OBJETO USUARIO QUE CONSUMIRÁ EL ENCABEZADO
+        // (Asegúrate de incluir los nombres de campos que retornaba tu API)
+        $usuarioLogueado = (object) [
+            'id_usuario'        => $user['id_usuario'],
+            'nombre_usuario'    => $user['nombre_usuario'] ?? $user['usuario'] ?? '',
+            'apellido_usuario'  => $user['apellido_usuario'] ?? '',
+            'rol'               => $user['rol'] ?? $user['nombre_rol'] ?? '',
+            'logo_empresa'      => $user['logo_empresa'] ?? asset('imagenes/logo_storedimo.png'),
+            'nombre_empresa'    => $user['empresa'] ?? ''
+        ];
+
+
+
+        // 4. Guardamos todo en la sesión local del navegador
         Session::put([
             'id_usuario'        => $user['id_usuario'],
             'usuario'           => $user['usuario'],
+            'usuario_logueado'  => $usuarioLogueado, // <--- GUARDADO EN SESIÓN PARA EL ENCABEZAD
             'id_empresa'        => $user['id_empresa'],
             'id_rol'            => $user['id_rol'],
             'empresa_actual'    => $user['empresa'],
@@ -247,6 +259,9 @@ class LoginStore implements Responsable
             'session_token'     => $nuevoToken, // <--- El "sello" de seguridad
             'api_jwt_token'     => $apiJwtToken // <--- ALMACENADO PARA CONSUMIR EN CADA PETICIÓN A LA API
         ]);
+
+        // Forzamos la escritura física de la sesión antes de redirigir
+        Session::save();
     }
 
     private function obtenerPermisos($idUsuario, string $apiJwtToken)
