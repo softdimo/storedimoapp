@@ -232,6 +232,9 @@ class LoginStore implements Responsable
 
         $permisos = $this->obtenerPermisos($user['id_usuario'], $apiJwtToken);
 
+        // Extraemos el nombre de la empresa de forma segura desde el array 'empresa'
+        $nombreEmpresaTexto = is_array($user['empresa']) ? ($user['empresa']['nombre_empresa'] ?? '') : $user['empresa'];
+
         // 3. ESTRUCTURAMOS EL OBJETO USUARIO QUE CONSUMIRÁ EL ENCABEZADO
         // (Asegúrate de incluir los nombres de campos que retornaba tu API)
         $usuarioLogueado = (object) [
@@ -239,25 +242,26 @@ class LoginStore implements Responsable
             'nombre_usuario'    => $user['nombre_usuario'] ?? $user['usuario'] ?? '',
             'apellido_usuario'  => $user['apellido_usuario'] ?? '',
             'rol'               => $user['rol'] ?? $user['nombre_rol'] ?? '',
-            'logo_empresa'      => $user['logo_empresa'] ?? asset('imagenes/logo_storedimo.png'),
-            'nombre_empresa'    => $user['empresa'] ?? ''
+            'logo_empresa'      => $user['empresa']['logo_empresa'] ?? asset('imagenes/logo_storedimo.png'),
+            'nombre_empresa'    => $nombreEmpresaTexto
         ];
 
-
+        // dd($usuarioLogueado);
 
         // 4. Guardamos todo en la sesión local del navegador
         Session::put([
             'id_usuario'        => $user['id_usuario'],
             'usuario'           => $user['usuario'],
-            'usuario_logueado'  => $usuarioLogueado, // <--- GUARDADO EN SESIÓN PARA EL ENCABEZAD
+            'usuario_logueado'  => $usuarioLogueado, // GUARDADO EN SESIÓN PARA EL ENCABEZAD
             'id_empresa'        => $user['id_empresa'],
             'id_rol'            => $user['id_rol'],
-            'empresa_actual'    => $user['empresa'],
+            'datos_empresa'     => $user['empresa'],      // EL ARRAY COMPLETO (Para configurar la BD Tenant)
+            'empresa_actual'    => $nombreEmpresaTexto,   // SOLO EL TEXTO STRING (Para vistas y Blade)
             'permisos'          => $permisos,
             'sesion_iniciada'   => true,
             'tenant_connection' => true,
-            'session_token'     => $nuevoToken, // <--- El "sello" de seguridad
-            'api_jwt_token'     => $apiJwtToken // <--- ALMACENADO PARA CONSUMIR EN CADA PETICIÓN A LA API
+            'session_token'     => $nuevoToken, // El "sello" de seguridad
+            'api_jwt_token'     => $apiJwtToken // ALMACENADO PARA CONSUMIR EN CADA PETICIÓN A LA API
         ]);
 
         // Forzamos la escritura física de la sesión antes de redirigir

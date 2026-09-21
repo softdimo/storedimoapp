@@ -17,7 +17,8 @@ class VerificarSesionIniciada
         }
 
         // 2. Verificación de empresa
-        if (!session('empresa_actual')) {
+        // if (!session('empresa_actual')) {
+        if (!session('datos_empresa') || !session('empresa_actual')) {
             $this->limpiarSesion();
             return $this->responderError('Sesión inválida', 401, $request);
         }
@@ -38,7 +39,7 @@ class VerificarSesionIniciada
             }
 
             // 4. Configuración tenant
-            DatabaseConnectionHelper::configurarConexionTenant(session('empresa_actual'));
+            DatabaseConnectionHelper::configurarConexionTenant(session('datos_empresa'));
             DB::connection('tenant')->getPdo();
 
             return $next($request);
@@ -72,7 +73,7 @@ class VerificarSesionIniciada
     // Mantener igual
     private function limpiarSesion()
     {
-        session()->forget(['sesion_iniciada', 'empresa_actual', 'permisos']);
+        session()->forget(['sesion_iniciada', 'empresa_actual', 'datos_empresa', 'permisos']);
         session()->flush();
     }
 }
