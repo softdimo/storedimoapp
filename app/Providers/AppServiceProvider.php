@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use GuzzleHttp\Client;
 
@@ -28,27 +29,36 @@ class AppServiceProvider extends ServiceProvider
     {
         // \Illuminate\Support\Facades\View::composer('*', function ($view) {
         View::composer('*', function ($view) {
-            $jwtToken = session('api_jwt_token');
-            $idUsuario = session('id_usuario');
-            $logoEmpresa = asset('imagenes/logo_storedimo.png');
+            $jwtToken       = session('api_jwt_token');
+            $idUsuario      = session('id_usuario');
+            $logoEmpresa    = asset('imagenes/logo_storedimo.png');
 
             // if (!$idUsuario) {
             //     $view->with('logoEmpresa', $logoEmpresa);
             //     return;
             // }
 
-            if (!$idUsuario) {
+            // if (!$idUsuario) {
+            //     $view->with([
+            //         'logoEmpresa' => $logoEmpresa,
+            //         'usuarioLogueado' => null,
+            //         'nombreEmpresa' => null
+            //     ]);
+            //     return;
+            // }
+
+            if (!$idUsuario || !$jwtToken) {
                 $view->with([
-                    'logoEmpresa' => $logoEmpresa,
+                    'logoEmpresa'     => $logoEmpresa,
                     'usuarioLogueado' => null,
-                    'nombreEmpresa' => null
+                    'nombreEmpresa'   => null
                 ]);
                 return;
             }
 
             try {
-                $baseUri = env('BASE_URI');
-                $clientApi = new Client(['base_uri' => $baseUri]);
+                $baseUri    = env('BASE_URI');
+                $clientApi  = new Client(['base_uri' => $baseUri]);
 
                 // $response = $clientApi->get($baseUri . 'administracion/consulta_usuario_logueado/' . $idUsuario, [
                 $response = $clientApi->get('administracion/consulta_usuario_logueado/' . $idUsuario, [
@@ -56,7 +66,8 @@ class AppServiceProvider extends ServiceProvider
                         'Authorization' => 'Bearer ' . $jwtToken, // <--- Header JWT
                         'Accept'        => 'application/json',
                     ],
-                    // 'timeout' => 3
+                    'connect_timeout' => 3, // Evita que la vista se cuelgue si la API tarda
+                    'timeout'         => 5
                 ]);
                 $usuario = json_decode($response->getBody()->getContents());
 
@@ -66,8 +77,10 @@ class AppServiceProvider extends ServiceProvider
                     'nombreEmpresa'     => $usuario->nombre_empresa ?? null,
                 ]);
 
-            } catch (\Exception $e) {
-                // $view->with('logoEmpresa', $logoEmpresa);
+            } catch (Exception $e) {
+                // Registra el error exacto en storage/logs/laravel.log para diagnosticar producción
+                Log::error('Error cargando usuario logueado en ViewComposer: ' . $e->getMessage());
+
                 $view->with([
                     'usuarioLogueado' => null,
                     'logoEmpresa'     => $logoEmpresa,
