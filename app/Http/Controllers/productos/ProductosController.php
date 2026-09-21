@@ -169,7 +169,7 @@ class ProductosController extends Controller
                     return redirect()->to(route('login'));
                 } else
                 {
-                    $vista = new ProductoShow();
+                    $vista = new ProductoShow($idProducto);
                     return $this->validarAccesos($sesion[0], 21, $vista);
                 }
             }
