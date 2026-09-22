@@ -241,12 +241,10 @@ class LoginStore implements Responsable
             'id_usuario'        => $user['id_usuario'],
             'nombre_usuario'    => $user['nombre_usuario'] ?? $user['usuario'] ?? '',
             'apellido_usuario'  => $user['apellido_usuario'] ?? '',
-            'rol'               => $user['rol'] ?? $user['nombre_rol'] ?? '',
+            'rol'               => $user['name'] ?? '',
             'logo_empresa'      => $user['empresa']['logo_empresa'] ?? asset('imagenes/logo_storedimo.png'),
             'nombre_empresa'    => $nombreEmpresaTexto
         ];
-
-        // dd($usuarioLogueado);
 
         // 4. Guardamos todo en la sesión local del navegador
         Session::put([
