@@ -4,7 +4,6 @@ namespace App\Http\Responsable\inicio_sesion;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
-// use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +16,12 @@ use App\Helpers\DatabaseConnectionHelper;
 class LoginStore implements Responsable
 {
     use MetodosTrait;
+
+    /* Crea una instancia centralizada de Client (Guzzle) */
+    private function getClient(): Client
+    {
+        return new Client(['base_uri' => env('BASE_URI')]);
+    }
 
     public function toResponse($request)
     {
