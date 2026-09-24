@@ -23,6 +23,25 @@ class LoginStore implements Responsable
         return new Client(['base_uri' => env('BASE_URI')]);
     }
 
+    // =======================================================================================
+
+    /* Obtiene los headers requeridos para la comunicación con la landing */
+    private function getLandingHeaders(string $apiJwtToken = null): array
+    {
+        $headers = [
+            'Accept' => 'application/json',
+            // Agrega aquí headers adicionales de seguridad requeridos por la landing si aplica
+        ];
+
+        if ($apiJwtToken) {
+            $headers['Authorization'] = 'Bearer ' . $apiJwtToken;
+        }
+
+        return $headers;
+    }
+
+    // =======================================================================================
+
     public function toResponse($request)
     {
         // Validación de campos requeridos
@@ -170,12 +189,27 @@ class LoginStore implements Responsable
     // MÉTODOS AUXILIARES
     // =========================================================================
 
+    private function checkDatabaseConnection(): bool
+    {
+        try {
+            DB::connection('mysql')->getPdo();
+            return true;
+        } catch (Exception $e) {
+            Log::error("Error de conexión a BD principal: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // =========================================================================
+
     /* Nuevo método para solicitar la emisión del JWT a la API Lumen */
     private function autenticarEnApi(string $email, string $clave): array
     {
         try {
-            $client = new Client(['base_uri' => env('BASE_URI')]);
-            $response = $client->post('auth/login', [
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
+            // $response = $client->post('auth/login', [
+            $response = $this->getClient()->post('auth/login', [
+                'headers' => $this->getLandingHeaders(),
                 'json' => [
                     'email'   => $email,
                     'clave'   => $clave
@@ -271,16 +305,20 @@ class LoginStore implements Responsable
         Session::save();
     }
 
+    // =======================================================================================
+
     private function obtenerPermisos($idUsuario, string $apiJwtToken)
     {
         try {
-            $client = new Client();
+            // $client = new Client();
             // $response = $client->post(env('BASE_URI').'consultar_permisos', [
-            $response = $client->post(env('BASE_URI') . 'administracion/consultar_permisos', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $apiJwtToken,
-                    'Accept'        => 'application/json',
-                ],
+            // $response = $client->post(env('BASE_URI') . 'administracion/consultar_permisos', [
+            $response = $this->getClient()->post('administracion/consultar_permisos_login', [
+                // 'headers' => [
+                //     'Authorization' => 'Bearer ' . $apiJwtToken,
+                //     'Accept'        => 'application/json',
+                // ],
+                'headers' => $this->getLandingHeaders($apiJwtToken),
                 'json' => ['usuarioId' => $idUsuario],
                 'timeout' => 3
             ]);
@@ -294,18 +332,22 @@ class LoginStore implements Responsable
         }
     }
 
+    // =======================================================================================
+
     private function actualizarTokenSesionBd($idUsuario, $token, string $apiJwtToken = null) {
         try {
-            $client = new Client(['base_uri' => env('BASE_URI')]);
-            $headers = ['Accept' => 'application/json'];
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
+            // $headers = ['Accept' => 'application/json'];
             
-            if ($apiJwtToken) {
-                $headers['Authorization'] = 'Bearer ' . $apiJwtToken;
-            }
+            // if ($apiJwtToken) {
+            //     $headers['Authorization'] = 'Bearer ' . $apiJwtToken;
+            // }
 
-            $client->post('administracion/actualizar_token_sesion/'.$idUsuario, [
-                'headers' => $headers,
-                'json' => [
+            // $client->post('administracion/actualizar_token_sesion/'.$idUsuario, [
+            $this->getClient()->post('administracion/actualizar_token_sesion_login/'.$idUsuario, [
+                // 'headers' => $headers,
+                'headers'   => $this->getLandingHeaders($apiJwtToken),
+                'json'      => [
                     'session_token' => $token,
                     'id_audit'      => $idUsuario
                 ],
@@ -320,44 +362,51 @@ class LoginStore implements Responsable
         }
     }
 
+    // =======================================================================================
+
     private function actualizarClaveFallas($idUsuario, $contador, string $apiJwtToken = null)
     {
         try {
-            $client = new Client(['base_uri' => env('BASE_URI')]);
-            $headers = ['Accept' => 'application/json'];
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
+            // $headers = ['Accept' => 'application/json'];
             
-            if ($apiJwtToken) {
-                $headers['Authorization'] = 'Bearer ' . $apiJwtToken;
-            }
+            // if ($apiJwtToken) {
+            //     $headers['Authorization'] = 'Bearer ' . $apiJwtToken;
+            // }
 
-            $client->post('administracion/actualizar_clave_fallas/'.$idUsuario, [
-                'headers' => $headers,
-                'json' => [
+            // $client->post('administracion/actualizar_clave_fallas/'.$idUsuario, [
+            $this->getClient()->post('landing/actualizar_clave_fallas_login/'.$idUsuario, [
+                // 'headers' => $headers,
+                'headers'   => $this->getLandingHeaders($apiJwtToken),
+                'json'      => [
                     'clave_fallas'  => $contador,
                     'id_audit'      => $idUsuario
                 ],
                 'timeout' => 5
             ]);
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             Log::error("Error actualizando clave fallas en API: " . $e->getMessage());
             alert()->error('Error actualizar clave fallas');
             return redirect()->route('login');
         }
     }
 
+    // =======================================================================================
+
     private function consultarEmail($email)
     {
         try {
             // Realiza la solicitud POST a la API
-            $client = new Client(['base_uri' => env('BASE_URI')]);
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
 
-            $response = $client->post('administracion/validar_email_login', [
-                    'json' => ['email' => $email],
-                    'timeout' => 5
-                ]
-            );
+            // $response = $client->post('administracion/validar_email_login', [
+            $response = $this->getClient()->post('administracion/validar_email_login', [
+                'headers'   => $this->getLandingHeaders(),
+                'json' => ['email' => $email],
+                'timeout' => 5
+            ]);
             return json_decode($response->getBody()->getContents(), true);
+
         } catch (Exception $e) {
             Log::error("Error consultando email en API: " . $e->getMessage());
             alert()->error('Error consultando email');
@@ -365,11 +414,16 @@ class LoginStore implements Responsable
         }
     }
 
+    // =======================================================================================
+
     private function inactivarUsuario($idUsuario)
     {
         try {
-            $client = new Client(['base_uri' => env('BASE_URI')]);
-            $client->post('administracion/inactivar_usuario/'.$idUsuario, [
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
+
+            // $client->post('administracion/inactivar_usuario/'.$idUsuario, [
+            $this->getClient()->post('administracion/inactivar_usuario_login/'.$idUsuario, [
+                'headers'   => $this->getLandingHeaders(),
                 'json' => ['id_audit' => $idUsuario],
                 'timeout' => 5
             ]);
@@ -380,18 +434,19 @@ class LoginStore implements Responsable
         }
     }
 
-    
+    // =======================================================================================
 
     private function consultarEstadoSuscripcionEmpresa($idEmpresa)
     {
         try {
-            $client = new Client(['base_uri' => env('BASE_URI')]);
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
 
-            $response = $client->get('administracion/suscripcion_empresa_estado_login/'.$idEmpresa, [
-                    'query' => [],
-                    'timeout' => 5
-                ]
-            );
+            // $response = $client->get('administracion/suscripcion_empresa_estado_login/'.$idEmpresa, [
+            $response = $this->getClient()->get('administracion/suscripcion_empresa_estado_login/'.$idEmpresa, [
+                'headers'   => $this->getLandingHeaders(),
+                'query'     => [],
+                'timeout'   => 5
+            ]);
             return json_decode($response->getBody()->getContents());
 
         } catch (Exception $e) {
@@ -400,6 +455,8 @@ class LoginStore implements Responsable
             return redirect()->route('login');
         }
     }
+
+    // =======================================================================================
 
     // Método para verificar si la fecha ya pasó
     private function fechaHaVencido($fecha)
@@ -412,17 +469,22 @@ class LoginStore implements Responsable
             // Si hoy es DÍA y fecha_final es DÍA, aún es válida.
             // Si hoy es DÍA+1, ya venció.
             return \Carbon\Carbon::parse($fecha)->endOfDay()->isPast();
+
         } catch (\Exception $e) {
             return true; // Si hay error de parseo, asumimos que no es válida
         }
     }
 
+    // =======================================================================================
+
     private function actualizarEstadoSuscripcion($idSuscripcion, $nuevoEstado)
     {
         try {
-            $client = new Client(['base_uri' => env('BASE_URI')]);
+            // $client = new Client(['base_uri' => env('BASE_URI')]);
             // Asumiendo que crearás un nuevo endpoint en tu API para actualizar el estado
-            $client->post('administracion/suscripcion_actualizar_estado_automatico/'.$idSuscripcion, [
+            // $client->post('administracion/suscripcion_actualizar_estado_automatico/'.$idSuscripcion, [
+            $this->getClient()->post('administracion/suscripcion_actualizar_estado_automatico_login/'.$idSuscripcion, [
+                'headers'   => $this->getLandingHeaders(),
                 'json' => [
                     'id_estado_suscripcion' => $nuevoEstado,
                     'id_audit'              => Session::get('id_usuario')
