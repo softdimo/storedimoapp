@@ -82,6 +82,16 @@
 
             const planesData = @json($planesData);
 
+            function formatearMiles(valor)
+            {
+                valor = String(valor).replace(/[^\d,]/g, "");
+                let partes = valor.split(",");
+                let entero = partes[0].replace(/\D/g, "");
+                let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+                entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return decimal ? `${entero},${decimal}` : entero;
+            }
+
 
             document.getElementById('fecha_final').addEventListener('keydown', e => e.preventDefault());
             document.getElementById('fecha_final').addEventListener('click', e => e.preventDefault());
@@ -175,16 +185,16 @@
                     $('#div_dias_trial').hide();
 
                     $('#div_valor_mensual').show();
-                    $('#valor_mensual').val(plan.valor_mensual ?? '');
+                    $('#valor_mensual').val(formatearMiles((plan.valor_mensual ?? '').toString()));
 
                     $('#div_valor_trimestral').show();
-                    $('#valor_trimestral').val(plan.valor_trimestral ?? '');
+                    $('#valor_trimestral').val(formatearMiles((plan.valor_trimestral ?? '').toString()));
 
                     $('#div_valor_semestral').show();
-                    $('#valor_semestral').val(plan.valor_semestral ?? '');
+                    $('#valor_semestral').val(formatearMiles((plan.valor_semestral ?? '').toString()));
 
                     $('#div_valor_anual').show();
-                    $('#valor_anual').val(plan.valor_anual ?? '');
+                    $('#valor_anual').val(formatearMiles((plan.valor_anual ?? '').toString()));
 
                     $('#div_descripcion_plan').show();
                     $('#descripcion_plan').val(plan.descripcion_plan ?? '');
@@ -245,10 +255,10 @@
 
                 const idTipoPago = $(this).val();
                 
-                let valorMensual = $('#valor_mensual').val();
-                let valorTrimestral = $('#valor_trimestral').val();
-                let valorSemestral = $('#valor_semestral').val();
-                let valorAnual = $('#valor_anual').val();
+                let valorMensual = $('#valor_mensual').val().replace(".", "").replace(".", "").replace(".", "");
+                let valorTrimestral = $('#valor_trimestral').val().replace(".", "").replace(".", "").replace(".", "");
+                let valorSemestral = $('#valor_semestral').val().replace(".", "").replace(".", "").replace(".", "");
+                let valorAnual = $('#valor_anual').val().replace(".", "").replace(".", "").replace(".", "");
 
                 let valorSuscripcion = $('#valor_suscripcion');
 
@@ -264,19 +274,19 @@
                 let fechaFin = '';
 
                 if (idTipoPago == 7) { // Mensual
-                    valorSuscripcion.val(valorMensual);
+                    valorSuscripcion.val(formatearMiles(valorMensual.toString()));
                     fechaFin = sumarDias(hoy, diasMensual);
 
                 } else if (idTipoPago == 8) { // Trimestral
-                    valorSuscripcion.val(valorTrimestral);
+                    valorSuscripcion.val(formatearMiles(valorTrimestral.toString()));
                     fechaFin = sumarDias(hoy, diasTrimestral);
 
                 } else if (idTipoPago == 9) { // Semestral
-                    valorSuscripcion.val(valorSemestral);
+                    valorSuscripcion.val(formatearMiles(valorSemestral.toString()));
                     fechaFin = sumarDias(hoy, diasSemestral);
 
                 } else if (idTipoPago == 6) { // Anual
-                    valorSuscripcion.val(valorAnual);
+                    valorSuscripcion.val(formatearMiles(valorAnual.toString()));
                     fechaFin = sumarDias(hoy, diasAnual);
                     
                 } else {

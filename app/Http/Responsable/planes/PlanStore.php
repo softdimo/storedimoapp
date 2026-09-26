@@ -42,10 +42,10 @@ class PlanStore implements Responsable
                 ],
                 'json' => [
                     'nombre_plan' => $nombrePlan,
-                    'valor_mensual' => $valorMensual,
-                    'valor_trimestral' => $valorTrimestral,
-                    'valor_semestral' => $valorSemestral,
-                    'valor_anual' => $valorAnual,
+                    'valor_mensual' => doubleval(str_replace(".", "", $valorMensual)),
+                    'valor_trimestral' => doubleval(str_replace(".", "", $valorTrimestral)),
+                    'valor_semestral' => doubleval(str_replace(".", "", $valorSemestral)),
+                    'valor_anual' => doubleval(str_replace(".", "", $valorAnual)),
                     'descripcion_plan' => $descripcionPlan,
                     'id_estado_plan' => $idEstadoPlan,
                     'id_audit' => session('id_usuario')

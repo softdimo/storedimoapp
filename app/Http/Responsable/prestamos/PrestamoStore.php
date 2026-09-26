@@ -35,7 +35,7 @@ class PrestamoStore implements Responsable
                     'id_tipo_persona' => $idTipoPersona,
                     'fecha_prestamo' => $fechaPrestamo,
                     'fecha_limite' => $fechaLimite,
-                    'valor_prestamo' => $valorPrestamo,
+                    'valor_prestamo' => doubleval(str_replace(".", "", $valorPrestamo)),
                     'descripcion' => $descripcion,
                     'id_audit' => session('id_usuario'),
                     'empresa_actual' => session('empresa_actual.id_empresa')

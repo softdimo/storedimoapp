@@ -75,7 +75,14 @@
                                         <td>{{ $suscripcion->nombre_plan }}</td>
                                         <td>{{ $suscripcion->dias_trial }}</td>
                                         <td>{{ $suscripcion->modalidad_suscripcion }}</td>
-                                        <td>$ {{ $suscripcion->valor_suscripcion }}</td>
+                                        @php
+                                            $valorSuscripcion = trim(str_replace(['$', ' ', "\xc2\xa0"], '', (string) ($suscripcion->valor_suscripcion ?? 0)));
+                                            if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $valorSuscripcion)) {
+                                                $valorSuscripcion = preg_replace('/[.,]/', '', $valorSuscripcion);
+                                            }
+                                            $valorSuscripcion = (float) $valorSuscripcion;
+                                        @endphp
+                                        <td data-order="{{ $valorSuscripcion }}">$ {{ number_format($valorSuscripcion, 0, ',', '.') }}</td>
                                         <td>{{ $suscripcion->fecha_inicial }}</td>
                                         <td>{{ $suscripcion->fecha_final }}</td>
                                         <td>{{ $suscripcion->estado }}</td>

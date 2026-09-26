@@ -58,10 +58,10 @@
                                     <tr class="text-center align-middle">
                                         <td>{{ $plan->id_plan }}</td>
                                         <td>{{ $plan->nombre_plan }}</td>
-                                        <td>{{ $plan->valor_mensual }}</td>
-                                        <td>{{ $plan->valor_trimestral }}</td>
-                                        <td>{{ $plan->valor_semestral }}</td>
-                                        <td>{{ $plan->valor_anual }}</td>
+                                        <td data-order="{{ $plan->valor_mensual }}">$ {{ number_format((float) ($plan->valor_mensual ?? 0), 0, ',', '.') }}</td>
+                                        <td data-order="{{ $plan->valor_trimestral }}">$ {{ number_format((float) ($plan->valor_trimestral ?? 0), 0, ',', '.') }}</td>
+                                        <td data-order="{{ $plan->valor_semestral }}">$ {{ number_format((float) ($plan->valor_semestral ?? 0), 0, ',', '.') }}</td>
+                                        <td data-order="{{ $plan->valor_anual }}">$ {{ number_format((float) ($plan->valor_anual ?? 0), 0, ',', '.') }}</td>
                                         <td>{{ $plan->descripcion_plan }}</td>
                                         <td>{{ $plan->estado }}</td>
                                         <td>

@@ -14,9 +14,6 @@ class EmpresaSuscripcionStore implements Responsable
 {
     use MetodosTrait;
 
-    protected $baseUri;
-    protected $clientApi;
-
     public function __construct()
     {
         $this->baseUri = env('BASE_URI');
@@ -144,7 +141,7 @@ class EmpresaSuscripcionStore implements Responsable
                             'id_plan_suscrito' => $idPlanSuscrito,
                             'dias_trial' => $diasTrial,
                             'id_tipo_pago_suscripcion' => $idTipoPago,
-                            'valor_suscripcion' => $valorSuscripcion,
+                            'valor_suscripcion' => doubleval(str_replace(".", "", $valorSuscripcion)),
                             'fecha_inicial' => $fechaInicial,
                             'fecha_final' => $fechaFinal,
                             'id_estado_suscripcion' => $idEstadoSuscripcion,
@@ -159,6 +156,8 @@ class EmpresaSuscripcionStore implements Responsable
                         
                         // Capturamos los datos que retornó la API para usarlos en los correos o en Wompi
                         $empresaData = $resEmpresaStore->empresa;
+                        $emailEmpresa = $empresaData->email_empresa;
+                        $nombreEmpresa = $empresaData->nombre_empresa;
                         $suscripcionData = $resSuscripcionStore->suscripcion;
 
                         // ==========================================

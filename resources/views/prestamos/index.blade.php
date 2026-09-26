@@ -217,11 +217,11 @@
                                                     <td>{{$prestamo->identificacion}}</td>
                                                     <td>{{$prestamo->fecha_prestamo}}</td>
                                                     <td>{{$prestamo->fecha_limite}}</td>
-                                                    <td>{{$prestamo->valor_prestamo}}</td>
-                                                    <td>{{$prestamo->valor_prestamo}}</td>
+                                                    <td>$ {{ number_format((float) ($prestamo->valor_prestamo ?? 0), 0, ',', '.') }}</td>
+                                                    <td>$ {{ number_format((float) ($prestamo->valor_prestamo ?? 0), 0, ',', '.') }}</td>
                                                     <td>{{$prestamo->descripcion}}</td>
-                                                    <td>{{$prestamo->valor_prestamo}}</td>
-                                                    <td>{{$prestamo->valor_prestamo}}</td>
+                                                    <td>$ {{ number_format((float) ($prestamo->valor_prestamo ?? 0), 0, ',', '.') }}</td>
+                                                    <td>$ {{ number_format((float) ($prestamo->valor_prestamo ?? 0), 0, ',', '.') }}</td>
                                                     <td>
                                                         <button title="Abonar" class="btn btn-warning rounded-circle btn-circle text-white" data-bs-toggle="modal" data-bs-target="#modalAbonoPrestamo_{{$prestamo->id_prestamo}}">
                                                             <i class="fa fa-money"></i>
@@ -287,7 +287,7 @@
                                 <div class="row m-0">
                                     <div class="col-12 col-md-6">
                                         <label for="valor_prestamo" class="fw-bold" style="font-size: 12px">Valor Préstamo <span class="text-danger">*</span></label>
-                                        {!! Form::text('valor_prestamo', isset($prestamo) ? $prestamo->valor_prestamo : null, ['class' => 'form-control', 'id' => 'valor_prestamo', 'required']) !!}
+                                        {!! Form::text('valor_prestamo', isset($prestamo) ? number_format((float) $prestamo->valor_prestamo, 0, ',', '.') : null, ['class' => 'form-control', 'id' => 'valor_prestamo', 'required']) !!}
                                     </div>
 
                                     <div class="col-12 col-md-6">
@@ -434,7 +434,7 @@
                                                 <tbody>
                                                     <tr class="text-center">
                                                         <td>{{$prestamo->fecha_prestamo}}</td>
-                                                        <td>{{$prestamo->valor_prestamo}}</td>
+                                                        <td>$ {{ number_format((float) ($prestamo->valor_prestamo ?? 0), 0, ',', '.') }}</td>
                                                         <td>
                                                             <button title="Abonar" class="btn btn-warning rounded-circle btn-circle text-white" data-bs-toggle="modal" data-bs-target="#modalEditarAbono_{{$prestamo->id_prestamo}}">
                                                                 <i class="fa fa-money"></i>
@@ -544,6 +544,25 @@
 
     <script>
         $( document ).ready(function() {
+            function formatearMiles(valor)
+            {
+                valor = String(valor).replace(/[^\d,]/g, "");
+                let partes = valor.split(",");
+                let entero = partes[0].replace(/\D/g, "");
+                let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+                entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return decimal ? `${entero},${decimal}` : entero;
+            }
+
+            $(document).on({
+                "focus": function (event) {
+                    $(event.target).select();
+                },
+                "keyup": function (event) {
+                    $(event.target).val(formatearMiles($(event.target).val()));
+                }
+            }, '#valor_prestamo, #valor_pendiente, #valor_abono');
+
             // INICIO DataTable Préstamo empleados
             $("#tbl_prestamo_empleados").DataTable({
                 dom: 'Blfrtip',

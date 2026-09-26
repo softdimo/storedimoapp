@@ -465,5 +465,24 @@
             return true;
         }
     });
+
+    function formatearMiles(valor)
+    {
+        valor = String(valor).replace(/[^\d,]/g, "");
+        let partes = valor.split(",");
+        let entero = partes[0].replace(/\D/g, "");
+        let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+        entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return decimal ? `${entero},${decimal}` : entero;
+    }
+
+    $('#v_minimo_subtotal, #v_maximo_subtotal, #v_base_liquidacion, #v_dia_empleado_fijo, #v_día_empleado_temporal').on({
+        "focus": function (event) {
+            $(event.target).select();
+        },
+        "keyup": function (event) {
+            $(event.target).val(formatearMiles($(event.target).val()));
+        }
+    });
 </script>
 

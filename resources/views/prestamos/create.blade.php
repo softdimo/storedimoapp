@@ -219,6 +219,25 @@
 
     <script>
         $( document ).ready(function() {
+            function formatearMiles(valor)
+            {
+                valor = String(valor).replace(/[^\d,]/g, "");
+                let partes = valor.split(",");
+                let entero = partes[0].replace(/\D/g, "");
+                let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+                entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return decimal ? `${entero},${decimal}` : entero;
+            }
+
+            $(document).on({
+                "focus": function (event) {
+                    $(event.target).select();
+                },
+                "keyup": function (event) {
+                    $(event.target).val(formatearMiles($(event.target).val()));
+                }
+            }, '#valor_prestamo');
+
             // INICIO DataTable Usuarios Préstamo
             $("#tbl_registrar_prestamo").DataTable({
                 dom: 'Blfrtip',

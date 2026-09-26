@@ -24,9 +24,9 @@
                             <tr class="text-center">
                                 <td>{{ $venta->fecha_venta }}</td>
                                 <td>{{ $venta->nombres_cliente }}</td>
-                                <td class="text-end">{{ $venta->subtotal_venta }}</td>
-                                <td class="text-end">{{ $venta->descuento }}</td>
-                                <td class="text-end">{{ $venta->total_venta_index }}</td>
+                                <td class="text-end">$ {{ number_format((float) ($venta->subtotal_venta ?? 0), 0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ number_format((float) ($venta->descuento ?? 0), 0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ number_format((float) ($venta->total_venta_index ?? 0), 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -55,10 +55,10 @@
                                 @foreach ($ventaDetalles as $producto)
                                     <tr class="text-center">
                                         <td>{{ $producto->nombre_producto }}</td>
-                                        <td class="text-end">{{ $producto->precio_venta_detalle }}</td>
+                                        <td class="text-end">$ {{ number_format((float) ($producto->precio_venta_detalle ?? 0), 0, ',', '.') }}</td>
                                         <td>{{ $producto->cantidad }}</td>
-                                        <td class="text-end">{{ $producto->subtotal_detalle }}</td>
-                                        <td class="text-end">{{ $producto->ganancia_venta }}</td>
+                                        <td class="text-end">$ {{ number_format((float) ($producto->subtotal_detalle ?? 0), 0, ',', '.') }}</td>
+                                        <td class="text-end">$ {{ number_format((float) ($producto->ganancia_venta ?? 0), 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

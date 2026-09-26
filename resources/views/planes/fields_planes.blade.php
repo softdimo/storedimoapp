@@ -19,7 +19,7 @@
             <label for="valor_mensual" class="form-label">Valor Mensual
                 <span class="text-danger">*</span>
             </label>
-            {!! Form::text('valor_mensual', old('valor_mensual', $planEdit?->valor_mensual ?? null), [
+            {!! Form::text('valor_mensual', old('valor_mensual', isset($planEdit?->valor_mensual) ? number_format((float) $planEdit->valor_mensual, 0, ',', '.') : null), [
                 'class' => 'form-control',
                 'id' => 'valor_mensual',
                 'required' => 'required',
@@ -34,7 +34,7 @@
             <label for="valor_trimestral" class="form-label">Valor Trimestral
                 <span class="text-danger">*</span>
             </label>
-            {!! Form::text('valor_trimestral', old('valor_trimestral', $planEdit?->valor_trimestral ?? null), [
+            {!! Form::text('valor_trimestral', old('valor_trimestral', isset($planEdit?->valor_trimestral) ? number_format((float) $planEdit->valor_trimestral, 0, ',', '.') : null), [
                 'class' => 'form-control',
                 'id' => 'valor_trimestral',
                 'required' => 'required',
@@ -49,7 +49,7 @@
             <label for="valor_semestral" class="form-label">Valor Semestral
                 <span class="text-danger">*</span>
             </label>
-            {!! Form::text('valor_semestral', old('valor_semestral', $planEdit?->valor_semestral ?? null), [
+            {!! Form::text('valor_semestral', old('valor_semestral', isset($planEdit?->valor_semestral) ? number_format((float) $planEdit->valor_semestral, 0, ',', '.') : null), [
                 'class' => 'form-control',
                 'id' => 'valor_semestral',
                 'required' => 'required',
@@ -64,7 +64,7 @@
             <label for="valor_anual" class="form-label">Valor Anual
                 <span class="text-danger">*</span>
             </label>
-            {!! Form::text('valor_anual', old('valor_anual', $planEdit?->valor_anual ?? null), [
+            {!! Form::text('valor_anual', old('valor_anual', isset($planEdit?->valor_anual) ? number_format((float) $planEdit->valor_anual, 0, ',', '.') : null), [
                 'class' => 'form-control',
                 'id' => 'valor_anual',
                 'required' => 'required',

@@ -128,12 +128,12 @@
                                                 <tr class="text-center">
                                                     <td>{{$pagoEmpleado->fecha_pago}}</td>
                                                     <td>{{$pagoEmpleado->tipo_pago}}</td>
-                                                    <td>{{$pagoEmpleado->valor_ventas}}</td>
-                                                    <td>{{$pagoEmpleado->valor_comision}}</td>
+                                                    <td>$ {{ number_format((float) ($pagoEmpleado->valor_ventas ?? 0), 0, ',', '.') }}</td>
+                                                    <td>$ {{ number_format((float) ($pagoEmpleado->valor_comision ?? 0), 0, ',', '.') }}</td>
                                                     <td>{{$pagoEmpleado->cantidad_dias}}</td>
-                                                    <td>{{$pagoEmpleado->valor_vacaciones}}</td>
-                                                    <td>{{$pagoEmpleado->valor_cesantias}}</td>
-                                                    <td>{{$pagoEmpleado->valor_total}}</td>
+                                                    <td>$ {{ number_format((float) ($pagoEmpleado->valor_vacaciones ?? 0), 0, ',', '.') }}</td>
+                                                    <td>$ {{ number_format((float) ($pagoEmpleado->valor_cesantias ?? 0), 0, ',', '.') }}</td>
+                                                    <td>$ {{ number_format((float) ($pagoEmpleado->valor_total ?? 0), 0, ',', '.') }}</td>
                                                     <td>{{$pagoEmpleado->estado}}</td>
                                                     <td>
                                                         <button title="Anular" class="btn btn-danger rounded-circle btn-circle text-white" data-bs-toggle="modal" data-bs-target="#modalAnularPago_{{$pagoEmpleado->id_pago_empleado}}">

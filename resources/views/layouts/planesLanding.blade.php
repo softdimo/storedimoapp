@@ -14,7 +14,7 @@
                         
                         <div class="mt-auto">
                             <h6 class="btn btn-info d-block text-white mb-2 py-2" style="cursor: default; pointer-events: none;">
-                                $ {{ $plan['valor_mensual'] }}
+                                $ {{ number_format((float) ($plan['valor_mensual'] ?? 0), 0, ',', '.') }}
                             </h6>
                             <a href="#" class="btn btn-primary w-100 py-2">Obtener</a>
                         </div>

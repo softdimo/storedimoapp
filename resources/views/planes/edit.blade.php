@@ -93,6 +93,32 @@
             });
 
             // ===================================================================================
+
+            function formatearMiles(valor)
+            {
+                // Quitar todo excepto dígitos y coma
+                valor = valor.replace(/[^\d,]/g, "");
+
+                // Separar por coma (decimal)
+                let partes = valor.split(",");
+                let entero = partes[0].replace(/\D/g, "");
+                let decimal = partes[1] ? partes[1].replace(/\D/g, "") : "";
+
+                // Formatear miles con punto
+                entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                return decimal ? `${entero},${decimal}` : entero;
+            }
+
+            $('#valor_mensual, #valor_trimestral, #valor_semestral, #valor_anual').on({
+                "focus": function (event) {
+                    $(event.target).select();
+                },
+                "keyup": function (event) {
+                    $(event.target).val(formatearMiles($(event.target).val()));
+                }
+            });
+
+            // ===================================================================================
             
             // Evita permitir que el enter active el submit
             $(document).on('keypress', 'form[id^="formEditarPlan_"]', function (e) {

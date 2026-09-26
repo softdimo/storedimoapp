@@ -15,9 +15,6 @@ class RenovarSuscripcion implements Responsable
 {
     use MetodosTrait;
 
-    protected $baseUri;
-    protected $clientApi;
-
     public function __construct()
     {
         $this->baseUri = env('BASE_URI');
@@ -54,7 +51,7 @@ class RenovarSuscripcion implements Responsable
             $idPlanSuscrito = $parametros['id_plan_suscrito'];
             $diasTrial = $parametros['dias_trial'];
             $idTipoPago = $parametros['id_tipo_pago'];
-            $valorSuscripcion = $parametros['valor_suscripcion'];
+            $valorSuscripcion = doubleval(str_replace(".", "", $parametros['valor_suscripcion']));
             $fechaInicial = $parametros['fecha_inicial'];
             $fechaFinal = $parametros['fecha_final'];
             $idEstadoSuscripcion = 13;
@@ -81,6 +78,8 @@ class RenovarSuscripcion implements Responsable
                 {
                     // Capturamos los datos que retornó la API para usarlos en los correos o en Wompi
                     $empresaData = $this->datosEmpresa($parametros['id_empresa']);
+                    $emailEmpresa = $empresaData->email_empresa;
+                    $nombreEmpresa = $empresaData->nombre_empresa;
                     $suscripcionData = $resSuscripcionStore->suscripcion;
 
                     if ($idPlanSuscrito == 1)

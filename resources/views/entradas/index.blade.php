@@ -72,7 +72,7 @@
                                     <tr class="text-center align-middle">
                                         {{-- <td>{{$entrada->empresa}}</td> --}}
                                         <td>{{ $entrada->id_compra }}</td>
-                                        <td class="text-end">{{ $entrada->valor_compra }}</td>
+                                        <td class="text-end" data-order="{{ $entrada->valor_compra }}">$ {{ number_format((float) ($entrada->valor_compra ?? 0), 0, ',', '.') }}</td>
                                         <td>{{ $entrada->factura_compra }}</td>
                                         <td>{{ $entrada->fecha_compra }}</td>
 

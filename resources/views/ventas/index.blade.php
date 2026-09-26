@@ -71,8 +71,8 @@
                                 @foreach ($ventas as $venta)
                                     <tr class="text-center align-middle">
                                         <td>{{ $venta->id_venta }}</td>
-                                        <td class="text-end">{{ $venta->total_venta_index }}</td>
-                                        <td class="text-end">{{ $venta->ganancia_total_venta }}</td>
+                                        <td class="text-end" data-order="{{ $venta->total_venta_index }}">$ {{ number_format((float) ($venta->total_venta_index ?? 0), 0, ',', '.') }}</td>
+                                        <td class="text-end" data-order="{{ $venta->ganancia_total_venta }}">$ {{ number_format((float) ($venta->ganancia_total_venta ?? 0), 0, ',', '.') }}</td>
                                         <td>{{ $venta->fecha_venta }}</td>
                                         <td>{{ $venta->identificacion }}</td>
                                         <td>{{ $venta->nombres_cliente }}</td>

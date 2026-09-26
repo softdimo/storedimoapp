@@ -42,7 +42,7 @@
                                         {{ $entrada->apellidos_proveedor }}</td>
                                 @endif
 
-                                <td>{{ $entrada->valor_compra }}</td>
+                                <td>$ {{ number_format((float) ($entrada->valor_compra ?? 0), 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -73,8 +73,8 @@
                                     <tr class="text-center">
                                         <td>{{ $producto->nombre_producto }}</td>
                                         <td>{{ $producto->cantidad }}</td>
-                                        <td>{{ $producto->precio_unitario_compra }}</td>
-                                        <td>{{ $producto->subtotal }}</td>
+                                        <td>$ {{ number_format((float) ($producto->precio_unitario_compra ?? 0), 0, ',', '.') }}</td>
+                                        <td>$ {{ number_format((float) ($producto->subtotal ?? 0), 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

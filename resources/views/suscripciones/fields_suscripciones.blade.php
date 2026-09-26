@@ -127,7 +127,7 @@
     <div class="col-12 col-md-3 mt-3">
         <div class="form-group d-flex flex-column">
             <label for="valor_suscripcion" class="form-label">Valor Suscripción</label>
-            {!! Form::text('valor_suscripcion', old('valor_suscripcion', isset($suscripcionEdit) ? $suscripcionEdit->valor_suscripcion : null), [
+            {!! Form::text('valor_suscripcion', old('valor_suscripcion', isset($suscripcionEdit->valor_suscripcion) ? number_format((float) $suscripcionEdit->valor_suscripcion, 0, ',', '.') : null), [
                 'class' => 'form-control bg-success-subtle',
                 'id' => 'valor_suscripcion',
                 'readonly' => true
