@@ -90,7 +90,12 @@
                 }
 
                 if (nuevaClaveValor !== confirmarClaveValor) {
-                    Swal.fire('Error!', 'Las contraseñas no coinciden!', 'error');
+                    Swal.fire('Precaución!', 'Las contraseñas no coinciden!', 'warning');
+
+                    $('#clave_nueva').val('');
+                    $('#clave_nueva_confirmar').val('');
+                    $('#clave_nueva').trigger('focus');
+
                     return;
                 }
 
