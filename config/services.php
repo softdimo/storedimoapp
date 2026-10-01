@@ -38,7 +38,7 @@ return [
     ],
 
     'app_web' => [
-        'internal_token' => env('INTERNAL_TOKEN_SECRET'),
+        'internal_token' => env('INTERNAL_TOKEN_SECRET'), // Wompi
     ],
 
     'lumen' => [

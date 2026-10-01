@@ -10,14 +10,21 @@ use Illuminate\Validation\ValidationException;
 use App\Http\Responsable\empresa_suscripcion\EmpresaSuscripcionStore;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use GuzzleHttp\Client;
 
 class EmpresaSuscripcionLandingController extends Controller
 {
     use MetodosTrait;
+    protected $clientApi;
 
     public function __construct()
     {
-        $this->shareData();
+        // $this->shareData();
+        // Instanciamos el cliente directamente sin depender de la sesión (shareData)
+        $this->clientApi = new Client([
+            'base_uri' => config('services.lumen.base_uri', env('BASE_URI')),
+            'timeout'  => 10.0,
+        ]);
     }
 
     // ======================================================================
@@ -26,8 +33,8 @@ class EmpresaSuscripcionLandingController extends Controller
     private function getLandingHeaders(): array
     {
         return [
-            'X-Landing-API-Key' => config('services.lumen.landing_key'),
             'Accept'            => 'application/json',
+            'X-Landing-API-Key' => config('services.lumen.landing_key'),
         ];
     }
 
@@ -67,11 +74,10 @@ class EmpresaSuscripcionLandingController extends Controller
     public function store(Request $request)
     {
         try {
-            return new EmpresaSuscripcionStore($request);
+            return new EmpresaSuscripcionStore();
                 
-        } catch (Exception $e)
-        {
-            alert()->error("Exception Store Empresas!");
+        } catch (Exception $e) {
+            alert()->error("Exception Store Empresas Landing!");
             return back();
         }
     }
@@ -148,16 +154,15 @@ class EmpresaSuscripcionLandingController extends Controller
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'valido' => false,
+                'valido'=> false,
                 'error' => $e->validator->errors()->first('nit_empresa')
             ], 422);
         }
     
         try {
-            // $response = $this->getHttpClient()->post('administracion/validar_nit', [
-            $response = $this->clientApi->post($this->baseUri.'landing/validar_nit_landing', [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
-                'json' => ['nit_empresa' => $request->input('nit_empresa')]
+            $response = $this->clientApi->post('landing/validar_nit_landing', [
+                'headers' => $this->getLandingHeaders(),
+                'json'    => ['nit_empresa' => $request->input('nit_empresa')]
             ]);
         
             return response()->json(json_decode($response->getBody()->getContents(), true));
@@ -176,17 +181,16 @@ class EmpresaSuscripcionLandingController extends Controller
     public function documentoValidatorLanding(Request $request)
     {
         try {
-            // $response = $this->getHttpClient()->post('administracion/validar_documento', [
-            $response = $this->clientApi->post($this->baseUri.'landing/validar_documento_landing', [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
-                'json' => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
+            $response = $this->clientApi->post('landing/validar_documento_landing', [
+                'headers' => $this->getLandingHeaders(),
+                'json'    => ['ident_empresa_natural' => $request->input('ident_empresa_natural')]
             ]);
         
             return response()->json(json_decode($response->getBody()->getContents(), true));
         
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'No se pudo validar el número del documento en la BD.',
+                'error'  => 'No se pudo validar el número del documento en la BD.',
                 'valido' => false
             ], 500);
         }
@@ -198,12 +202,9 @@ class EmpresaSuscripcionLandingController extends Controller
     public function validarCorreoEmpresaLanding(Request $request)
     {
         try {
-            // $response = $this->getHttpClient()->post('administracion/validar_correo_empresa', [
-            $response = $this->clientApi->post($this->baseUri.'landing/validar_correo_empresa_landing', [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
-                'json' => [
-                    'email_empresa' => $request->input('email_empresa')
-                ]
+            $response = $this->clientApi->post('landing/validar_correo_empresa_landing', [
+                'headers' => $this->getLandingHeaders(),
+                'json'    => ['email_empresa' => $request->input('email_empresa')]
             ]);
             return json_decode($response->getBody()->getContents());
 
@@ -229,7 +230,8 @@ class EmpresaSuscripcionLandingController extends Controller
             $estadoPago = $data['data']['status'] ?? 'PENDING';
 
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error en pagoResultado: ' . $e->getMessage());
+            // \Illuminate\Support\Facades\Log::error('Error en pagoResultado: ' . $e->getMessage());
+            Log::error('Error en pagoResultado: ' . $e->getMessage());
             $estadoPago = 'PENDING';
         }
 
@@ -244,8 +246,9 @@ class EmpresaSuscripcionLandingController extends Controller
 
     public function notificarCorreoAsincrono(Request $request)
     {
-        // Validar token de seguridad interno para asegurar que solo tu API Lumen use este endpoint
+        // 1. Validar token de seguridad interno para asegurar que solo tu API Lumen use este endpoint
         if ($request->header('X-Storedimo-Token') !== config('services.app_web.internal_token')) {
+            Log::warning('Wompi Mail Webhook: Token no autorizado');
             return response()->json(['error' => 'No autorizado'], 401);
         }
 
@@ -253,73 +256,94 @@ class EmpresaSuscripcionLandingController extends Controller
         $idTransaccion = $request->input('id_transaccion');
         $estadoWompi   = $request->input('estado_wompi');
 
+        Log::info("Iniciando notificarCorreoAsincrono - Suscripción: {$idSuscripcion}, Estado: {$estadoWompi}");
+
         try {
-            // Consultamos a la API de Lumen los datos frescos de la suscripción y empresa mediante tu cliente regular
-            $reqSuscripcion = $this->clientApi->get($this->baseUri . 'landing/suscripcion_edit_landing/' . $idSuscripcion, [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            // 2. Consultamos a la API de Lumen los datos frescos de la suscripción y empresa mediante tu cliente regular
+            $reqSuscripcion = $this->clientApi->get('landing/suscripcion_edit_landing/' . $idSuscripcion, [
+                'headers' => $this->getLandingHeaders(),
             ]);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 
-            if (!$suscripcion) {
+            // if (!$suscripcion) {
+            //     return response()->json(['error' => 'Suscripción no válida'], 404);
+            // }
+
+            if (!$suscripcion || !isset($suscripcion->id_empresa_suscrita)) {
+                Log::error("Wompi Mail Error: No se encontró la suscripción ID {$idSuscripcion}");
                 return response()->json(['error' => 'Suscripción no válida'], 404);
             }
 
-            $reqEmpresa = $this->clientApi->get($this->baseUri . 'landing/empresa_edit_landing/' . $suscripcion->id_empresa_suscrita, [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            // 3. Consulta de Empresa a API Lumen
+            // $reqEmpresa = $this->clientApi->get($this->baseUri . 'landing/empresa_edit_landing/' . $suscripcion->id_empresa_suscrita, [
+            $reqEmpresa = $this->clientApi->get('landing/empresa_edit_landing/' . $suscripcion->id_empresa_suscrita, [
+                'headers' => $this->getLandingHeaders(),
             ]);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
-            if ($empresa) {
-                $destinatarios = [
-                    config('mail.from.address'),
-                    'softdimo@gmail.com'
-                ];
-
-                if ($estadoWompi === 'APPROVED') {
-                    // Enviar correos de Aprobado (Cliente y Admin)
-                    Mail::send(
-                        'emails.wompi.pago_aprobado_cliente',
-                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
-                        function ($m) use ($empresa) {
-                            $m->to($empresa->email_empresa, $empresa->nombre_empresa)
-                            ->subject('¡Pago aprobado! Bienvenido a Storedimo');
-                        }
-                    );
-
-                    Mail::send(
-                        'emails.wompi.pago_aprobado_admin',
-                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
-                        function ($m) use ($destinatarios) {
-                            $m->to($destinatarios, 'Administrador Storedimo')
-                            ->subject('Suscripción aprobada (Asíncrona vía API) - ' . now()->format('d/m/Y H:i'));
-                        }
-                    );
-                } elseif (in_array($estadoWompi, ['DECLINED', 'VOIDED', 'ERROR'])) {
-                    // Enviar correos de Fallido (Cliente y Admin)
-                    Mail::send(
-                        'emails.wompi.pago_fallido_cliente',
-                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
-                        function ($m) use ($empresa) {
-                            $m->to($empresa->email_empresa, $empresa->nombre_empresa)
-                            ->subject('Tu pago no pudo ser procesado - Storedimo');
-                        }
-                    );
-
-                    Mail::send(
-                        'emails.wompi.pago_fallido_admin',
-                        ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
-                        function ($m) use ($destinatarios) {
-                            $m->to($destinatarios, 'Administrador Storedimo')
-                            ->subject('Pago fallido cliente (Asíncrónica vía API) - ' . now()->format('d/m/Y H:i'));
-                        }
-                    );
-                }
+            if (!$empresa || !isset($empresa->email_empresa)) {
+                Log::error("Wompi Mail Error: No se encontraron datos de la empresa ID {$suscripcion->id_empresa_suscrita}");
+                return response()->json(['error' => 'Empresa no encontrada'], 404);
             }
 
-            return response()->json(['success' => true, 'message' => 'Correos despachados'], 200);
+            // if ($empresa) {
+            $destinatarios = [
+                config('mail.from.address'),
+                'softdimo@gmail.com'
+            ];
+
+            // 4. Envío de Correos según el estado
+
+            if ($estadoWompi === 'APPROVED') {
+                // Enviar correos de Aprobado (Cliente y Admin)
+                Mail::send(
+                    'emails.wompi.pago_aprobado_cliente',
+                    ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                    function ($m) use ($empresa) {
+                        $m->to($empresa->email_empresa, $empresa->nombre_empresa)
+                        ->subject('¡Pago aprobado! Bienvenido a Storedimo');
+                    }
+                );
+
+                Mail::send(
+                    'emails.wompi.pago_aprobado_admin',
+                    ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                    function ($m) use ($destinatarios) {
+                        $m->to($destinatarios, 'Administrador Storedimo')
+                        ->subject('Suscripción aprobada (Asíncrona vía API) - ' . now()->format('d/m/Y H:i'));
+                    }
+                );
+
+                Log::info("Correos de APROBADO enviados a {$empresa->email_empresa} y Admins");
+
+            } elseif (in_array($estadoWompi, ['DECLINED', 'VOIDED', 'ERROR'])) {
+                // Enviar correos de Fallido (Cliente y Admin)
+                Mail::send(
+                    'emails.wompi.pago_fallido_cliente',
+                    ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                    function ($m) use ($empresa) {
+                        $m->to($empresa->email_empresa, $empresa->nombre_empresa)
+                        ->subject('Tu pago no pudo ser procesado - Storedimo');
+                    }
+                );
+
+                Mail::send(
+                    'emails.wompi.pago_fallido_admin',
+                    ['empresa' => $empresa, 'suscripcion' => $suscripcion, 'idTransaccion' => $idTransaccion],
+                    function ($m) use ($destinatarios) {
+                        $m->to($destinatarios, 'Administrador Storedimo')
+                        ->subject('Pago fallido cliente (Asíncrónica vía API) - ' . now()->format('d/m/Y H:i'));
+                    }
+                );
+
+                Log::info("Correos de RECHAZADO enviados a {$empresa->email_empresa} y Admins");
+            }
+            // }
+
+            return response()->json(['success' => true, 'message' => 'Correos despachados correctamente'], 200);
 
         } catch (Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error enviando correos asíncronos en App Web: ' . $e->getMessage());
+            Log::error('Error enviando correos asíncronos en App Web: ' . $e->getMessage());
             return response()->json(['error' => 'Error al procesar correos'], 500);
         }
     }
@@ -332,13 +356,13 @@ class EmpresaSuscripcionLandingController extends Controller
         try {
             // Consultar empresa
             $reqEmpresa = $this->clientApi->get($this->baseUri.'landing/empresa_edit_landing/' . $idEmpresa, [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+                'headers' => $this->getLandingHeaders(),
             ]);
             $empresa = json_decode($reqEmpresa->getBody()->getContents());
 
             // Consultar suscripción más reciente de esa empresa
             $reqSuscripcion = $this->clientApi->get($this->baseUri.'landing/suscripcion_empresa_estado_login/' . $idEmpresa, [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+                'headers' => $this->getLandingHeaders(),
             ]);
             $suscripcion = json_decode($reqSuscripcion->getBody()->getContents());
 

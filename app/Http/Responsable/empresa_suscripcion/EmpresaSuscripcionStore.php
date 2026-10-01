@@ -30,17 +30,17 @@ class EmpresaSuscripcionStore implements Responsable
 
     public function toResponse($request)
     {
-        $idTipoDocumento = request('id_tipo_documento', null);
-        $nitEmpresa = request('nit_empresa', null);
+        $idTipoDocumento     = request('id_tipo_documento', null);
+        $nitEmpresa          = request('nit_empresa', null);
         $identEmpresaNatural = request('ident_empresa_natural', null);
-        $nombreEmpresa = request('nombre_empresa', null);
-        $telefonoEmpresa = request('telefono_empresa', null);
-        $celularEmpresa = request('celular_empresa');
-        $emailEmpresa = request('email_empresa');
-        $direccionEmpresa = request('direccion_empresa');
-        $idTipoBd = 1;
-        $dbHost = Crypt::encrypt('localhost');
-        $idEstado = 13;
+        $nombreEmpresa       = request('nombre_empresa', null);
+        $telefonoEmpresa     = request('telefono_empresa', null);
+        $celularEmpresa      = request('celular_empresa');
+        $emailEmpresa        = request('email_empresa');
+        $direccionEmpresa    = request('direccion_empresa');
+        $idTipoBd            = 1;
+        $dbHost              = Crypt::encrypt('localhost');
+        $idEstado            = 13;
 
         // ========================================================
 
@@ -87,20 +87,20 @@ class EmpresaSuscripcionStore implements Responsable
             // $reqEmpresaStore = $this->getHttpClient()->post('administracion/empresa_store', [
             // $reqEmpresaStore = $this->clientApi->post($this->baseUri.'landing/empresa_store_landing', [
             $reqEmpresaStore = $this->clientApi->post('landing/empresa_store_landing', [
-                'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+                'headers' => $this->getLandingHeaders(),
                 'json' => [
-                    'id_tipo_documento' => $idTipoDocumento,
-                    'nit_empresa' => $nitEmpresa,
+                    'id_tipo_documento'     => $idTipoDocumento,
+                    'nit_empresa'           => $nitEmpresa,
                     'ident_empresa_natural' => $identEmpresaNatural,
-                    'nombre_empresa' => $nombreEmpresa,
-                    'telefono_empresa' => $telefonoEmpresa,
-                    'celular_empresa' => $celularEmpresa,
-                    'email_empresa' => $emailEmpresa,
-                    'direccion_empresa' => $direccionEmpresa,
-                    'id_tipo_bd' => $idTipoBd,
-                    'db_host' => $dbHost,
-                    'logo_empresa' => $logoEmpresaBase64,
-                    'id_estado' => $idEstado,
+                    'nombre_empresa'        => $nombreEmpresa,
+                    'telefono_empresa'      => $telefonoEmpresa,
+                    'celular_empresa'       => $celularEmpresa,
+                    'email_empresa'         => $emailEmpresa,
+                    'direccion_empresa'     => $direccionEmpresa,
+                    'id_tipo_bd'            => $idTipoBd,
+                    'db_host'               => $dbHost,
+                    'logo_empresa'          => $logoEmpresaBase64,
+                    'id_estado'             => $idEstado,
                 ]
             ]);
             $resEmpresaStore = json_decode($reqEmpresaStore->getBody()->getContents());
@@ -117,15 +117,15 @@ class EmpresaSuscripcionStore implements Responsable
             // INICIO Store SUSCIPCIÓN EMPRESA
             if (isset($resEmpresaStore->success) && $resEmpresaStore->success) {
                 $idEmpresaRecienCreada = $resEmpresaStore->empresa->id_empresa;
-                $idEmpresaSuscrita = $idEmpresaRecienCreada;
-                $idPlanSuscrito = request('id_plan_suscrito', null);
+                $idEmpresaSuscrita     = $idEmpresaRecienCreada;
+                $idPlanSuscrito        = request('id_plan_suscrito', null);
 
                 $diasTrial = ($idPlanSuscrito == 1) ? request('dias_trial', null) : null;
                 
-                $idTipoPago = request('id_tipo_pago', null);
-                $valorSuscripcion = request('valor_suscripcion', null);
-                $fechaInicial = request('fecha_inicial', null);
-                $fechaFinal = request('fecha_final', null);
+                $idTipoPago          = request('id_tipo_pago', null);
+                $valorSuscripcion    = request('valor_suscripcion', null);
+                $fechaInicial        = request('fecha_inicial', null);
+                $fechaFinal          = request('fecha_final', null);
                 $idEstadoSuscripcion = 13;
 
                 // ===================================================================
@@ -135,16 +135,16 @@ class EmpresaSuscripcionStore implements Responsable
                     // $reqSuscripcionStore = $this->getHttpClient()->post('administracion/suscripcion_store', [
                     // $reqSuscripcionStore = $this->clientApi->post($this->baseUri.'landing/suscripcion_store_landing', [
                     $reqSuscripcionStore = $this->clientApi->post('landing/suscripcion_store_landing', [
-                        'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+                        'headers' => $this->getLandingHeaders(),
                         'json' => [
-                            'id_empresa_suscrita' => $idEmpresaSuscrita,
-                            'id_plan_suscrito' => $idPlanSuscrito,
-                            'dias_trial' => $diasTrial,
+                            'id_empresa_suscrita'      => $idEmpresaSuscrita,
+                            'id_plan_suscrito'         => $idPlanSuscrito,
+                            'dias_trial'               => $diasTrial,
                             'id_tipo_pago_suscripcion' => $idTipoPago,
-                            'valor_suscripcion' => doubleval(str_replace(".", "", $valorSuscripcion)),
-                            'fecha_inicial' => $fechaInicial,
-                            'fecha_final' => $fechaFinal,
-                            'id_estado_suscripcion' => $idEstadoSuscripcion,
+                            'valor_suscripcion'        => doubleval(str_replace(".", "", $valorSuscripcion)),
+                            'fecha_inicial'            => $fechaInicial,
+                            'fecha_final'              => $fechaFinal,
+                            'id_estado_suscripcion'    => $idEstadoSuscripcion,
                         ]
                     ]);
                     $resSuscripcionStore = json_decode($reqSuscripcionStore->getBody()->getContents());
@@ -155,9 +155,9 @@ class EmpresaSuscripcionStore implements Responsable
                     if (isset($resSuscripcionStore->success) && $resSuscripcionStore->success) {
                         
                         // Capturamos los datos que retornó la API para usarlos en los correos o en Wompi
-                        $empresaData = $resEmpresaStore->empresa;
-                        $emailEmpresa = $empresaData->email_empresa;
-                        $nombreEmpresa = $empresaData->nombre_empresa;
+                        $empresaData     = $resEmpresaStore->empresa;
+                        $emailEmpresa    = $empresaData->email_empresa;
+                        $nombreEmpresa   = $empresaData->nombre_empresa;
                         $suscripcionData = $resSuscripcionStore->suscripcion;
 
                         // ==========================================
@@ -225,13 +225,13 @@ class EmpresaSuscripcionStore implements Responsable
                     
                         // 4. Retornamos la vista de pago con el Widget de Wompi
                         return view('wompi.checkout.pago_wompi', [
-                            'valor' => $valorEnCentavos,
+                            'valor'      => $valorEnCentavos,
                             'referencia' => $referencia,
-                            'firma' => $firmaHash,
-                            'email' => $emailEmpresa,
-                            'nombre' => $nombreEmpresa,
+                            'firma'      => $firmaHash,
+                            'email'      => $emailEmpresa,
+                            'nombre'     => $nombreEmpresa,
                             'celular'    => $celularEmpresa,
-                            'publicKey' => config('services.wompi.public_key')
+                            'publicKey'  => config('services.wompi.public_key')
                         ]);
                     }
 
@@ -255,9 +255,9 @@ class EmpresaSuscripcionStore implements Responsable
         // $consultarEmpresa = $this->getHttpClient()->post('administracion/consultar_empresa', [
         // $consultarEmpresa = $this->clientApi->post($this->baseUri.'landing/consultar_empresa_landing', [
         $consultarEmpresa = $this->clientApi->post('landing/consultar_empresa_landing', [
-            'headers' => $this->getLandingHeaders(), // <-- Encabezado con la API Key
+            'headers' => $this->getLandingHeaders(),
             'json' => [
-                'nit_empresa' => $nitEmpresa,
+                'nit_empresa'    => $nitEmpresa,
                 'nombre_empresa' => $nombreEmpresa
             ]
         ]);
