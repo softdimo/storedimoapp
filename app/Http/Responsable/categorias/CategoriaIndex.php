@@ -12,11 +12,17 @@ class CategoriaIndex implements Responsable
     {
         try
         {
+            $jwtToken = session('api_jwt_token');
+
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
             
             // Realiza la solicitud a la API
-            $response = $clientApi->get($baseUri . 'categoria_index', [
+            $response = $clientApi->get('categoria_index', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

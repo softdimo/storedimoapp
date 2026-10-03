@@ -17,6 +17,16 @@ class ProveedorStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+     /* Helper privado para obtener las cabeceras estándar con JWT */
+     private function getHeaders()
+     {
+         return [
+             'Authorization' => 'Bearer ' . session('api_jwt_token'),
+             'Accept'        => 'application/json',
+         ];
+     }
+
+
     public function toResponse($request)
     {
         $idTipoPersona = request('id_tipo_persona', null);
@@ -68,7 +78,8 @@ class ProveedorStore implements Responsable
 
         } else {
             try {
-                $peticionProveedorStore = $this->clientApi->post($this->baseUri.'proveedor_store', [
+                $peticionProveedorStore = $this->clientApi->post('proveedor_store', [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'id_tipo_persona' => $idTipoPersona,
                         'id_tipo_documento' => $idTipoDocumento,
@@ -104,7 +115,8 @@ class ProveedorStore implements Responsable
 
     private function consultarIdentificacionProveedor($identificacion)
     {
-        $queryIdentificacion = $this->clientApi->post($this->baseUri.'query_identificacion_proveedor', [
+        $queryIdentificacion = $this->clientApi->post('query_identificacion_proveedor', [
+            'headers' => $this->getHeaders(),
             'json' => [
                 'identificacion' => $identificacion,
                 'empresa_actual' => session('empresa_actual.id_empresa')
@@ -118,7 +130,8 @@ class ProveedorStore implements Responsable
     
     private function consultarNitProveedor($nitProveedor)
     {
-        $queryNitProveedor = $this->clientApi->post($this->baseUri.'query_nit_proveedor', [
+        $queryNitProveedor = $this->clientApi->post('query_nit_proveedor', [
+            'headers' => $this->getHeaders(),
             'json' => [
                 'nit_proveedor' => $nitProveedor,
                 'empresa_actual' => session('empresa_actual.id_empresa')
@@ -133,7 +146,8 @@ class ProveedorStore implements Responsable
     public function validarCorreoProveedor($emailProveedor)
     {
         try {
-            $response = $this->clientApi->post($this->baseUri . 'validar_correo_proveedor', [
+            $response = $this->clientApi->post('validar_correo_proveedor', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'email_proveedor' => $emailProveedor
                 ]

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\categorias;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Exception;
+use GuzzleHttp\Client;
+
 use App\Http\Responsable\categorias\CategoriaIndex;
 use App\Http\Responsable\categorias\CategoriaStore;
 use App\Http\Responsable\categorias\CategoriaUpdate;
@@ -15,11 +17,29 @@ use App\Traits\MetodosTrait;
 class CategoriasController extends Controller
 {
     use MetodosTrait;
+    protected $baseUri;
+    protected $clientApi;
+    protected $jwtToken;
 
-    public function __construct()
-    {
-        $this->shareData();
+    public function __construct() { 
+        $this->middleware(function ($request, $next) { 
+            $this->shareData(); 
+            $this->jwtToken = session('api_jwt_token'); 
+            return $next($request); 
+        }); 
+        $this->baseUri = env('BASE_URI'); 
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]); 
     }
+
+       /* Helper privado para obtener las cabeceras estándar con JWT */
+       private function getHeaders()
+       {
+           return [
+               'Authorization' => 'Bearer ' . session('api_jwt_token'),
+               'Accept'        => 'application/json',
+           ];
+       }
+       
     /**
      * Display a listing of the resource.
      *

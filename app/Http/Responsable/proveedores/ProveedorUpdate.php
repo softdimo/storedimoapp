@@ -18,6 +18,8 @@ class ProveedorUpdate implements Responsable
     }
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         $idProveedor = request('id_proveedor', null);
         $idTipoPersona = request('id_tipo_persona', null);
         $idTipoDocumento = request('id_tipo_documento', null);
@@ -47,7 +49,11 @@ class ProveedorUpdate implements Responsable
         }
 
         try {
-            $peticionProveedorUpdate = $this->clientApi->put($this->baseUri.'proveedor_update/'. $idProveedor , [
+            $peticionProveedorUpdate = $this->clientApi->put('proveedor_update/'. $idProveedor , [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'id_tipo_persona' => $idTipoPersona,
                     'id_tipo_documento' => $idTipoDocumento,

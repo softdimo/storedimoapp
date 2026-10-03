@@ -20,6 +20,15 @@ class CategoriaStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+     /* Helper privado para obtener las cabeceras estándar con JWT */
+     private function getHeaders()
+     {
+         return [
+             'Authorization' => 'Bearer ' . session('api_jwt_token'),
+             'Accept'        => 'application/json',
+         ];
+     }
+
     public function toResponse($request)
     {
         $categoria = request('categoria', null);
@@ -42,7 +51,8 @@ class CategoriaStore implements Responsable
             try
             {
                 // Pasamos el id_estado de las nuevas categorías por default en 1 "activo"
-                $peticionCategoriaStore = $this->clientApi->post($this->baseUri.'categoria_store', [
+                $peticionCategoriaStore = $this->clientApi->post('categoria_store', [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'categoria' => $this->quitarCaracteresEspeciales(ucwords($categoria)),
                         'id_estado' => 1,
@@ -85,7 +95,8 @@ class CategoriaStore implements Responsable
     {
         try
         {
-            $peticionConsultaCategoria = $this->clientApi->post($this->baseUri.'consulta_categoria', [
+            $peticionConsultaCategoria = $this->clientApi->post('consulta_categoria', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'categoria' => $categoria,
                     'empresa_actual' => session('empresa_actual.id_empresa')

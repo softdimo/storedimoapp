@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
+
 class PersonaEdit implements Responsable
 {
     protected $idCliente;
@@ -20,11 +21,17 @@ class PersonaEdit implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $peticion = $clientApi->get($baseUri . 'persona_edit/'. $this->idCliente, [
+            $peticion = $clientApi->get('persona_edit/'. $this->idCliente, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

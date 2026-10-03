@@ -10,11 +10,13 @@ class CategoriaDestroy implements Responsable
 {
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
         $idCategoria = request('id_categoria', null);
 
         try
         {
             $baseUri = env('BASE_URI');
+
             $clientApi = new Client([
                 'base_uri' => $baseUri,
                 'http_errors' => false
@@ -24,6 +26,10 @@ class CategoriaDestroy implements Responsable
             $response = $clientApi->post(
                 $baseUri . 'cambiar_estado_categoria/' . $idCategoria,
                 [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $jwtToken,
+                        'Accept' => 'application/json',
+                    ],
                     'json' => [
                         'id_audit' => session('id_usuario'),
                         'empresa_actual' => session('empresa_actual.id_empresa')
@@ -31,22 +37,38 @@ class CategoriaDestroy implements Responsable
                 ]
             );
 
-            $respuesta = json_decode($response->getBody()->getContents());
+            $respuesta = json_decode(
+                $response->getBody()->getContents()
+            );
 
-            if (isset($respuesta->success) && $respuesta->success === true) {
-                alert()->success('Proceso Exitoso', 'Estado cambiado satisfactoriamente');
+            if (isset($respuesta->success) && $respuesta->success === true)
+            {
+                alert()->success(
+                    'Proceso Exitoso',
+                    'Estado cambiado satisfactoriamente'
+                );
+
                 return redirect()->to(route('categorias.index'));
-            } else {
+            }
+            else
+            {
                 // Si la API respondió success: false con un mensaje específico
                 $mensaje = $respuesta->message ?? 'No se pudo cambiar el estado.';
+
                 alert()->warning('Atención', $mensaje);
+
                 return back();
             }
-
-        } catch (Exception $e)
+        }
+        catch (Exception $e)
         {
-            alert()->error('Error', 'Cambiando el estado de la categoría, contacte a Soporte.');
+            alert()->error(
+                'Error',
+                'Cambiando el estado de la categoría, contacte a Soporte.'
+            );
+
             return back();
         }
     }
 }
+

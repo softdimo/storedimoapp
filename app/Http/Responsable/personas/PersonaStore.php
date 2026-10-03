@@ -10,12 +10,22 @@ class PersonaStore implements Responsable
 {
     protected $baseUri;
     protected $clientApi;
+    
 
     public function __construct()
     {
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
+
+     /* Helper privado para obtener las cabeceras estándar con JWT */
+     private function getHeaders()
+     {
+         return [
+             'Authorization' => 'Bearer ' . session('api_jwt_token'),
+             'Accept'        => 'application/json',
+         ];
+     }
 
     public function toResponse($request)
     {
@@ -61,7 +71,8 @@ class PersonaStore implements Responsable
         }
         
         try {
-            $peticionPersonaStore = $this->clientApi->post($this->baseUri.'persona_store', [
+            $peticionPersonaStore = $this->clientApi->post('persona_store', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_tipo_persona' => $idTipoPersona,
                     'id_tipo_documento' => $idTipoDocumento,
@@ -96,7 +107,8 @@ class PersonaStore implements Responsable
 
     private function consultarIdPersona($identificacion)
     {
-        $queryIdentificacion = $this->clientApi->post($this->baseUri.'query_id_persona', [
+        $queryIdentificacion = $this->clientApi->post('query_id_persona', [
+            'headers' => $this->getHeaders(),
             'json' => [
                 'identificacion' => $identificacion,
                 'empresa_actual' => session('empresa_actual.id_empresa')
@@ -110,7 +122,8 @@ class PersonaStore implements Responsable
     
     private function consultarNitEmpresa($nitEmpresa)
     {
-        $queryNitEmpresa = $this->clientApi->post($this->baseUri.'query_nit_empresa', [
+        $queryNitEmpresa = $this->clientApi->post('query_nit_empresa', [
+            'headers' => $this->getHeaders(),
             'json' => [
                 'nit_empresa' => $nitEmpresa,
                 'empresa_actual' => session('empresa_actual.id_empresa')
