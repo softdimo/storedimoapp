@@ -20,6 +20,17 @@ class UnidadMedidaUpdate implements Responsable
     }
 
     // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
     // ===================================================================
 
     public function toResponse($request)
@@ -31,6 +42,7 @@ class UnidadMedidaUpdate implements Responsable
 
         try {
             $peticion = $this->clientApi->put($this->baseUri.'unidad_medida_update/'.$this->idUmd, [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'descripcion' => $descripcionUmd,
                     'abreviatura' => $abreviaturaUmd,

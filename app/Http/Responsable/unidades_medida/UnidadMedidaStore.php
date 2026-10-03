@@ -18,6 +18,17 @@ class UnidadMedidaStore implements Responsable
     }
 
     // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
     // ===================================================================
 
     public function toResponse($request)
@@ -28,6 +39,7 @@ class UnidadMedidaStore implements Responsable
 
         try {
             $peticion = $this->clientApi->post($this->baseUri.'unidad_medida_store', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'descripcion' => strtolower($umd),
                     'abreviatura' => strtolower($abreviaturaUmd),

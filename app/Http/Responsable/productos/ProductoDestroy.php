@@ -11,6 +11,7 @@ class ProductoDestroy implements Responsable
     public function toResponse($request)
     {
         $idProducto = request('id_producto', null);
+        $jwtToken = session('api_jwt_token');
 
         try
         {
@@ -19,6 +20,10 @@ class ProductoDestroy implements Responsable
 
             // Realiza la solicitud a la API
             $response = $clientApi->post($baseUri . 'cambiar_estado_producto/'.$idProducto, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'id_audit' => session('id_usuario'),
                     'empresa_actual' => session('empresa_actual.id_empresa')

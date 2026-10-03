@@ -18,6 +18,7 @@ class ProductoShow implements Responsable
     public function toResponse($request)
     {
         $idProducto = $this->idProducto;
+        $jwtToken = session('api_jwt_token');
 
         try {
             // Realiza la solicitud a la API
@@ -26,6 +27,10 @@ class ProductoShow implements Responsable
             
             // Realiza la solicitud a la API
             $response = $clientApi->post($baseUri . 'producto_show/'.$idProducto, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

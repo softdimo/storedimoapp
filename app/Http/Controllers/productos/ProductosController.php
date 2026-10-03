@@ -22,12 +22,29 @@ class ProductosController extends Controller
     use MetodosTrait;
     protected $baseUri;
     protected $clientApi;
+    protected $jwtToken;
 
     public function __construct()
     {
-        $this->shareData();
+        $this->middleware(function ($request, $next) {
+            $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
+            // $this->jwtToken = session('api_jwt_token'); // 🟢 Asignación global del Token
+            return $next($request);
+        });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    // ======================================================================
+    // ======================================================================
+
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
     }
     /**
      * Display a listing of the resource.
@@ -316,6 +333,7 @@ class ProductosController extends Controller
                         $idCategoria = request('id_categoria', null);
 
                         $verificarProducto = $clientApi->post($baseUri.'verificar_producto', [
+                            'headers' => $this->getHeaders(),
                             'query' => [
                                 'nombre_producto' => $nombreProducto,
                                 'id_categoria' => $idCategoria,
@@ -420,6 +438,7 @@ class ProductosController extends Controller
                 } else
                 {
                     $queryValoresProducto = $this->clientApi->get($this->baseUri.'query_producto_update/'.$idProducto, [
+                        'headers' => $this->getHeaders(),
                         'query' => [
                             'empresa_actual' => session('empresa_actual.id_empresa')
                         ]
@@ -491,6 +510,7 @@ class ProductosController extends Controller
         try
         {
             $response = $this->clientApi->post($this->baseUri . 'verificar_referencia', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'referencia' => $request->input('referencia'),
                     'empresa_actual' => session('empresa_actual.id_empresa')
@@ -512,6 +532,7 @@ class ProductosController extends Controller
     {
         try {
             $response = $this->clientApi->get('categorias_trait', [
+                'headers' => $this->getHeaders(),
                 'query' => ['empresa_actual' => session('empresa_actual.id_empresa')]
             ]);
 
@@ -529,6 +550,7 @@ class ProductosController extends Controller
         try
         {
             $response = $this->clientApi->get('umd_trait', [
+                'headers' => $this->getHeaders(),
                 'query' => ['empresa_actual' => session('empresa_actual.id_empresa')]
             ]);
 
@@ -546,6 +568,7 @@ class ProductosController extends Controller
         try
         {
             $response = $this->clientApi->get('proveedores_trait', [
+                'headers' => $this->getHeaders(),
                 'query' => ['empresa_actual' => session('empresa_actual.id_empresa')]
             ]);
 

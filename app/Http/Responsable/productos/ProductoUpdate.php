@@ -8,6 +8,28 @@ use GuzzleHttp\Client;
 
 class ProductoUpdate implements Responsable
 {
+    protected $baseUri;
+    protected $clientApi;
+
+    public function __construct()
+    {
+        $this->baseUri = env('BASE_URI');
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
+
     public function toResponse($request)
     {
         $formEditarPreciosEntradas = request('form_editar_precios_entradas', null); // Identifico el formualrio origen
@@ -58,12 +80,10 @@ class ProductoUpdate implements Responsable
 
         // ===================================================================
 
-        $baseUri = env('BASE_URI');
-        $clientApi = new Client(['base_uri' => $baseUri]);
-
         try {
             // Obtener los datos actuales del producto antes de actualizar
-            $peticionProducto = $clientApi->get($baseUri.'query_producto_update/'.$idProducto, [
+            $peticionProducto = $this->clientApi->get($this->baseUri.'query_producto_update/'.$idProducto, [
+                'headers' => $this->getHeaders(),
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
@@ -71,7 +91,8 @@ class ProductoUpdate implements Responsable
             $productoActual = json_decode($peticionProducto->getBody()->getContents());
 
             // Enviar la actualización solo con los datos necesarios
-            $peticionProductoUpdate = $clientApi->put($baseUri.'producto_update/'.$idProducto, [
+            $peticionProductoUpdate = $this->clientApi->put($this->baseUri.'producto_update/'.$idProducto, [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'imagen_producto' => $imagenProductoBase64Edit ?? ($productoActual ? $productoActual->imagen_producto : null),
                     'nombre_producto' => $nombreProductoEdit ?? $productoActual->nombre_producto,

@@ -9,6 +9,28 @@ use Carbon\Carbon;
 
 class ProductoStore implements Responsable
 {
+    protected $baseUri;
+    protected $clientApi;
+
+    public function __construct()
+    {
+        $this->baseUri = env('BASE_URI');
+        $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
+
     public function toResponse($request)
     {
         $formEntradas = request('form_entradas', null); // Identifico el formulario origen entradas
@@ -64,13 +86,11 @@ class ProductoStore implements Responsable
         {
             $formStore = $formVentas;
         }
-        
-        $baseUri = env('BASE_URI');
-        $clientApi = new Client(['base_uri' => $baseUri]);
 
         try
         {
-            $peticionProductoStore = $clientApi->post($baseUri.'producto_store', [
+            $peticionProductoStore = $this->clientApi->post($this->baseUri.'producto_store', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_tipo_persona' => $idTipoPersona,
                     'imagen_producto' => $imagenProductoBase64,

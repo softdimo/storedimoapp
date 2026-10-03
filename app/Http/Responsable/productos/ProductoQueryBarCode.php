@@ -20,6 +20,7 @@ class ProductoQueryBarCode implements Responsable
     public function toResponse($request)
     {
         $idProducto = $this->idProducto;
+        $jwtToken = session('api_jwt_token');
 
         try {
             // Realiza la solicitud a la API
@@ -27,6 +28,10 @@ class ProductoQueryBarCode implements Responsable
             $clientApi = new Client(['base_uri' => $baseUri]);
 
             $response = $clientApi->post($baseUri . 'producto_query_barcode/'.$idProducto, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

@@ -10,6 +10,8 @@ class UnidadMedidaIndex implements Responsable
 {
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
@@ -18,6 +20,10 @@ class UnidadMedidaIndex implements Responsable
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'unidad_medida_index', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

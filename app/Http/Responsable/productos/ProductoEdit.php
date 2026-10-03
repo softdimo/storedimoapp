@@ -27,6 +27,7 @@ class ProductoEdit implements Responsable
         $categorias = $this->categorias;
         $unidaMedida = $this->unidaMedida;
         $proveedor = $this->proveedor;
+        $jwtToken = session('api_jwt_token');
         view()->share('categorias', $categorias);
         view()->share('umd', $unidaMedida);
         view()->share('proveedores', $proveedor);
@@ -37,6 +38,10 @@ class ProductoEdit implements Responsable
             
             // Realiza la solicitud a la API
             $response = $clientApi->post($baseUri . 'producto_edit/'.$idProducto, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
