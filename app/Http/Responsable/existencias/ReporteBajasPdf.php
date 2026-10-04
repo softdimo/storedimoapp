@@ -21,6 +21,17 @@ class ReporteBajasPdf implements Responsable
     }
 
     // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
     // ===================================================================
 
     public function toResponse($request)
@@ -77,6 +88,7 @@ class ReporteBajasPdf implements Responsable
     {
         try {
             $peticionReporteBajasPdf = $this->clientApi->post($this->baseUri . 'reporte_bajas_pdf', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'fecha_inicial' => $fechaInicial,
                     'fecha_final' => $fechaFinal,

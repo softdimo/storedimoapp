@@ -17,6 +17,8 @@ class BajaDetalle implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
@@ -25,6 +27,10 @@ class BajaDetalle implements Responsable
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'baja/'. $this->idBaja, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
@@ -33,6 +39,10 @@ class BajaDetalle implements Responsable
 
             // Obtener detalles de cada baja
             $detallePeticion = $clientApi->post($baseUri . 'baja_detalle/'. $this->idBaja, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

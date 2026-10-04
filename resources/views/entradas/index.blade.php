@@ -72,7 +72,25 @@
                                     <tr class="text-center align-middle">
                                         {{-- <td>{{$entrada->empresa}}</td> --}}
                                         <td>{{ $entrada->id_compra }}</td>
-                                        <td class="text-end" data-order="{{ $entrada->valor_compra }}">$ {{ number_format((float) ($entrada->valor_compra ?? 0), 0, ',', '.') }}</td>
+                                        @php
+                                            $valorCompra = trim(str_replace(['$', 'COP', ' ', "\xc2\xa0"], '', (string) ($entrada->valor_compra ?? '0')));
+                                            if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $valorCompra) || substr_count($valorCompra, '.') > 1) {
+                                                $valorCompra = str_replace(['.', ','], '', $valorCompra);
+                                            } elseif (substr_count($valorCompra, ',') === 1 && !str_contains($valorCompra, '.')) {
+                                                $decimales = substr(strrchr($valorCompra, ','), 1);
+                                                $valorCompra = strlen($decimales) === 3
+                                                    ? str_replace(',', '', $valorCompra)
+                                                    : str_replace(',', '.', $valorCompra);
+                                            }
+                                            $valorCompra = (float) $valorCompra;
+                                            if ($valorCompra == 0) {
+                                                $digitosValorCompra = preg_replace('/\D/', '', (string) ($entrada->valor_compra ?? ''));
+                                                if ($digitosValorCompra !== '') {
+                                                    $valorCompra = (float) $digitosValorCompra;
+                                                }
+                                            }
+                                        @endphp
+                                        <td class="text-end" data-order="{{ $valorCompra }}">$ {{ number_format($valorCompra, 0, ',', '.') }}</td>
                                         <td>{{ $entrada->factura_compra }}</td>
                                         <td>{{ $entrada->fecha_compra }}</td>
 

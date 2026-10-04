@@ -18,6 +18,17 @@ class BajaStore implements Responsable
     }
 
     // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
     // ===================================================================
 
     public function toResponse($request)
@@ -33,6 +44,7 @@ class BajaStore implements Responsable
 
         try {
             $reqBajaStore = $this->clientApi->post($this->baseUri.'baja_store', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_responsable_baja' => $responsableBaja,
                     'fecha_baja' => $fechaBaja,

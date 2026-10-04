@@ -42,7 +42,25 @@
                                         {{ $entrada->apellidos_proveedor }}</td>
                                 @endif
 
-                                <td>$ {{ number_format((float) ($entrada->valor_compra ?? 0), 0, ',', '.') }}</td>
+                                @php
+                                    $valorCompra = trim(str_replace(['$', 'COP', ' ', "\xc2\xa0"], '', (string) ($entrada->valor_compra ?? '0')));
+                                    if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $valorCompra) || substr_count($valorCompra, '.') > 1) {
+                                        $valorCompra = str_replace(['.', ','], '', $valorCompra);
+                                    } elseif (substr_count($valorCompra, ',') === 1 && !str_contains($valorCompra, '.')) {
+                                        $decimales = substr(strrchr($valorCompra, ','), 1);
+                                        $valorCompra = strlen($decimales) === 3
+                                            ? str_replace(',', '', $valorCompra)
+                                            : str_replace(',', '.', $valorCompra);
+                                    }
+                                    $valorCompra = (float) $valorCompra;
+                                    if ($valorCompra == 0) {
+                                        $digitosValorCompra = preg_replace('/\D/', '', (string) ($entrada->valor_compra ?? ''));
+                                        if ($digitosValorCompra !== '') {
+                                            $valorCompra = (float) $digitosValorCompra;
+                                        }
+                                    }
+                                @endphp
+                                <td>$ {{ number_format($valorCompra, 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,11 +88,46 @@
                             </thead>
                             <tbody>
                                 @foreach ($entradaDetalles as $producto)
+                                    @php
+                                        $precioProducto = trim(str_replace(['$', 'COP', ' ', "\xc2\xa0"], '', (string) ($producto->precio_unitario_compra ?? '0')));
+                                        if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $precioProducto) || substr_count($precioProducto, '.') > 1) {
+                                            $precioProducto = str_replace(['.', ','], '', $precioProducto);
+                                        } elseif (substr_count($precioProducto, ',') === 1 && !str_contains($precioProducto, '.')) {
+                                            $decimalesPrecio = substr(strrchr($precioProducto, ','), 1);
+                                            $precioProducto = strlen($decimalesPrecio) === 3
+                                                ? str_replace(',', '', $precioProducto)
+                                                : str_replace(',', '.', $precioProducto);
+                                        }
+                                        $precioProducto = (float) $precioProducto;
+                                        if ($precioProducto == 0) {
+                                            $digitosPrecio = preg_replace('/\D/', '', (string) ($producto->precio_unitario_compra ?? ''));
+                                            if ($digitosPrecio !== '') {
+                                                $precioProducto = (float) $digitosPrecio;
+                                            }
+                                        }
+
+                                        $subtotalProducto = trim(str_replace(['$', 'COP', ' ', "\xc2\xa0"], '', (string) ($producto->subtotal ?? '0')));
+                                        if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $subtotalProducto) || substr_count($subtotalProducto, '.') > 1) {
+                                            $subtotalProducto = str_replace(['.', ','], '', $subtotalProducto);
+                                        } elseif (substr_count($subtotalProducto, ',') === 1 && !str_contains($subtotalProducto, '.')) {
+                                            $decimalesSubtotal = substr(strrchr($subtotalProducto, ','), 1);
+                                            $subtotalProducto = strlen($decimalesSubtotal) === 3
+                                                ? str_replace(',', '', $subtotalProducto)
+                                                : str_replace(',', '.', $subtotalProducto);
+                                        }
+                                        $subtotalProducto = (float) $subtotalProducto;
+                                        if ($subtotalProducto == 0) {
+                                            $digitosSubtotal = preg_replace('/\D/', '', (string) ($producto->subtotal ?? ''));
+                                            if ($digitosSubtotal !== '') {
+                                                $subtotalProducto = (float) $digitosSubtotal;
+                                            }
+                                        }
+                                    @endphp
                                     <tr class="text-center">
                                         <td>{{ $producto->nombre_producto }}</td>
                                         <td>{{ $producto->cantidad }}</td>
-                                        <td>$ {{ number_format((float) ($producto->precio_unitario_compra ?? 0), 0, ',', '.') }}</td>
-                                        <td>$ {{ number_format((float) ($producto->subtotal ?? 0), 0, ',', '.') }}</td>
+                                        <td>$ {{ number_format($precioProducto, 0, ',', '.') }}</td>
+                                        <td>$ {{ number_format($subtotalProducto, 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

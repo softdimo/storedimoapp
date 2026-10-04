@@ -18,6 +18,17 @@ class EntradaUpdate implements Responsable
     }
 
     // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
     // ===================================================================
 
     public function toResponse($request)
@@ -36,6 +47,7 @@ class EntradaUpdate implements Responsable
 
         try {
             $peticionCategoriaUpdate = $this->clientApi->put($this->baseUri.'categoria_update/'.$idCategoria, [
+                'headers' => $this->getHeaders(),
                 'json' => ['categoria' => $categoria,
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
@@ -73,6 +85,7 @@ class EntradaUpdate implements Responsable
         try
         {
             $peticionConsultaCategoria = $this->clientApi->post($this->baseUri.'consulta_categoria', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'categoria' => $categoria,
                     'empresa_actual' => session('empresa_actual.id_empresa')

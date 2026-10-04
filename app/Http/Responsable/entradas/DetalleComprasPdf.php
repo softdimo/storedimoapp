@@ -25,6 +25,17 @@ class DetalleComprasPdf implements Responsable
     }
 
     // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
+    // ===================================================================
     // ===================================================================
 
     public function toResponse($request)
@@ -122,6 +133,7 @@ class DetalleComprasPdf implements Responsable
     {
         try {
             $peticionDetalleCompraProductoPdf = $this->clientApi->post($this->baseUri.'detalle_compra_pdf/'.$idCompra, [
+                'headers' => $this->getHeaders(),
                 'json' => ['empresa_actual' => session('empresa_actual.id_empresa')]
             ]);
             return json_decode($peticionDetalleCompraProductoPdf->getBody()->getContents());

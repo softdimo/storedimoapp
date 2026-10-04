@@ -21,12 +21,40 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $parseValorVenta = function ($valor) {
+                                    $original = (string) ($valor ?? '0');
+                                    $parseado = trim(str_replace(['$', 'COP', ' ', "\xc2\xa0"], '', $original));
+                                    if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $parseado) || substr_count($parseado, '.') > 1) {
+                                        $parseado = str_replace(['.', ','], '', $parseado);
+                                    } elseif (substr_count($parseado, ',') === 1 && !str_contains($parseado, '.')) {
+                                        $decimales = substr(strrchr($parseado, ','), 1);
+                                        $parseado = strlen($decimales) === 3
+                                            ? str_replace(',', '', $parseado)
+                                            : str_replace(',', '.', $parseado);
+                                    }
+                                    $parseado = (float) $parseado;
+                                    if ($parseado == 0) {
+                                        $digitos = preg_replace('/\D/', '', $original);
+                                        if ($digitos !== '') {
+                                            $parseado = (float) $digitos;
+                                        }
+                                    }
+                                    return $parseado;
+                                };
+                                $descuentoVenta = $parseValorVenta($venta->descuento_index ?? ($venta->descuento ?? 0));
+                                $totalVentaDetalle = $parseValorVenta($venta->total_venta_index ?? ($venta->total_venta ?? 0));
+                                $subtotalVenta = $parseValorVenta($venta->subtotal_venta_index ?? ($venta->subtotal_venta ?? 0));
+                                if ($subtotalVenta == 0 && $totalVentaDetalle > 0) {
+                                    $subtotalVenta = $totalVentaDetalle + $descuentoVenta;
+                                }
+                            @endphp
                             <tr class="text-center">
                                 <td>{{ $venta->fecha_venta }}</td>
                                 <td>{{ $venta->nombres_cliente }}</td>
-                                <td class="text-end">$ {{ number_format((float) ($venta->subtotal_venta ?? 0), 0, ',', '.') }}</td>
-                                <td class="text-end">$ {{ number_format((float) ($venta->descuento ?? 0), 0, ',', '.') }}</td>
-                                <td class="text-end">$ {{ number_format((float) ($venta->total_venta_index ?? 0), 0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ number_format($subtotalVenta, 0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ number_format($descuentoVenta, 0, ',', '.') }}</td>
+                                <td class="text-end">$ {{ number_format($totalVentaDetalle, 0, ',', '.') }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -53,12 +81,26 @@
                             </thead>
                             <tbody>
                                 @foreach ($ventaDetalles as $producto)
+                                    @php
+                                        $subtotalProducto = $parseValorVenta($producto->subtotal_detalle ?? ($producto->subtotal ?? 0));
+                                        $gananciaProducto = $parseValorVenta($producto->ganancia_venta ?? 0);
+                                        $precioProducto = $parseValorVenta($producto->precio_venta_detalle ?? 0);
+                                        if ($precioProducto == 0) {
+                                            $precioProducto = $parseValorVenta($producto->precio_venta ?? 0);
+                                        }
+                                        if ($precioProducto == 0) {
+                                            $precioProducto = $parseValorVenta($producto->precio_unitario_venta ?? 0);
+                                        }
+                                        if ($precioProducto == 0 && $subtotalProducto > 0 && (float) ($producto->cantidad ?? 0) > 0) {
+                                            $precioProducto = $subtotalProducto / (float) $producto->cantidad;
+                                        }
+                                    @endphp
                                     <tr class="text-center">
                                         <td>{{ $producto->nombre_producto }}</td>
-                                        <td class="text-end">$ {{ number_format((float) ($producto->precio_venta_detalle ?? 0), 0, ',', '.') }}</td>
+                                        <td class="text-end">$ {{ number_format($precioProducto, 0, ',', '.') }}</td>
                                         <td>{{ $producto->cantidad }}</td>
-                                        <td class="text-end">$ {{ number_format((float) ($producto->subtotal_detalle ?? 0), 0, ',', '.') }}</td>
-                                        <td class="text-end">$ {{ number_format((float) ($producto->ganancia_venta ?? 0), 0, ',', '.') }}</td>
+                                        <td class="text-end">$ {{ number_format($subtotalProducto, 0, ',', '.') }}</td>
+                                        <td class="text-end">$ {{ number_format($gananciaProducto, 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

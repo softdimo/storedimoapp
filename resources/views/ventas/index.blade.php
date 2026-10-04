@@ -69,10 +69,34 @@
                             {{-- ============================== --}}
                             <tbody>
                                 @foreach ($ventas as $venta)
+                                    @php
+                                        $parseValorVenta = function ($valor) {
+                                            $original = (string) ($valor ?? '0');
+                                            $parseado = trim(str_replace(['$', 'COP', ' ', "\xc2\xa0"], '', $original));
+                                            if (preg_match('/^\d{1,3}([.,]\d{3})+$/', $parseado) || substr_count($parseado, '.') > 1) {
+                                                $parseado = str_replace(['.', ','], '', $parseado);
+                                            } elseif (substr_count($parseado, ',') === 1 && !str_contains($parseado, '.')) {
+                                                $decimales = substr(strrchr($parseado, ','), 1);
+                                                $parseado = strlen($decimales) === 3
+                                                    ? str_replace(',', '', $parseado)
+                                                    : str_replace(',', '.', $parseado);
+                                            }
+                                            $parseado = (float) $parseado;
+                                            if ($parseado == 0) {
+                                                $digitos = preg_replace('/\D/', '', $original);
+                                                if ($digitos !== '') {
+                                                    $parseado = (float) $digitos;
+                                                }
+                                            }
+                                            return $parseado;
+                                        };
+                                        $totalVentaIndex = $parseValorVenta($venta->total_venta_index ?? 0);
+                                        $gananciaTotalVenta = $parseValorVenta($venta->ganancia_total_venta ?? 0);
+                                    @endphp
                                     <tr class="text-center align-middle">
                                         <td>{{ $venta->id_venta }}</td>
-                                        <td class="text-end" data-order="{{ $venta->total_venta_index }}">$ {{ number_format((float) ($venta->total_venta_index ?? 0), 0, ',', '.') }}</td>
-                                        <td class="text-end" data-order="{{ $venta->ganancia_total_venta }}">$ {{ number_format((float) ($venta->ganancia_total_venta ?? 0), 0, ',', '.') }}</td>
+                                        <td class="text-end" data-order="{{ $totalVentaIndex }}">$ {{ number_format($totalVentaIndex, 0, ',', '.') }}</td>
+                                        <td class="text-end" data-order="{{ $gananciaTotalVenta }}">$ {{ number_format($gananciaTotalVenta, 0, ',', '.') }}</td>
                                         <td>{{ $venta->fecha_venta }}</td>
                                         <td>{{ $venta->identificacion }}</td>
                                         <td>{{ $venta->nombres_cliente }}</td>

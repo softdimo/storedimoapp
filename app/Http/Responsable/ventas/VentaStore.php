@@ -17,6 +17,17 @@ class VentaStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+    // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
     public function toResponse($request)
     {
         $idEmpresa = request('id_empresa', null);
@@ -41,6 +52,7 @@ class VentaStore implements Responsable
         
         try {
             $reqVentaStore = $this->clientApi->post($this->baseUri.'venta_store', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_empresa' => $idEmpresa,
                     'id_tipo_cliente' => $idTipoCliente,

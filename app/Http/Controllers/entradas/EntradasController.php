@@ -19,12 +19,29 @@ class EntradasController extends Controller
     use MetodosTrait;
     protected $baseUri;
     protected $clientApi;
+    protected $jwtToken;
 
     public function __construct()
     {
-        $this->shareData();
+        $this->middleware(function ($request, $next) {
+            $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
+            // $this->jwtToken = session('api_jwt_token'); // 🟢 Asignación global del Token
+            return $next($request);
+        });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    // ======================================================================
+    // ======================================================================
+
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
     }
 
     // ======================================================================
@@ -221,6 +238,7 @@ class EntradasController extends Controller
                     }
     
                     $reqAnularCompra = $this->clientApi->post($this->baseUri.'anular_compra/'.$idCompra, [
+                        'headers' => $this->getHeaders(),
                         'json' => [
                             'id_audit' => session('id_usuario'),
                             'empresa_actual' => session('empresa_actual.id_empresa'),
@@ -337,6 +355,7 @@ class EntradasController extends Controller
     {
         try {
             $response = $this->clientApi->get('categorias_trait', [
+                'headers' => $this->getHeaders(),
                 'query' => ['empresa_actual' => session('empresa_actual.id_empresa')]
             ]);
 
@@ -356,6 +375,7 @@ class EntradasController extends Controller
         try
         {
             $response = $this->clientApi->get('productos_trait_compras', [
+                'headers' => $this->getHeaders(),
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
@@ -376,6 +396,7 @@ class EntradasController extends Controller
     {
         try {
             $response = $this->clientApi->get('proveedores_trait', [
+                'headers' => $this->getHeaders(),
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]
@@ -396,6 +417,7 @@ class EntradasController extends Controller
         try
         {
             $response = $this->clientApi->get('productos_por_proveedor/' . $idProveedor, [
+                'headers' => $this->getHeaders(),
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

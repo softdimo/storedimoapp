@@ -21,12 +21,29 @@ class ExistenciasController extends Controller
     use MetodosTrait;
     protected $baseUri;
     protected $clientApi;
+    protected $jwtToken;
 
     public function __construct()
     {
-        $this->shareData();
+        $this->middleware(function ($request, $next) {
+            $this->shareData(); // 🟢 Se ejecuta con la sesión y JWT ya cargados
+            // $this->jwtToken = session('api_jwt_token'); // 🟢 Asignación global del Token
+            return $next($request);
+        });
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
+    }
+
+    // ======================================================================
+    // ======================================================================
+
+    /* Helper privado para obtener las cabeceras estándar con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
     }
 
     // ======================================================================
@@ -378,6 +395,7 @@ class ExistenciasController extends Controller
     {
         try {
             $response = $this->clientApi->get('productos_trait_existencias', [
+                'headers' => $this->getHeaders(),
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

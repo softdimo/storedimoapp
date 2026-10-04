@@ -10,6 +10,8 @@ class FechasVencimiento implements Responsable
 {
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         try
         {
             $baseUri = env('BASE_URI');
@@ -17,6 +19,10 @@ class FechasVencimiento implements Responsable
             
             // Realiza la solicitud a la API
             $peticion = $clientApi->get($baseUri . 'fechas_vencimiento_index', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

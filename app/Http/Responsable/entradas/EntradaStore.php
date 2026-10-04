@@ -17,6 +17,17 @@ class EntradaStore implements Responsable
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
 
+    // ===================================================================
+
+    /* Helper privado para obtener los headers con JWT */
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+
     public function toResponse($request)
     {
         $idEmpresa = request('id_empresa', null);
@@ -37,6 +48,7 @@ class EntradaStore implements Responsable
         try
         {
             $reqEntradaStore = $this->clientApi->post($this->baseUri.'entrada_store', [
+                'headers' => $this->getHeaders(),
                 'json' => [
                     'id_empresa' => $idEmpresa,
                     'factura_compra' => $facturaCompra,
