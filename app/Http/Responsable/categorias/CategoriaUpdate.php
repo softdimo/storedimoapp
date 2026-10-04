@@ -77,6 +77,8 @@ class CategoriaUpdate implements Responsable
     {
         try
         {
+            $jwtToken = session('api_jwt_token');
+
             $peticionConsultaCategoria = $this->clientApi->post('consulta_categoria', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $jwtToken,
