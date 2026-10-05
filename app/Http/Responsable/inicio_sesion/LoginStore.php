@@ -212,7 +212,7 @@ class LoginStore implements Responsable
                     'email'   => $email,
                     'clave'   => $clave
                 ],
-                'timeout' => 5
+                // 'timeout' => 5
             ]);
 
             $data = json_decode($response->getBody()->getContents(), true);
@@ -251,8 +251,8 @@ class LoginStore implements Responsable
 
     private function crearVariablesSesion(array $user, string $apiJwtToken)
     {
-        // Regeneramos el ID de sesión para evitar fijación/carreras con requests previos
-        Session::regenerate(true);
+        // Regeneramos el ID de sesión (sin destruir archivos previos de golpe en hosting compartido)
+        Session::regenerate();
 
         // 1. Generamos un token único e irrepetible para esta sesión específica
         $nuevoToken = Str::random(40);
@@ -311,7 +311,7 @@ class LoginStore implements Responsable
             $response = $this->getClient()->post('landing/consultar_permisos_login', [
                 'headers' => $this->getLandingHeaders($apiJwtToken),
                 'json' => ['usuarioId' => $idUsuario],
-                'timeout' => 3
+                // 'timeout' => 3
             ]);
             
             return json_decode($response->getBody(), true) ?? [];
@@ -334,7 +334,7 @@ class LoginStore implements Responsable
                     'session_token' => $token,
                     'id_audit'      => $idUsuario
                 ],
-                'timeout' => 5
+                // 'timeout' => 5
             ]);
 
             return $response->getStatusCode() >= 200 && $response->getStatusCode() < 300;
@@ -356,7 +356,7 @@ class LoginStore implements Responsable
                     'clave_fallas'  => $contador,
                     'id_audit'      => $idUsuario
                 ],
-                'timeout' => 5
+                // 'timeout' => 5
             ]);
         } catch (Exception $e) {
             Log::error("Error actualizando clave fallas en API: " . $e->getMessage());
@@ -374,7 +374,7 @@ class LoginStore implements Responsable
             $response = $this->getClient()->post('landing/validar_email_login', [
                 'headers'   => $this->getLandingHeaders(),
                 'json' => ['email' => $email],
-                'timeout' => 5
+                // 'timeout' => 5
             ]);
             return json_decode($response->getBody()->getContents(), true);
 
@@ -393,7 +393,7 @@ class LoginStore implements Responsable
             $this->getClient()->post('landing/inactivar_usuario_login/'.$idUsuario, [
                 'headers'   => $this->getLandingHeaders(),
                 'json' => ['id_audit' => $idUsuario],
-                'timeout' => 5
+                // 'timeout' => 5
             ]);
         } catch (Exception $e) {
             Log::error("Error inactivando usuario en API: " . $e->getMessage());
@@ -410,7 +410,7 @@ class LoginStore implements Responsable
             $response = $this->getClient()->get('landing/suscripcion_empresa_estado_login/'.$idEmpresa, [
                 'headers'   => $this->getLandingHeaders(),
                 'query'     => [],
-                'timeout'   => 5
+                // 'timeout'   => 5
             ]);
             return json_decode($response->getBody()->getContents());
 
@@ -433,7 +433,7 @@ class LoginStore implements Responsable
                     'id_estado_suscripcion' => $nuevoEstado,
                     'id_audit'              => Session::get('id_usuario')
                 ],
-                'timeout' => 5
+                // 'timeout' => 5
             ]);
             // No devolver nada, solo ejecutar la actualización
         } catch (Exception $e) {

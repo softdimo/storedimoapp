@@ -39,7 +39,7 @@ class VerificarTokenSesion
                             'Authorization' => 'Bearer ' . $jwtToken,
                             'Accept'        => 'application/json',
                         ],
-                        'timeout' => 3
+                        // 'timeout' => 3
                     ]);
                     $datosApi = json_decode($response->getBody()->getContents());
 

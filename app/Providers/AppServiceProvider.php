@@ -34,11 +34,10 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with([
                 'usuarioLogueado' => $usuario,
-                'logoEmpresa'     => $usuario->logo_empresa ?? $logoEmpresaPredeterminado,
+                'logoEmpresa'     => (is_object($usuario) ? ($usuario->logo_empresa ?? null) : null) ?? $logoEmpresaPredeterminado,
                 'nombreEmpresa'   => session('empresa_actual.nombre_empresa')
                     ?? (is_string(session('empresa_actual')) ? session('empresa_actual') : null)
-                    ?? $usuario->nombre_empresa
-                    ?? '',
+                    ?? (is_object($usuario) ? ($usuario->nombre_empresa ?? '') : ''),
             ]);
         });
 

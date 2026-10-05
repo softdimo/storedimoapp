@@ -67,8 +67,8 @@ class UsuariosController extends Controller
             }
         } catch (Exception $e) {
             logger()->error("Exception Index Usuario: " . $e->getMessage());
-            alert()->error("Exception Index Usuario!");
-            return redirect()->to(route('login'));
+            alert()->error("Error", "No se pudo cargar el listado de usuarios.");
+            return redirect()->route('home.index');
         }
     }
 

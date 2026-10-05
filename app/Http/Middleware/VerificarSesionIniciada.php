@@ -17,7 +17,6 @@ class VerificarSesionIniciada
         }
 
         // 2. Verificación de empresa
-        // if (!session('empresa_actual')) {
         if (!session('datos_empresa') || !session('empresa_actual')) {
             $this->limpiarSesion();
             return $this->responderError('Sesión inválida', 401, $request);
@@ -33,7 +32,6 @@ class VerificarSesionIniciada
                 ->pluck('permissions.name')
                 ->toArray();
 
-            // Almacenar permisos en sesión si no existen
             if (!session()->has('permisos')) {
                 session(['permisos' => $permisos]);
             }
@@ -45,13 +43,22 @@ class VerificarSesionIniciada
             return $next($request);
 
         } catch (\Exception $e) {
-            Log::error("Error middleware autenticación: ".$e->getMessage());
-            $this->limpiarSesion();
-            return $this->responderError('Error de conexión', 500, $request);
+            // Importante: NO limpiar sesión por fallos temporales de BD/API en Hostinger.
+            // Antes esto hacía Session::flush() y parecía un "logout" al entrar a /usuarios.
+            Log::error('Error middleware autenticación: '.$e->getMessage(), [
+                'usuario' => session('id_usuario'),
+                'ruta'    => $request->path(),
+            ]);
+
+            if ($request->is('api/*')) {
+                return response()->json(['error' => 'Error de conexión'], 500);
+            }
+
+            alert()->error('Error de conexión', 'No se pudo validar la sesión con la base de datos. Intente de nuevo.');
+            return redirect()->route('home.index');
         }
     }
 
-    // --- Métodos nuevos/modificados ---
     protected function responderError($mensaje, $codigo, $request)
     {
         if ($request->is('api/*')) {
@@ -60,17 +67,6 @@ class VerificarSesionIniciada
         return redirect()->route('login')->withErrors(['error' => $mensaje]);
     }
 
-    protected function validarPermisosAPI($request)
-    {
-        $ruta = $request->path();
-        $permisos = session('permisos', []);
-        
-        if (!in_array($ruta, $permisos['rutas_permitidas'] ?? [])) {
-            abort(403, 'No autorizado');
-        }
-    }
-
-    // Mantener igual
     private function limpiarSesion()
     {
         session()->forget(['sesion_iniciada', 'empresa_actual', 'datos_empresa', 'permisos']);

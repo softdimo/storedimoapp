@@ -24,17 +24,23 @@ class UsuarioIndex implements Responsable
                     'Accept'        => 'application/json',
                 ],
                 'query' => [
-                    'id_empresa_usuario' => session('empresa_actual.id_empresa')
+                    'id_empresa_usuario' => session('empresa_actual.id_empresa') ?? session('id_empresa')
                 ],
                 // 'timeout' => 5.0
             ]);
             $usuarioIndex = json_decode($response->getBody()->getContents());
 
+            // Evita que la vista rompa con foreach(null) y termine en redirect raro
+            if (!is_array($usuarioIndex) && !is_object($usuarioIndex)) {
+                $usuarioIndex = [];
+            }
+
             return view('usuarios.index', compact('usuarioIndex'));
             
         } catch (Exception $e) {
+            logger()->error('Error UsuarioIndex: ' . $e->getMessage());
             alert()->error('Error cargando los usuarios.');
-            return back();
+            return redirect()->route('home.index');
         }
     }
 }
