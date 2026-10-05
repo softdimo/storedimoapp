@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use Exception;
@@ -17,74 +16,43 @@ class VerificarTokenSesion
             
             $ahora = now();
             $ultimaValidacion = Session::get('ultima_validacion_token');
-            // 600 segundos = 10 minutos de "paz" para el servidor
-            $intervaloSegundos = 0;
-            // $intervaloSegundos = 600; // 10 minutos
-            // $intervaloSegundos = 1200; // 20 minutos
-            // $intervaloSegundos = 1800; // 30 minutos
-            // $intervaloSegundos = 2400; // 40 minutos
-            // $intervaloSegundos = 3000; // 50 minutos
-            // $intervaloSegundos = 3600; // 60 minutos
-            // $intervaloSegundos = 4200; // 70 minutos
-            // $intervaloSegundos = 4800; // 80 minutos
-            // $intervaloSegundos = 5400; // 90 minutos
-            // $intervaloSegundos = 6000; // 100 minutos
-            // $intervaloSegundos = 36000; // 10 horas
-            // $intervaloSegundos = 43200; // 12 horas
-            // $intervaloSegundos = 86400; // 24 horas
-            // $intervaloSegundos = 172800; // 48 horas
-            // $intervaloSegundos = 259200; // 72 horas
-            // $intervaloSegundos = 345600; // 96 horas
-            // $intervaloSegundos = 432000; // 120 horas
-            // $intervaloSegundos = 518400; // 144 horas
+            // Evita consultar la API en cada request (reduce carreras y falsos deslogueos)
+            $intervaloSegundos = 600; // 10 minutos
 
-            // Solo entramos a consultar si es la primera vez o si ya pasaron 10 minutos
+            // Solo consultamos si es la primera vez o si ya pasó el intervalo
             if (!$ultimaValidacion || $ahora->diffInSeconds($ultimaValidacion) > $intervaloSegundos) {
                 
                 $idUsuario = Session::get('id_usuario');
                 $tokenEnSesion = Session::get('session_token');
                 $jwtToken = Session::get('api_jwt_token');
 
-                // Si no hay JWT disponible en sesión, permitimos el flujo para evitar bucles o deslogueos erróneos
-                if (!$jwtToken) {
+                // Sin JWT o sin token local, no invalidamos (evita bucles/falsos positivos)
+                if (!$jwtToken || !$tokenEnSesion) {
                     return $next($request);
                 }
 
                 try {
-                    /*
-                    |--------------------------------------------------------------------------
-                    | OPCIÓN A: CONSULTA DIRECTA (ACTIVA)
-                    |--------------------------------------------------------------------------
-                    */
-                    // $userBd = DB::connection('mysql')
-                    //             ->table('usuarios')
-                    //             ->select('session_token')
-                    //             ->where('id_usuario', $idUsuario)
-                    //             ->first();
-                    
-                    // $tokenReal = $userBd->session_token ?? null;
-
-                    
-                    // |--------------------------------------------------------------------------
-                    // | OPCIÓN B: CONSULTA VÍA API (COMENTADA PARA COMPARACIÓN)
-                    // |--------------------------------------------------------------------------
                     $client = new Client(['base_uri' => env('BASE_URI')]);
                     
-                    // Añadimos ?t=timestamp para forzar a la API a darnos el dato fresco de la BD
                     $response = $client->get("administracion/consultar_session_token/{$idUsuario}?t=" . time(), [
                         'headers' => [
-                            'Authorization' => 'Bearer ' . $jwtToken, // <--- HEADER JWT INYECTADO
+                            'Authorization' => 'Bearer ' . $jwtToken,
                             'Accept'        => 'application/json',
                         ],
                         'timeout' => 3
                     ]);
                     $datosApi = json_decode($response->getBody()->getContents());
 
-                    // Extraemos el token del objeto JSON correctamente
                     $tokenReal = isset($datosApi->session_token) ? $datosApi->session_token : null;
-                    
-                    // VALIDACIÓN
-                    if (!$tokenReal || $tokenReal !== $tokenEnSesion) {
+
+                    // Si la API no devolvió token, NO cerramos sesión (puede ser falla temporal)
+                    if (!$tokenReal) {
+                        Log::warning("VerificarTokenSesion: token remoto vacío/nulo. Usuario: {$idUsuario}. Se mantiene la sesión.");
+                        return $next($request);
+                    }
+
+                    // Solo invalidar cuando hay evidencia clara de mismatch
+                    if ($tokenReal !== $tokenEnSesion) {
                         Log::warning("Sesión invalidada por token incorrecto. Usuario: {$idUsuario}");
                         
                         Session::flush();
@@ -93,13 +61,13 @@ class VerificarTokenSesion
                             return response()->json(['error' => 'Sesión no válida'], 401);
                         }
 
-                        return redirect()->route('login')->with('error_sesion', 'Por seguridad, su sesión ha caducado debido al cambio de clave.');
+                        return redirect()->route('login')->with('error_sesion', 'Por seguridad, su sesión ha caducado.');
                     }
 
-                    // Si todo está bien, renovamos el sello de tiempo para no volver a consultar en 10 min
                     Session::put('ultima_validacion_token', $ahora);
 
                 } catch (Exception $e) {
+                    // Error de red/API: no cerrar sesión
                     Log::error("Error en Middleware VerificarTokenSesion: " . $e->getMessage());
                 }
             }

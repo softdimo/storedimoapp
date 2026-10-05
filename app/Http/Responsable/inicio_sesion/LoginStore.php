@@ -251,18 +251,17 @@ class LoginStore implements Responsable
 
     private function crearVariablesSesion(array $user, string $apiJwtToken)
     {
-        // Limpiamos cualquier rastro de sesiones anteriores
-        Session::flush();
-        
+        // Regeneramos el ID de sesión para evitar fijación/carreras con requests previos
+        Session::regenerate(true);
+
         // 1. Generamos un token único e irrepetible para esta sesión específica
         $nuevoToken = Str::random(40);
 
-        // 2. Notificamos a la API para que lo guarde en la BD principal
-        // Si la API falla, es mejor capturarlo para no bloquear el login, pero idealmente debe ser exitoso.
-        try {
-            $this->actualizarTokenSesionBd($user['id_usuario'], $nuevoToken, $apiJwtToken);
-        } catch (Exception $e) {
-            Log::error("No se pudo actualizar el session_token en la API: " . $e->getMessage());
+        // 2. Guardamos el token en BD ANTES de crear la sesión local.
+        // Si falla, NO dejamos sesión con token distinto al de BD (eso provoca deslogueos).
+        $tokenGuardado = $this->actualizarTokenSesionBd($user['id_usuario'], $nuevoToken, $apiJwtToken);
+        if (!$tokenGuardado) {
+            throw new Exception('No se pudo sincronizar el token de sesión con la API');
         }
 
         $permisos = $this->obtenerPermisos($user['id_usuario'], $apiJwtToken);
@@ -271,7 +270,6 @@ class LoginStore implements Responsable
         $nombreEmpresaTexto = is_array($user['empresa']) ? ($user['empresa']['nombre_empresa'] ?? '') : $user['empresa'];
 
         // 3. ESTRUCTURAMOS EL OBJETO USUARIO QUE CONSUMIRÁ EL ENCABEZADO
-        // (Asegúrate de incluir los nombres de campos que retornaba tu API)
         $usuarioLogueado = (object) [
             'id_usuario'        => $user['id_usuario'],
             'nombre_usuario'    => $user['nombre_usuario'] ?? $user['usuario'] ?? '',
@@ -285,22 +283,23 @@ class LoginStore implements Responsable
         Session::put([
             'id_usuario'        => $user['id_usuario'],
             'usuario'           => $user['usuario'],
-            'usuario_logueado'  => $usuarioLogueado, // GUARDADO EN SESIÓN PARA EL ENCABEZAD
+            'usuario_logueado'  => $usuarioLogueado,
             'id_empresa'        => $user['id_empresa'],
             'id_rol'            => $user['id_rol'],
-            'datos_empresa'     => $user['empresa'],      // EL ARRAY COMPLETO (Para configurar la BD Tenant)
-            'empresa_actual'    => [                      // Array: sirve para API y para Blade
+            'datos_empresa'     => $user['empresa'],
+            'empresa_actual'    => [
                 'id_empresa'     => $user['id_empresa'],
                 'nombre_empresa' => $nombreEmpresaTexto,
             ],
             'permisos'          => $permisos,
             'sesion_iniciada'   => true,
             'tenant_connection' => true,
-            'session_token'     => $nuevoToken, // El "sello" de seguridad
-            'api_jwt_token'     => $apiJwtToken // ALMACENADO PARA CONSUMIR EN CADA PETICIÓN A LA API
+            'session_token'     => $nuevoToken,
+            'api_jwt_token'     => $apiJwtToken,
+            // Evita que el middleware revalide el token en el primer request tras el login
+            'ultima_validacion_token' => now(),
         ]);
 
-        // Forzamos la escritura física de la sesión antes de redirigir
         Session::save();
     }
 
@@ -326,9 +325,10 @@ class LoginStore implements Responsable
 
     // =======================================================================================
 
-    private function actualizarTokenSesionBd($idUsuario, $token, string $apiJwtToken = null) {
+    private function actualizarTokenSesionBd($idUsuario, $token, string $apiJwtToken = null): bool
+    {
         try {
-            $this->getClient()->post('landing/actualizar_token_sesion_login/'.$idUsuario, [
+            $response = $this->getClient()->post('landing/actualizar_token_sesion_login/'.$idUsuario, [
                 'headers'   => $this->getLandingHeaders($apiJwtToken),
                 'json'      => [
                     'session_token' => $token,
@@ -337,11 +337,11 @@ class LoginStore implements Responsable
                 'timeout' => 5
             ]);
 
-            return true;
+            return $response->getStatusCode() >= 200 && $response->getStatusCode() < 300;
 
         } catch (Exception $e) {
             Log::error("Error al sincronizar el token con la API: ".$e->getMessage());
-            // throw new Exception("Error al sincronizar el token con la API.");
+            return false;
         }
     }
 

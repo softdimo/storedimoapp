@@ -56,16 +56,14 @@ class UsuariosController extends Controller
             {
                 $sesion = $this->validarVariablesSesion();
 
-                if (
-                    empty($sesion[0]) || is_null($sesion[0]) &&
-                    empty($sesion[1]) || is_null($sesion[1]) &&
-                    empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
-                {
+                $sesionInvalida = collect($sesion)->slice(0, 3)->contains(fn($val) => empty($val)) || !$sesion[3];
+
+                if ($sesionInvalida) {
                     return redirect()->to(route('login'));
-                } else {
-                    $vista = new UsuarioIndex();
-                    return $this->validarAccesos($sesion[0], 3, $vista);
                 }
+
+                $vista = new UsuarioIndex();
+                return $this->validarAccesos($sesion[0], 3, $vista);
             }
         } catch (Exception $e) {
             logger()->error("Exception Index Usuario: " . $e->getMessage());
@@ -207,32 +205,6 @@ class UsuariosController extends Controller
     {
         //comment
     }
-
-    // public function listarClientes()
-    // {
-    //     try {
-    //         if (!$this->checkDatabaseConnection()) {
-    //             return view('db_conexion');
-    //         } else {
-    //             $sesion = $this->validarVariablesSesion();
-
-    //             if (
-    //                 empty($sesion[0]) || is_null($sesion[0]) &&
-    //                 empty($sesion[1]) || is_null($sesion[1]) &&
-    //                 empty($sesion[2]) || is_null($sesion[2]) && !$sesion[3])
-    //             {
-    //                 return redirect()->to(route('login'));
-    //             } else {
-    //                 $vista = 'personas.listar_clientes';
-    //                 return $this->validarAccesos($sesion[0], 1, $vista);
-    //             }
-    //         }
-    //     } catch (Exception $e) {
-    //         logger()->error("Exception Listar Clientes: " . $e->getMessage());
-    //         alert()->error("Exception Store Usuario!");
-    //         return redirect()->to(route('login'));
-    //     }
-    // }
 
     public function queryUsuarioUpdate($idUsuario)
     {
