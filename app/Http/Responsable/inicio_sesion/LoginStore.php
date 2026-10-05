@@ -289,7 +289,10 @@ class LoginStore implements Responsable
             'id_empresa'        => $user['id_empresa'],
             'id_rol'            => $user['id_rol'],
             'datos_empresa'     => $user['empresa'],      // EL ARRAY COMPLETO (Para configurar la BD Tenant)
-            'empresa_actual'    => $nombreEmpresaTexto,   // SOLO EL TEXTO STRING (Para vistas y Blade)
+            'empresa_actual'    => [                      // Array: sirve para API y para Blade
+                'id_empresa'     => $user['id_empresa'],
+                'nombre_empresa' => $nombreEmpresaTexto,
+            ],
             'permisos'          => $permisos,
             'sesion_iniciada'   => true,
             'tenant_connection' => true,

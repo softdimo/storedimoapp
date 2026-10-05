@@ -29,7 +29,7 @@ class UsuarioIndex implements Responsable
                 // 'timeout' => 5.0
             ]);
             $usuarioIndex = json_decode($response->getBody()->getContents());
-            
+
             return view('usuarios.index', compact('usuarioIndex'));
             
         } catch (Exception $e) {
