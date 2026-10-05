@@ -42,6 +42,7 @@ return [
     ],
 
     'lumen' => [
+        'base_uri'    => env('BASE_URI'),
         'landing_key' => env('LANDING_API_KEY'),
     ],
 

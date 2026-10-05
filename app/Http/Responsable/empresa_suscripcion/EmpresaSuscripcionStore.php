@@ -23,7 +23,8 @@ class EmpresaSuscripcionStore implements Responsable
     private function getLandingHeaders(): array
     {
         return [
-            'X-Landing-API-Key' => config('services.lumen.landing_key'),
+            // Debe coincidir con LandingApiKeyMiddleware en la API
+            'X-Landing-Api-Key' => config('services.lumen.landing_key', env('LANDING_API_KEY')),
             'Accept'            => 'application/json',
         ];
     }
