@@ -123,10 +123,14 @@ class EmpresaSuscripcionStore implements Responsable
                 $diasTrial = ($idPlanSuscrito == 1) ? request('dias_trial', null) : null;
                 
                 $idTipoPago          = request('id_tipo_pago', null);
-                $valorSuscripcion    = request('valor_suscripcion', null);
+                $valorSuscripcionRaw = request('valor_suscripcion', null);
                 $fechaInicial        = request('fecha_inicial', null);
                 $fechaFinal          = request('fecha_final', null);
                 $idEstadoSuscripcion = 13;
+
+                // Formato UI colombiano: "600.000" → 600000 (float numérico real)
+                // Importante: no usar el string crudo en cálculos; en PHP "600.000" * 100 = 60000
+                $valorSuscripcion = (float) str_replace('.', '', (string) $valorSuscripcionRaw);
 
                 // ===================================================================
                 // ===================================================================
@@ -141,7 +145,7 @@ class EmpresaSuscripcionStore implements Responsable
                             'id_plan_suscrito'         => $idPlanSuscrito,
                             'dias_trial'               => $diasTrial,
                             'id_tipo_pago_suscripcion' => $idTipoPago,
-                            'valor_suscripcion'        => doubleval(str_replace(".", "", $valorSuscripcion)),
+                            'valor_suscripcion'        => $valorSuscripcion,
                             'fecha_inicial'            => $fechaInicial,
                             'fecha_final'              => $fechaFinal,
                             'id_estado_suscripcion'    => $idEstadoSuscripcion,
@@ -204,8 +208,8 @@ class EmpresaSuscripcionStore implements Responsable
                         // CASO 2: PLAN PAGO (Requiere pasarela de Wompi)
                         // ==========================================
                         
-                        // 1. Calculamos el valor en centavos para Wompi
-                        $valorEnCentavos = intval($valorSuscripcion * 100);
+                        // 1. Calculamos el valor en centavos para Wompi (ya viene numérico limpio)
+                        $valorEnCentavos = (int) round($valorSuscripcion * 100);
 
                         // 2. Definimos la referencia única uniendo ID y timestamp
                         $referencia = "STOR-" . $suscripcionData->id_suscripcion . "-" . time();

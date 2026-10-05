@@ -17,7 +17,7 @@ class VerificarTokenSesion
             $ahora = now();
             $ultimaValidacion = Session::get('ultima_validacion_token');
             // Evita consultar la API en cada request (reduce carreras y falsos deslogueos)
-            $intervaloSegundos = 600; // 10 minutos
+            $intervaloSegundos = 60; // 1 minuto
 
             // Solo consultamos si es la primera vez o si ya pasó el intervalo
             if (!$ultimaValidacion || $ahora->diffInSeconds($ultimaValidacion) > $intervaloSegundos) {

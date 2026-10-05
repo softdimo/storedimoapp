@@ -49,11 +49,9 @@ class UsuariosController extends Controller
     public function index()
     {
         try {
-            if (!$this->checkDatabaseConnection()) 
-            {
+            if (!$this->checkDatabaseConnection()) {
                 return view('db_conexion');
-            } else
-            {
+            } else {
                 $sesion = $this->validarVariablesSesion();
 
                 $sesionInvalida = collect($sesion)->slice(0, 3)->contains(fn($val) => empty($val)) || !$sesion[3];
@@ -65,6 +63,7 @@ class UsuariosController extends Controller
                 $vista = new UsuarioIndex();
                 return $this->validarAccesos($sesion[0], 3, $vista);
             }
+            
         } catch (Exception $e) {
             logger()->error("Exception Index Usuario: " . $e->getMessage());
             alert()->error("Error", "No se pudo cargar el listado de usuarios.");
