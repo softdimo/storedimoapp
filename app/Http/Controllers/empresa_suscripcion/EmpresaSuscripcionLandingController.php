@@ -427,7 +427,7 @@ class EmpresaSuscripcionLandingController extends Controller
 
         } catch (\Exception $e) {
             alert()->error('Error', 'No fue posible recuperar los datos del pago.');
-            return redirect()->route('home.index');
+            return redirect()->route('inicio_sesion.login');
         }
     }
 

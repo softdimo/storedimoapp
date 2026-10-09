@@ -247,7 +247,7 @@ class EmpresaSuscripcionStore implements Responsable
             }
 
         } catch (Exception $e) {
-            alert()->error('Error', 'Creando la empresa, contacte a Soporte.');
+            alert()->error('Error', 'Creando la suscripción de la empresa, contacte a Soporte.');
             return back();
         }
     } // FIN toResponse
