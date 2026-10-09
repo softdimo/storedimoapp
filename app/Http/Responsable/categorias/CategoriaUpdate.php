@@ -21,6 +21,8 @@ class CategoriaUpdate implements Responsable
 
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         $idCategoria = request('id_categoria', null);
         $categoria = request('categoria', null);
 
@@ -34,7 +36,11 @@ class CategoriaUpdate implements Responsable
 
         try
         {
-            $peticionCategoriaUpdate = $this->clientApi->put($this->baseUri.'categoria_update/'.$idCategoria, [
+            $peticionCategoriaUpdate = $this->clientApi->put('categoria_update/'.$idCategoria, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'categoria' => $this->quitarCaracteresEspeciales(ucwords($categoria)),
                     'id_audit' => session('id_usuario'),
@@ -71,7 +77,13 @@ class CategoriaUpdate implements Responsable
     {
         try
         {
-            $peticionConsultaCategoria = $this->clientApi->post($this->baseUri.'consulta_categoria', [
+            $jwtToken = session('api_jwt_token');
+
+            $peticionConsultaCategoria = $this->clientApi->post('consulta_categoria', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'categoria' => $categoria,
                     'empresa_actual' => session('empresa_actual.id_empresa')

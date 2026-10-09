@@ -12,10 +12,16 @@ class PersonaIndex implements Responsable
     {
         try
         {
+            $jwtToken = session('api_jwt_token');
+
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
 
-            $response = $clientApi->get($baseUri . 'personas_index', [
+            $response = $clientApi->get('personas_index', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'query' => [
                     'empresa_actual' => session('empresa_actual.id_empresa')
                 ]

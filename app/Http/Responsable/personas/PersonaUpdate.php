@@ -16,8 +16,12 @@ class PersonaUpdate implements Responsable
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
+
+
     public function toResponse($request)
     {
+        $jwtToken = session('api_jwt_token');
+
         $idPersona = request('id_persona', null);
         $idTipoPersona = request('id_tipo_persona', null);
         $idTipoDocumento = request('id_tipo_documento', null);
@@ -47,7 +51,11 @@ class PersonaUpdate implements Responsable
         }
 
         try {
-            $peticionPersonaUpdate = $this->clientApi->put($this->baseUri.'persona_update/'. $idPersona , [
+            $peticionPersonaUpdate = $this->clientApi->put('persona_update/'. $idPersona , [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $jwtToken,
+                    'Accept'        => 'application/json',
+                ],
                 'json' => [
                     'id_tipo_persona' => $idTipoPersona,
                     'id_tipo_documento' => $idTipoDocumento,

@@ -15,19 +15,17 @@ class UsuarioIndex implements Responsable
         try {
             $baseUri = env('BASE_URI');
             $clientApi = new Client(['base_uri' => $baseUri]);
-            
-            // Realiza la solicitud a la API
-            // $response = $clientApi->get($baseUri . 'administracion/usuarios_index', [
+
             $response = $clientApi->get('administracion/usuarios_index', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $jwtToken, // <--- JWT Inyectado
+                    'Authorization' => 'Bearer ' . $jwtToken,
                     'Accept'        => 'application/json',
                 ],
                 'query' => [
                     'id_empresa_usuario' => session('empresa_actual.id_empresa') ?? session('id_empresa')
                 ],
-                // 'timeout' => 5.0
             ]);
+
             $usuarioIndex = json_decode($response->getBody()->getContents());
 
             // Evita que la vista rompa con foreach(null) y termine en redirect raro
@@ -36,7 +34,7 @@ class UsuarioIndex implements Responsable
             }
 
             return view('usuarios.index', compact('usuarioIndex'));
-            
+
         } catch (Exception $e) {
             logger()->error('Error UsuarioIndex: ' . $e->getMessage());
             alert()->error('Error cargando los usuarios.');
@@ -44,3 +42,4 @@ class UsuarioIndex implements Responsable
         }
     }
 }
+
