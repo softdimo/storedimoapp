@@ -120,7 +120,12 @@ class UsuarioStore implements Responsable
                 }
 
             } catch (Exception $e) {
-                dd($e);
+                // dd($e);
+                // dd([
+                //     'Linea'         => $e->getLine(),
+                //     'Archivo'       => $e->getFile(),
+                //     'Error Mensaje' => $e->getMessage(),
+                // ]);
                 return $this->respuestaException('Error creando el usuario, contacte a Soporte.');
             }
         }
