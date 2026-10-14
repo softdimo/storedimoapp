@@ -286,5 +286,17 @@ Route::middleware(['web', 'prevent-back-history'])->group(function () {
             Route::post('query_actividad_horas', 'MetricasController@queryActividadHoras')->name('query_actividad_horas');
             Route::post('borrar_registros', 'MetricasController@borrarRegistros')->name('borrar_registros');
         });
+        
+        // ========================================================================
+        // ========================================================================
+
+        // AUDITORIAS
+        Route::group(['namespace' => 'App\Http\Controllers\auditorias'], function () {
+            Route::get('auditorias_datos', 'AuditoriasController@datos')->name('auditorias.datos');
+            Route::resource('auditorias', 'AuditoriasController');
+        });
+        
+        // ========================================================================
+        // ========================================================================
     }); // F..IN Route::middleware(['verificar.sesion']) RUTAS PROTEGIDAS
 }); // FIN Route::middleware(['web'])
