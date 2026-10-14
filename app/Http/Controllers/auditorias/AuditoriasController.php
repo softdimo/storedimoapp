@@ -91,8 +91,8 @@ class AuditoriasController extends Controller
             $response = $this->clientApi->get('administracion/auditoria_index', [
                 'headers' => $this->getHeaders(),
                 'query' => [
-                    'draw' => $request->input('draw'),
-                    'start' => $request->input('start', 0),
+                    'draw'   => $request->input('draw'),
+                    'start'  => $request->input('start', 0),
                     'length' => $request->input('length', 10),
                 ],
             ]);
@@ -102,11 +102,11 @@ class AuditoriasController extends Controller
 
         } catch (Exception $e) {
             return response()->json([
-                'draw' => (int) $request->input('draw'),
-                'recordsTotal' => 0,
+                'draw'            => (int) $request->input('draw'),
+                'recordsTotal'    => 0,
                 'recordsFiltered' => 0,
-                'data' => [],
-                'error' => 'No fue posible consultar las auditorías',
+                'data'            => [],
+                'error'           => 'No fue posible consultar las auditorías',
             ], 500);
         }
     }

@@ -121,8 +121,8 @@
                 ],
                 buttons: [
                     {
-                        extend: 'excelHtml5',
-                        text: '<i class="fa fa-file-excel-o"></i> Excel',
+                        extend:    'excelHtml5',
+                        text:      '<i class="fa fa-file-excel-o"></i> Excel',
                         className: 'btn btn-modern-excel mr-3',
                         customize: function(xlsx) {
                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
@@ -132,12 +132,12 @@
                 ],
                 language: {
                     processing: "Cargando...",
-                    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
-                    infoEmpty: "No hay registros",
+                    info:       "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty:  "No hay registros",
                     lengthMenu: "Mostrar _MENU_",
                     paginate: {
                         previous: "Anterior",
-                        next: "Siguiente"
+                        next:     "Siguiente"
                     }
                 }
             });
