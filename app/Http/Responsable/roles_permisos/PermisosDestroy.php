@@ -16,6 +16,15 @@ class PermisosDestroy implements Responsable
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
+
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+    
     public function toResponse($request)
     {
         try
@@ -31,8 +40,8 @@ class PermisosDestroy implements Responsable
 
             if(isset($arrayPermisos) && !is_null($arrayPermisos) && !empty($arrayPermisos))
             {
-                $peticionPermisoStore = $this->clientApi->post($this->baseUri . 'administracion/eliminar_permiso_usuario',
-                [
+                $peticionPermisoStore = $this->clientApi->post('administracion/eliminar_permiso_usuario', [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'permissions' => $arrayPermisos,
                         'usuario_id' => $idUsuario,

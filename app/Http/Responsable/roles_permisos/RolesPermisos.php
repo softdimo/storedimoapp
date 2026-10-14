@@ -36,7 +36,8 @@ class RolesPermisos implements Responsable
         {
             $rol = request('role', null);
 
-            $peticionRolStore = $this->clientApi->post($this->baseUri . 'administracion/guardar_rol', [
+            // $peticionRolStore = $this->clientApi->post($this->baseUri . 'administracion/guardar_rol', [
+            $peticionRolStore = $this->clientApi->post('administracion/guardar_rol', [
                 'headers' => $this->getHeaders(),
                 'json' => [
                     'name'      => $rol,
@@ -68,7 +69,8 @@ class RolesPermisos implements Responsable
         try {
             $permiso = request('permission', null);
 
-            $peticionPermissionStore = $this->clientApi->post($this->baseUri . 'administracion/guardar_permiso', [
+            // $peticionPermissionStore = $this->clientApi->post($this->baseUri . 'administracion/guardar_permiso', [
+            $peticionPermissionStore = $this->clientApi->post('administracion/guardar_permiso', [
                 'headers' => $this->getHeaders(),
                 'json' => [
                     'permission' => $permiso,
@@ -100,7 +102,8 @@ class RolesPermisos implements Responsable
         try {
             $usuario = request('usuarioId', null);
 
-            $peticionPermisos = $this->clientApi->post($this->baseUri . 'administracion/consultar_permisos', [
+            // $peticionPermisos = $this->clientApi->post($this->baseUri . 'administracion/consultar_permisos', [
+            $peticionPermisos = $this->clientApi->post('administracion/consultar_permisos', [
                 'headers' => $this->getHeaders(),
                 'json' => [
                     'usuarioId' => $usuario,

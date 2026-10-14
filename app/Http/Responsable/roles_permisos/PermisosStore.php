@@ -16,6 +16,15 @@ class PermisosStore implements Responsable
         $this->baseUri = env('BASE_URI');
         $this->clientApi = new Client(['base_uri' => $this->baseUri]);
     }
+
+    private function getHeaders()
+    {
+        return [
+            'Authorization' => 'Bearer ' . session('api_jwt_token'),
+            'Accept'        => 'application/json',
+        ];
+    }
+    
     public function toResponse($request)
     {
         try
@@ -31,8 +40,9 @@ class PermisosStore implements Responsable
 
             if(isset($arrayPermisos) && !is_null($arrayPermisos) && !empty($arrayPermisos))
             {
-                $peticionPermisoStore = $this->clientApi->post($this->baseUri . 'administracion/crear_permiso_usuario',
-                [
+                // $peticionPermisoStore = $this->clientApi->post($this->baseUri . 'administracion/crear_permiso_usuario',
+                $peticionPermisoStore = $this->clientApi->post('administracion/crear_permiso_usuario', [
+                    'headers' => $this->getHeaders(),
                     'json' => [
                         'permissions' => $arrayPermisos,
                         'usuario_id' => $idUsuario,
@@ -54,14 +64,12 @@ class PermisosStore implements Responsable
                     return back();
                 }
 
-            } else
-            {
+            } else {
                 alert()->error("Debes seleccionar al menos un permiso");
                 return back();
             }
 
-        } catch (Exception $e)
-        {
+        } catch (Exception $e) {
             alert()->error("Ha ocurrido un error asignando los permisos!");
             return back();
         }
