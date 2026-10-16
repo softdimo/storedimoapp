@@ -1,5 +1,5 @@
 {
-    "name": "laravel/laravel",
+    "name": "storedimo/app",
     "type": "project",
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
@@ -65,7 +65,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "8.3.0"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
