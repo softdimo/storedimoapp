@@ -3,7 +3,8 @@
 namespace App\Http\Responsable\Informes;
 
 use App\Models\Informe;
-use Jenssegers\Date\Date;
+use Carbon\Carbon as Date;
+use Illuminate\Support\Str;
 use App\Models\InformeCampo;
 use App\Traits\CamposInforme;
 use App\Models\InformeInnerJoin;
@@ -292,7 +293,7 @@ class FormatoInformes
                         $is_date->$propiedad = $date->format("Ymd");
                         break;
                     case 10: //devuelve solo el mes String
-                        $value->$propiedad = title_case($value->$propiedad);
+                        $value->$propiedad = Str::title($value->$propiedad);
                         $totales[$indices[$j]] = isset($totales[$indices[$j]]) ? null : null;
                         $is_date->$propiedad = null;
                         break;

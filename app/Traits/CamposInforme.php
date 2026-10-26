@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use Carbon\Carbon;
-use Jenssegers\Date\Date;
+use Carbon\Carbon as Date;
 
 /**
  * Filtros para la consultas de los informes
