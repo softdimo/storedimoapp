@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Exception;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 
 trait MetodosTrait
@@ -386,6 +387,10 @@ trait MetodosTrait
             });
 
         } catch (RequestException $e) {
+            if ($e->hasResponse() && $e->getResponse()->getStatusCode() === 401) {
+                throw $e;
+            }
+
             logger()->error("Error en permisosPorUsuario: " . $e->getMessage());
             return [];
         }
@@ -451,6 +456,23 @@ trait MetodosTrait
             // Si la vista es una respuesta diferente
             return $vista;
 
+        } catch (RequestException $e) {
+            if ($e->hasResponse() && $e->getResponse()->getStatusCode() === 401) {
+                Session::flush();
+
+                $mensaje = 'Tu sesión expiró por inactividad. Ingresa de nuevo.';
+
+                if (request()->ajax() || request()->wantsJson()) {
+                    return response()->json(['message' => $mensaje], 401);
+                }
+
+                alert()->warning('Sesión expirada', $mensaje);
+
+                return redirect()->route('login');
+            }
+
+            logger()->error("Error en validarAccesos: " . $e->getMessage());
+            return view('errors.403')->with('error', 'Error validando permisos');
         } catch (Exception $e) {
             logger()->error("Error en validarAccesos: " . $e->getMessage());
             return view('errors.403')->with('error', 'Error validando permisos');

@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Exception;
 
 class VerificarTokenSesion
@@ -20,7 +21,11 @@ class VerificarTokenSesion
             $intervaloSegundos = 60; // 1 minuto
 
             // Solo consultamos si es la primera vez o si ya pasó el intervalo
-            if (!$ultimaValidacion || $ahora->diffInSeconds($ultimaValidacion) > $intervaloSegundos) {
+            $segundosDesdeValidacion = $ultimaValidacion
+                ? $ahora->diffInSeconds($ultimaValidacion, true)
+                : $intervaloSegundos + 1;
+
+            if ($segundosDesdeValidacion > $intervaloSegundos) {
                 
                 $idUsuario = Session::get('id_usuario');
                 $tokenEnSesion = Session::get('session_token');
@@ -66,13 +71,33 @@ class VerificarTokenSesion
 
                     Session::put('ultima_validacion_token', $ahora);
 
+                } catch (RequestException $e) {
+                    if ($e->hasResponse() && $e->getResponse()->getStatusCode() === 401) {
+                        return $this->cerrarSesionExpirada($request);
+                    }
+
+                    Log::error("Error en Middleware VerificarTokenSesion: " . $e->getMessage());
                 } catch (Exception $e) {
-                    // Error de red/API: no cerrar sesión
                     Log::error("Error en Middleware VerificarTokenSesion: " . $e->getMessage());
                 }
             }
         }
 
         return $next($request);
+    }
+
+    private function cerrarSesionExpirada($request)
+    {
+        Session::flush();
+
+        $mensaje = 'Tu sesión expiró por inactividad. Ingresa de nuevo.';
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['message' => $mensaje], 401);
+        }
+
+        alert()->warning('Sesión expirada', $mensaje);
+
+        return redirect()->route('login');
     }
 }
