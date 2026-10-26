@@ -458,17 +458,16 @@ trait MetodosTrait
 
         } catch (RequestException $e) {
             if ($e->hasResponse() && $e->getResponse()->getStatusCode() === 401) {
-                Session::flush();
-
                 $mensaje = 'Tu sesión expiró por inactividad. Ingresa de nuevo.';
+
+                Session::flush();
+                Session::put('sesion_expirada', $mensaje);
 
                 if (request()->ajax() || request()->wantsJson()) {
                     return response()->json(['message' => $mensaje], 401);
                 }
 
-                alert()->warning('Sesión expirada', $mensaje);
-
-                return redirect()->route('login');
+                return redirect('/login');
             }
 
             logger()->error("Error en validarAccesos: " . $e->getMessage());

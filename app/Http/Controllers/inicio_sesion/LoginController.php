@@ -56,6 +56,12 @@ class LoginController extends Controller
             return redirect()->route('home.index');
         }
 
+        $mensajeSesionExpirada = session()->pull('sesion_expirada');
+
+        if ($mensajeSesionExpirada) {
+            alert()->warning('Sesión expirada', $mensajeSesionExpirada);
+        }
+
         // Inicialización por defecto en caso de fallo en la API
         $planesLanding          = collect([]);
         $tiposDocumento         = collect([]);
@@ -100,7 +106,8 @@ class LoginController extends Controller
             'tiposDocumento',
             'planesSelect',
             'planesData',
-            'tiposPagoSuscripcion'
+            'tiposPagoSuscripcion',
+            'mensajeSesionExpirada'
         ));
     }
 

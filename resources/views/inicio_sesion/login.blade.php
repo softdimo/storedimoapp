@@ -25,6 +25,12 @@
                     
                     <h3 class="mb-4 fw-bold text-primary">Iniciar Sesión</h3>
 
+                    @if (!empty($mensajeSesionExpirada))
+                        <div class="alert alert-warning text-start" role="alert">
+                            {{ $mensajeSesionExpirada }}
+                        </div>
+                    @endif
+
                     <div class="mb-4">
                         <input type="email" name="email" id="email" class="w-100 form-control p-3" placeholder="Correo *" required>
                     </div>

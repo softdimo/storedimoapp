@@ -59,14 +59,11 @@ class VerificarTokenSesion
                     // Solo invalidar cuando hay evidencia clara de mismatch
                     if ($tokenReal !== $tokenEnSesion) {
                         Log::warning("Sesión invalidada por token incorrecto. Usuario: {$idUsuario}");
-                        
-                        Session::flush();
 
-                        if ($request->ajax()) {
-                            return response()->json(['error' => 'Sesión no válida'], 401);
-                        }
-
-                        return redirect()->route('login')->with('error_sesion', 'Por seguridad, su sesión ha caducado.');
+                        return $this->cerrarSesionExpirada(
+                            $request,
+                            'Por seguridad, su sesión ha caducado.'
+                        );
                     }
 
                     Session::put('ultima_validacion_token', $ahora);
@@ -86,18 +83,15 @@ class VerificarTokenSesion
         return $next($request);
     }
 
-    private function cerrarSesionExpirada($request)
+    private function cerrarSesionExpirada($request, $mensaje = 'Tu sesión expiró por inactividad. Ingresa de nuevo.')
     {
         Session::flush();
-
-        $mensaje = 'Tu sesión expiró por inactividad. Ingresa de nuevo.';
+        Session::put('sesion_expirada', $mensaje);
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['message' => $mensaje], 401);
         }
 
-        alert()->warning('Sesión expirada', $mensaje);
-
-        return redirect()->route('login');
+        return redirect('/login');
     }
 }
