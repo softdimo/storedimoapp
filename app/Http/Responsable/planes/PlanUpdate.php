@@ -32,6 +32,11 @@ class PlanUpdate implements Responsable
 
     public function toResponse($request)
     {
+        if ($this->planTieneSuscripcionActiva($this->idPlan)) {
+            alert()->error('Error', 'No se puede editar el plan porque tiene una suscripción activa relacionada.');
+            return redirect()->to(route('planes.index'));
+        }
+
         $nombrePlan = request('nombre_plan', null);
         $valorMensual = request('valor_mensual', null);
         $valorTrimestral = request('valor_trimestral', null);
@@ -71,6 +76,29 @@ class PlanUpdate implements Responsable
         } catch (Exception $e) {
             alert()->error('Error', 'Actualizando el Plan, contacte a Soporte.');
             return back();
+        }
+    }
+
+    private function planTieneSuscripcionActiva($idPlan)
+    {
+        try {
+            $peticion = $this->clientApi->get('administracion/plan_tiene_suscripcion_activa/' . $idPlan, [
+                'headers' => $this->getHeaders(),
+            ]);
+
+            $respuesta = json_decode($peticion->getBody()->getContents());
+
+            if (isset($respuesta->tiene_suscripcion_activa)) {
+                return (bool) $respuesta->tiene_suscripcion_activa;
+            }
+
+            if (isset($respuesta->data->tiene_suscripcion_activa)) {
+                return (bool) $respuesta->data->tiene_suscripcion_activa;
+            }
+
+            return false;
+        } catch (Exception $e) {
+            return false;
         }
     }
 }

@@ -65,11 +65,19 @@
                                         <td>{{ $plan->descripcion_plan }}</td>
                                         <td>{{ $plan->estado }}</td>
                                         <td>
-                                            <a href="{{ route('planes.edit', $plan->id_plan) }}"
-                                                class="btn btn-success text-white rounded-circle btn-circle btn-editar-plan"
-                                                title="Editar Plan">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
+                                            @if (in_array((int) $plan->id_plan, $planesConSuscripcionActiva ?? []))
+                                                <span class="btn btn-secondary text-white rounded-circle btn-circle"
+                                                    title="No se puede editar: el plan tiene una suscripción activa"
+                                                    style="cursor: not-allowed; opacity: 0.65;">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </span>
+                                            @else
+                                                <a href="{{ route('planes.edit', $plan->id_plan) }}"
+                                                    class="btn btn-success text-white rounded-circle btn-circle btn-editar-plan"
+                                                    title="Editar Plan">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

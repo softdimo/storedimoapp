@@ -91,13 +91,19 @@
                                         <td>{{ $suscripcion->observaciones_suscripcion }}</td>
 
                                         @if($rolId == 3)
-                                            <td>
-                                                <a href="{{ route('suscripciones.edit', $suscripcion->id_suscripcion) }}"
-                                                    class="btn btn-success text-white rounded-circle btn-circle btn-editar-suscripcion"
-                                                    title="Editar Suscripción">
-                                                    <i class="fa fa-pencil-square-o"></i>
-                                                </a>
-                                            </td>
+                                            @if($suscripcion->id_estado_suscripcion == 1)
+                                                <td>
+                                                    <p>&nbsp;</p>
+                                                </td>
+                                            @else
+                                                <td>
+                                                    <a href="{{ route('suscripciones.edit', $suscripcion->id_suscripcion) }}"
+                                                        class="btn btn-success text-white rounded-circle btn-circle btn-editar-suscripcion"
+                                                        title="Editar Suscripción">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
+                                                </td>
+                                            @endif
                                         @else  
                                             <td>
                                                 <a href="{{ route('renovar') }}"
