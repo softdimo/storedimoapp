@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
-class EntradaUpdate implements Responsable
+class VentaUpdate implements Responsable
 {
     protected $baseUri;
     protected $clientApi;
