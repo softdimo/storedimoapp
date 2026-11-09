@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Responsable\entradas;
+namespace App\Http\Responsable\ventas;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;

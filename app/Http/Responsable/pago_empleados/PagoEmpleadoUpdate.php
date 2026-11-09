@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Responsable\prestamos;
+namespace App\Http\Responsable\pago_empleados;
 
 use Exception;
 use Illuminate\Contracts\Support\Responsable;
 use GuzzleHttp\Client;
 
-class PrestamoUpdate implements Responsable
+class PagoEmpleadoUpdate implements Responsable
 {
     protected $baseUri;
     protected $clientApi;
